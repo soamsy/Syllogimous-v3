@@ -415,6 +415,16 @@ function resetApp() {
     }
 }
 
+function clearHistory() {
+    const confirmed = confirm("Are you sure?");
+    if (confirmed) {
+        savedata.questions = [];
+        savedata.score = 0;
+        save();
+        window.location.reload();
+    }
+}
+
 function renderHQL() {
     historyList.innerHTML = "";
 

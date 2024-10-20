@@ -722,10 +722,17 @@ input[type="checkbox"]:checked + .switch::after {
     transition-timing-function: ease-in;
 }
 
+.hql-frame {
+    display: flex;
+    flex-direction: column;
+}
+
 .hql {
     display: grid;
     gap: 1rem;
     padding: 1rem 0;
+    max-height: 100%;
+    overflow: scroll;
 }
 
 .hqli {
