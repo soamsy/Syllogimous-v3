@@ -20,6 +20,7 @@ let timerTime = 10;
 let timerCount = 10;
 let timerInstance;
 let timerRunning = false;
+let animatingFeedback = false;
 
 let quota
 
@@ -328,29 +329,44 @@ function init() {
 }
 
 function wowFeedbackWrong(cb) {
+    if (animatingFeedback) {
+        return;
+    }
     feedbackWrong.style.transitionDuration = "0.5s";
     feedbackWrong.classList.add("active");
+    animatingFeedback = true;
     setTimeout(() => {
         feedbackWrong.classList.remove("active");
         cb();
+        animatingFeedback = false;
     }, 1200);
 }
 
 function wowFeedbackMissed(cb) {
+    if (animatingFeedback) {
+        return;
+    }
     feedbackMissed.style.transitionDuration = "0.5s";
     feedbackMissed.classList.add("active");
+    animatingFeedback = true;
     setTimeout(() => {
         feedbackMissed.classList.remove("active");
         cb();
+        animatingFeedback = false;
     }, 1200);
 }
 
 function wowFeedbackRight(cb) {
+    if (animatingFeedback) {
+        return;
+    }
     feedbackRight.style.transitionDuration = "0.5s";
     feedbackRight.classList.add("active");
+    animatingFeedback = true;
     setTimeout(() => {
         feedbackRight.classList.remove("active");
         cb();
+        animatingFeedback = false;
     }, 1200);
 }
 
