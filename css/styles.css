@@ -616,7 +616,7 @@ label.open[for="offcanvas-user"]:hover {
     color: #fffff0;
     display: flex;
     height: 100%;
-    max-width: 360px;
+    max-width: 400px;
     position: absolute;
     top: 0;
     transition: all 0.3s ease-out;
