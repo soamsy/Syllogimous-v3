@@ -254,7 +254,7 @@ function createSameOpposite(length) {
 
     return {
         category,
-        createdAt: new Date().getTime(),
+        startedAt: new Date().getTime(),
         buckets,
         isValid,
         premises,
@@ -351,7 +351,7 @@ function createMoreLess(length) {
 
     return {
         category,
-        createdAt: new Date().getTime(),
+        startedAt: new Date().getTime(),
         bucket,
         isValid,
         premises,
@@ -447,7 +447,7 @@ function createBeforeAfter(length) {
 
     return {
         category,
-        createdAt: new Date().getTime(),
+        startedAt: new Date().getTime(),
         bucket,
         isValid,
         premises,
@@ -532,7 +532,7 @@ function createBinaryQuestion(length) {
 
     return {
         category: `Binary: ${choice.category} ${operandNames[operandIndex]} ${choice2.category}`,
-        createdAt: new Date().getTime(),
+        startedAt: new Date().getTime(),
         isValid,
         premises,
         conclusion
@@ -617,7 +617,7 @@ function createNestedBinaryQuestion(length) {
 
     return {
         category: `Nested Binary: ${category}`,
-        createdAt: new Date().getTime(),
+        startedAt: new Date().getTime(),
         isValid,
         premises,
         conclusion
@@ -808,7 +808,7 @@ function createSameDifferent(length) {
     conclusion += `<span class="subject">${c}</span> to <span class="subject">${d}</span>`;
 
     choice.category = "Analogy: " + subtype;
-    choice.createdAt = new Date().getTime();
+    choice.startedAt = new Date().getTime();
     choice.isValid = isValid;
     choice.conclusion = conclusion;
 
@@ -897,7 +897,7 @@ function createDirectionQuestion(length) {
     
     return {
         category: "Space Two D",
-        createdAt: new Date().getTime(),
+        startedAt: new Date().getTime(),
         wordCoordMap,
         isValid,
         premises,
@@ -991,7 +991,7 @@ function createDirectionQuestion3D(length) {
     
     return {
         category: "Space Three D",
-        createdAt: new Date().getTime(),
+        startedAt: new Date().getTime(),
         wordCoordMap,
         isValid,
         premises,
@@ -1095,7 +1095,7 @@ function createDirectionQuestion4D(length) {
     
     return {
         category: "Space Time",
-        createdAt: new Date().getTime(),
+        startedAt: new Date().getTime(),
         wordCoordMap,
         isValid,
         premises,
@@ -1150,7 +1150,7 @@ function createSyllogism(length) {
     return {
         category,
         rule,
-        createdAt: new Date().getTime(),
+        startedAt: new Date().getTime(),
         bucket,
         isValid,
         premises,

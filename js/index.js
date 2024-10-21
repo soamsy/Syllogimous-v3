@@ -186,6 +186,7 @@ function switchButtons() {
 
 function startCountDown() {
     timerRunning = true;
+    question.startedAt = new Date().getTime();
     animateTimerBar();
 }
 
@@ -460,10 +461,10 @@ function createHQLI(question, answerUser) {
         answerUser = "FALSE";
 
     let responseTimeHtml = '';
-    if (question.createdAt && question.answeredAt)
+    if (question.startedAt && question.answeredAt)
         responseTimeHtml =
 `
-        <div class="hqli-response-time">${Math.round((question.answeredAt - question.createdAt) / 1000)} sec</div>
+        <div class="hqli-response-time">${Math.round((question.answeredAt - question.startedAt) / 1000)} sec</div>
 `;
     
     const html =
