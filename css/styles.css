@@ -799,6 +799,9 @@ input[type="checkbox"]:checked + .switch::after {
     font-size: 12px;
     margin-right: -1rem;
     text-align: right;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 @media (max-width: 768px) {

@@ -212,8 +212,7 @@ function animateTimerBar() {
 function timeElapsed() {
     savedata.score--;
     question.answerUser = undefined;
-    savedata.questions.push(question);
-    save();
+    removeAppStateAndSave();
     renderHQL();
 
     wowFeedbackMissed(init);
@@ -221,9 +220,6 @@ function timeElapsed() {
 
 function init() {
     stopCountDown();
-
-    correctlyAnsweredEl.innerText = savedata.score;
-    nextLevelEl.innerText = savedata.questions.length;
 
     const analogyEnable = [
         savedata.enableDistinction,
@@ -377,37 +373,36 @@ function removeAppStateAndSave() {
     delete question.bucket;
     delete question.buckets;
     delete question.wordCoordMap;
-    question.answeredAt = new Date().getTime();
     savedata.questions.push(question);
     save();
 }
 
 function checkIfTrue() {
     question.answerUser = true;
-    removeAppStateAndSave();
-    renderHQL();
-
     if (question.isValid) {
         savedata.score++;
         wowFeedbackRight(init);
     } else {
-        wowFeedbackWrong(init);
         savedata.score--;
+        wowFeedbackWrong(init);
     }
+    question.answeredAt = new Date().getTime();
+    removeAppStateAndSave();
+    renderHQL();
 }
 
 function checkIfFalse() {
     question.answerUser = false;
-    removeAppStateAndSave();
-    renderHQL();
-
     if (!question.isValid) {
         savedata.score++;
         wowFeedbackRight(init);
     } else {
-        wowFeedbackWrong(init);
         savedata.score--;
+        wowFeedbackWrong(init);
     }
+    question.answeredAt = new Date().getTime();
+    removeAppStateAndSave();
+    renderHQL();
 }
 
 function resetApp() {
@@ -428,20 +423,29 @@ function clearHistory() {
     }
 }
 
+function deleteQuestion(i, isRight) {
+    savedata.score += (isRight ? -1 : 1);
+    savedata.questions.splice(i, 1);
+    save();
+    renderHQL();
+}
+
 function renderHQL() {
     historyList.innerHTML = "";
 
-    const reverseChronological = savedata.questions.reverse();
+    const len = savedata.questions.length;
+    const reverseChronological = structuredClone(savedata.questions).reverse();
 
     reverseChronological
         .map((q, i) => {
-            const el = createHQLI(q, q.answerUser);
-            el.querySelector(".index").textContent = i + 1;
+            const el = createHQLI(q, len - i - 1);
             return el;
         })
         .forEach(el => historyList.appendChild(el));
 
     updateAverage(reverseChronological);
+    correctlyAnsweredEl.innerText = savedata.score;
+    nextLevelEl.innerText = savedata.questions.length;
 }
 
 function updateAverage(reverseChronological) {
@@ -452,7 +456,6 @@ function updateAverage(reverseChronological) {
         let q = reverseChronological[i];
         if (q.answeredAt && q.startedAt) {
             const daysSince = (now - q.startedAt) / 86400000 // milliseconds in a day
-            console.log(daysSince);
             if (daysSince < 1) {
                 times.push((q.answeredAt - q.startedAt) / 1000);
             }
@@ -462,30 +465,38 @@ function updateAverage(reverseChronological) {
         last30Average.innerHTML = "None yet"
         return;
     }
-    const average = Math.round(times.reduce((a,b) => a + b, 0) / len);
+    const average = Math.round(times.reduce((a,b) => a + b, 0) / times.length);
     last30Average.innerHTML = average.toFixed(1) + "s";
 }
 
-function createHQLI(question, answerUser) {
+function createHQLI(question, i) {
     const parent = document.createElement("DIV");
 
-    let classModifier;
-    if (answerUser === undefined)
-        classModifier = '';
-    else if (question.isValid === answerUser)
-        classModifier = "hqli--right";
-    else
-        classModifier = "hqli--wrong";
+    const answerUser = question.answerUser;
+    let type = '';
+    if (answerUser === undefined) {
+        type = 'missed';
+    } else if (question.isValid === answerUser) {
+        type = 'right'
+    } else {
+        type = 'wrong'
+    }
+
+    let classModifier = {
+        'missed': '',
+        'right': 'hqli--right',
+        'wrong': 'hqli--wrong'
+    }[type];
+    
+    let answerDisplay = {
+        'missed': '(TIMED OUT)',
+        'right': 'TRUE',
+        'wrong': 'FALSE'
+    }[type];
+
     const htmlPremises = question.premises
         .map(p => `<div class="hqli-premise">${p}</div>`)
         .join("\n");
-
-    if (answerUser === undefined)
-        answerUser = "(TIMED OUT)";
-    else if (answerUser === true)
-        answerUser = "TRUE";
-    else
-        answerUser = "FALSE";
 
     let responseTimeHtml = '';
     if (question.startedAt && question.answeredAt)
@@ -501,16 +512,21 @@ function createHQLI(question, answerUser) {
             ${htmlPremises}
         </div>
         <div class="hqli-conclusion">${question.conclusion}</div>
-        <div class="hqli-answer-user">${answerUser}</div>
+        <div class="hqli-answer-user">${answerDisplay}</div>
         <div class="hqli-answer">${("" + question.isValid).toUpperCase()}</div>
         ${responseTimeHtml}
         <div class="hqli-footer">
-            <div class="index"></div>
             <div>${question.category}</div>
+            <div class="index"></div>
+            <button class="delete">X</button>
         </div>
     </div>
 </div>`;
     parent.innerHTML = html;
+    parent.querySelector(".index").textContent = i + 1;
+    parent.querySelector(".delete").addEventListener('click', () => {
+        deleteQuestion(i, type === 'right');
+    });
     return parent.firstElementChild;
 }
 
