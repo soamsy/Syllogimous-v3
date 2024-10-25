@@ -25,6 +25,7 @@ let animatingFeedback = false;
 let quota
 
 const historyList = document.getElementById("history-list");
+const last30Average = document.getElementById("last-30-average");
 
 let carouselIndex = 0;
 let question;
@@ -219,9 +220,7 @@ function timeElapsed() {
 }
 
 function init() {
-
     stopCountDown();
-    if (timerToggled) startCountDown();
 
     correctlyAnsweredEl.innerText = savedata.score;
     nextLevelEl.innerText = savedata.questions.length;
@@ -324,6 +323,9 @@ function init() {
     for (let i = Math.floor(Math.random()*10); i > 0; i--) {
         switchButtons();
     }
+
+    if (timerToggled) 
+        startCountDown();
 
     carouselInit();
     displayInit();
@@ -429,14 +431,39 @@ function clearHistory() {
 function renderHQL() {
     historyList.innerHTML = "";
 
-    savedata.questions
+    const reverseChronological = savedata.questions.reverse();
+
+    reverseChronological
         .map((q, i) => {
             const el = createHQLI(q, q.answerUser);
             el.querySelector(".index").textContent = i + 1;
             return el;
         })
-        .reverse()
         .forEach(el => historyList.appendChild(el));
+
+    updateAverage(reverseChronological);
+}
+
+function updateAverage(reverseChronological) {
+    const len = Math.min(30, reverseChronological.length)
+    const now = new Date().getTime();
+    let times = [];
+    for (let i = 0; i < len; i++) {
+        let q = reverseChronological[i];
+        if (q.answeredAt && q.startedAt) {
+            const daysSince = (now - q.startedAt) / 86400000 // milliseconds in a day
+            console.log(daysSince);
+            if (daysSince < 1) {
+                times.push((q.answeredAt - q.startedAt) / 1000);
+            }
+        }
+    }
+    if (times.length == 0) {
+        last30Average.innerHTML = "None yet"
+        return;
+    }
+    const average = Math.round(times.reduce((a,b) => a + b, 0) / len);
+    last30Average.innerHTML = average.toFixed(1) + "s";
 }
 
 function createHQLI(question, answerUser) {
@@ -494,6 +521,10 @@ timerInput.addEventListener("input", evt => {
     timerCount = el.value;
     el.style.width = (el.value.length + 3) + 'ch';
     savedata.timer = el.value;
+    if (timerToggle.checked) {
+        stopCountDown();
+        startCountDown();
+    }
     save();
 });
 
