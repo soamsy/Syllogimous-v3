@@ -212,6 +212,7 @@ function animateTimerBar() {
 function timeElapsed() {
     savedata.score--;
     question.answerUser = undefined;
+    question.answeredAt = new Date().getTime();
     removeAppStateAndSave();
     renderHQL();
 
