@@ -474,10 +474,11 @@ function createHQLI(question, i) {
     const parent = document.createElement("DIV");
 
     const answerUser = question.answerUser;
+    const answer = question.isValid;
     let type = '';
     if (answerUser === undefined) {
         type = 'missed';
-    } else if (question.isValid === answerUser) {
+    } else if (answer === answerUser) {
         type = 'right'
     } else {
         type = 'wrong'
@@ -489,10 +490,11 @@ function createHQLI(question, i) {
         'wrong': 'hqli--wrong'
     }[type];
     
-    let answerDisplay = {
+    let answerDisplay = ('' + answer).toUpperCase();
+    let answerUserDisplay = {
         'missed': '(TIMED OUT)',
-        'right': 'TRUE',
-        'wrong': 'FALSE'
+        'right': ('' + answerUser).toUpperCase(),
+        'wrong': ('' + answerUser).toUpperCase()
     }[type];
 
     const htmlPremises = question.premises
@@ -513,8 +515,8 @@ function createHQLI(question, i) {
             ${htmlPremises}
         </div>
         <div class="hqli-conclusion">${question.conclusion}</div>
-        <div class="hqli-answer-user">${answerDisplay}</div>
-        <div class="hqli-answer">${("" + question.isValid).toUpperCase()}</div>
+        <div class="hqli-answer-user">${answerUserDisplay}</div>
+        <div class="hqli-answer">${answerDisplay}</div>
         ${responseTimeHtml}
         <div class="hqli-footer">
             <div>${question.category}</div>
