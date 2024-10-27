@@ -26,6 +26,7 @@ let quota
 
 const historyList = document.getElementById("history-list");
 const averageDisplay = document.getElementById("average-display");
+const averageCorrectDisplay = document.getElementById("average-correct-display");
 
 let carouselIndex = 0;
 let question;
@@ -211,6 +212,7 @@ function animateTimerBar() {
 
 function timeElapsed() {
     savedata.score--;
+    question.correctness = 'missed';
     question.answerUser = undefined;
     question.answeredAt = new Date().getTime();
     removeAppStateAndSave();
@@ -382,9 +384,11 @@ function checkIfTrue() {
     question.answerUser = true;
     if (question.isValid) {
         savedata.score++;
+        question.correctness = 'right';
         wowFeedbackRight(init);
     } else {
         savedata.score--;
+        question.correctness = 'wrong';
         wowFeedbackWrong(init);
     }
     question.answeredAt = new Date().getTime();
@@ -396,9 +400,11 @@ function checkIfFalse() {
     question.answerUser = false;
     if (!question.isValid) {
         savedata.score++;
+        question.correctness = 'right';
         wowFeedbackRight(init);
     } else {
         savedata.score--;
+        question.correctness = 'wrong';
         wowFeedbackWrong(init);
     }
     question.answeredAt = new Date().getTime();
@@ -450,21 +456,22 @@ function renderHQL() {
 }
 
 function updateAverage(reverseChronological) {
-    const len = reverseChronological.length;
-    const now = new Date().getTime();
-    let times = [];
-    for (let i = 0; i < len; i++) {
-        let q = reverseChronological[i];
-        if (q.answeredAt && q.startedAt) {
-            times.push((q.answeredAt - q.startedAt) / 1000);
-        }
-    }
+    let questions = reverseChronological.filter(q => q.answeredAt && q.startedAt);
+    let times = questions.map(q => (q.answeredAt - q.startedAt) / 1000);
     if (times.length == 0) {
-        averageDisplay.innerHTML = "None yet"
+        averageDisplay.innerHTML = 'None yet';
         return;
     }
     const average = Math.round(times.reduce((a,b) => a + b, 0) / times.length);
-    averageDisplay.innerHTML = average.toFixed(1) + "s";
+    averageDisplay.innerHTML = average.toFixed(1) + 's';
+
+    let correctTimes = questions.filter(q => q.correctness == 'right').map(q => (q.answeredAt - q.startedAt) / 1000);
+    if (correctTimes.length == 0) {
+        averageCorrectDisplay.innerHTML = 'None yet';
+        return;
+    }
+    const averageCorrect = Math.round(correctTimes.reduce((a,b) => a + b, 0) / times.length);
+    averageCorrectDisplay.innerHTML = averageCorrect.toFixed(1) + 's';
 }
 
 function createHQLI(question, i) {
@@ -472,27 +479,18 @@ function createHQLI(question, i) {
 
     const answerUser = question.answerUser;
     const answer = question.isValid;
-    let type = '';
-    if (answerUser === undefined) {
-        type = 'missed';
-    } else if (answer === answerUser) {
-        type = 'right'
-    } else {
-        type = 'wrong'
-    }
-
     let classModifier = {
         'missed': '',
         'right': 'hqli--right',
         'wrong': 'hqli--wrong'
-    }[type];
+    }[question.correctness];
     
     let answerDisplay = ('' + answer).toUpperCase();
     let answerUserDisplay = {
         'missed': '(TIMED OUT)',
         'right': ('' + answerUser).toUpperCase(),
         'wrong': ('' + answerUser).toUpperCase()
-    }[type];
+    }[question.correctness];
 
     const htmlPremises = question.premises
         .map(p => `<div class="hqli-premise">${p}</div>`)
