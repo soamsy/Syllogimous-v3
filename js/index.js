@@ -25,7 +25,7 @@ let animatingFeedback = false;
 let quota
 
 const historyList = document.getElementById("history-list");
-const last30Average = document.getElementById("last-30-average");
+const averageDisplay = document.getElementById("average-display");
 
 let carouselIndex = 0;
 let question;
@@ -450,24 +450,21 @@ function renderHQL() {
 }
 
 function updateAverage(reverseChronological) {
-    const len = Math.min(30, reverseChronological.length)
+    const len = reverseChronological.length;
     const now = new Date().getTime();
     let times = [];
     for (let i = 0; i < len; i++) {
         let q = reverseChronological[i];
         if (q.answeredAt && q.startedAt) {
-            const daysSince = (now - q.startedAt) / 86400000 // milliseconds in a day
-            if (daysSince < 1) {
-                times.push((q.answeredAt - q.startedAt) / 1000);
-            }
+            times.push((q.answeredAt - q.startedAt) / 1000);
         }
     }
     if (times.length == 0) {
-        last30Average.innerHTML = "None yet"
+        averageDisplay.innerHTML = "None yet"
         return;
     }
     const average = Math.round(times.reduce((a,b) => a + b, 0) / times.length);
-    last30Average.innerHTML = average.toFixed(1) + "s";
+    averageDisplay.innerHTML = average.toFixed(1) + "s";
 }
 
 function createHQLI(question, i) {
