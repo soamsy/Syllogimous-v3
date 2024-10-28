@@ -462,7 +462,7 @@ function updateAverage(reverseChronological) {
         averageDisplay.innerHTML = 'None yet';
         return;
     }
-    const average = Math.round(times.reduce((a,b) => a + b, 0) / times.length);
+    const average = times.reduce((a,b) => a + b, 0) / times.length;
     averageDisplay.innerHTML = average.toFixed(1) + 's';
 
     let correctTimes = questions.filter(q => q.correctness == 'right').map(q => (q.answeredAt - q.startedAt) / 1000);
@@ -470,7 +470,7 @@ function updateAverage(reverseChronological) {
         averageCorrectDisplay.innerHTML = 'None yet';
         return;
     }
-    const averageCorrect = Math.round(correctTimes.reduce((a,b) => a + b, 0) / correctTimes.length);
+    const averageCorrect = correctTimes.reduce((a,b) => a + b, 0) / correctTimes.length;
     averageCorrectDisplay.innerHTML = averageCorrect.toFixed(1) + 's';
 }
 
