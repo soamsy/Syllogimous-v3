@@ -470,7 +470,7 @@ function updateAverage(reverseChronological) {
         averageCorrectDisplay.innerHTML = 'None yet';
         return;
     }
-    const averageCorrect = Math.round(correctTimes.reduce((a,b) => a + b, 0) / times.length);
+    const averageCorrect = Math.round(correctTimes.reduce((a,b) => a + b, 0) / correctTimes.length);
     averageCorrectDisplay.innerHTML = averageCorrect.toFixed(1) + 's';
 }
 
