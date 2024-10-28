@@ -20,7 +20,7 @@ let timerTime = 30;
 let timerCount = 30;
 let timerInstance;
 let timerRunning = false;
-let animatingFeedback = false;
+let processingAnswer = false;
 
 let quota
 
@@ -210,17 +210,6 @@ function animateTimerBar() {
     }
 }
 
-function timeElapsed() {
-    savedata.score--;
-    question.correctness = 'missed';
-    question.answerUser = undefined;
-    question.answeredAt = new Date().getTime();
-    removeAppStateAndSave();
-    renderHQL();
-
-    wowFeedbackMissed(init);
-}
-
 function init() {
     stopCountDown();
 
@@ -330,45 +319,33 @@ function init() {
     displayInit();
 }
 
+function wowFeedbackRight(cb) {
+    feedbackRight.style.transitionDuration = "0.5s";
+    feedbackRight.classList.add("active");
+    setTimeout(() => {
+        feedbackRight.classList.remove("active");
+        cb();
+        processingAnswer = false;
+    }, 1200);
+}
+
 function wowFeedbackWrong(cb) {
-    if (animatingFeedback) {
-        return;
-    }
     feedbackWrong.style.transitionDuration = "0.5s";
     feedbackWrong.classList.add("active");
-    animatingFeedback = true;
     setTimeout(() => {
         feedbackWrong.classList.remove("active");
         cb();
-        animatingFeedback = false;
+        processingAnswer = false;
     }, 1200);
 }
 
 function wowFeedbackMissed(cb) {
-    if (animatingFeedback) {
-        return;
-    }
     feedbackMissed.style.transitionDuration = "0.5s";
     feedbackMissed.classList.add("active");
-    animatingFeedback = true;
     setTimeout(() => {
         feedbackMissed.classList.remove("active");
         cb();
-        animatingFeedback = false;
-    }, 1200);
-}
-
-function wowFeedbackRight(cb) {
-    if (animatingFeedback) {
-        return;
-    }
-    feedbackRight.style.transitionDuration = "0.5s";
-    feedbackRight.classList.add("active");
-    animatingFeedback = true;
-    setTimeout(() => {
-        feedbackRight.classList.remove("active");
-        cb();
-        animatingFeedback = false;
+        processingAnswer = false;
     }, 1200);
 }
 
@@ -381,6 +358,10 @@ function removeAppStateAndSave() {
 }
 
 function checkIfTrue() {
+    if (processingAnswer) {
+        return;
+    }
+    processingAnswer = true;
     question.answerUser = true;
     if (question.isValid) {
         savedata.score++;
@@ -397,6 +378,10 @@ function checkIfTrue() {
 }
 
 function checkIfFalse() {
+    if (processingAnswer) {
+        return;
+    }
+    processingAnswer = true;
     question.answerUser = false;
     if (!question.isValid) {
         savedata.score++;
@@ -410,6 +395,21 @@ function checkIfFalse() {
     question.answeredAt = new Date().getTime();
     removeAppStateAndSave();
     renderHQL();
+}
+
+function timeElapsed() {
+    if (processingAnswer) {
+        return;
+    }
+    processingAnswer = true;
+    savedata.score--;
+    question.correctness = 'missed';
+    question.answerUser = undefined;
+    question.answeredAt = new Date().getTime();
+    removeAppStateAndSave();
+    renderHQL();
+
+    wowFeedbackMissed(init);
 }
 
 function resetApp() {
