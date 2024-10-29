@@ -25,6 +25,7 @@ let processingAnswer = false;
 let quota
 
 const historyList = document.getElementById("history-list");
+const totalDisplay = document.getElementById("total-display");
 const averageDisplay = document.getElementById("average-display");
 const averageCorrectDisplay = document.getElementById("average-correct-display");
 
@@ -459,10 +460,14 @@ function updateAverage(reverseChronological) {
     let questions = reverseChronological.filter(q => q.answeredAt && q.startedAt);
     let times = questions.map(q => (q.answeredAt - q.startedAt) / 1000);
     if (times.length == 0) {
-        averageDisplay.innerHTML = 'None yet';
         return;
     }
-    const average = times.reduce((a,b) => a + b, 0) / times.length;
+    const totalTime = times.reduce((a,b) => a + b, 0);
+    const minutes = totalTime / 60;
+    const seconds = totalTime % 60;
+    totalDisplay.innerHTML = minutes.toFixed(0) + 'm ' + seconds.toFixed(0) + 's';
+    
+    const average =  totalTime / times.length;
     averageDisplay.innerHTML = average.toFixed(1) + 's';
 
     let correctTimes = questions.filter(q => q.correctness == 'right').map(q => (q.answeredAt - q.startedAt) / 1000);
