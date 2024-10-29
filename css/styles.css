@@ -38,10 +38,14 @@
     -webkit-tap-highlight-color: #0000;
 }
 
+:root {
+    font-size: 125%;
+}
+
 body {
     height: 100vh;
     margin: 0;
-    padding: 2em;
+    padding: 0;
     font-family: "MGS2", sans-serif;
     color: #fffff1;
     background-color: #111;
@@ -195,6 +199,12 @@ button:not(:disabled):hover {
     position: relative;
 }
 
+.game-area {
+    display: flex;
+    flex-direction: column;
+    max-height: 100vh;
+}
+
 .background-image {
     position: absolute;
     top: 0;
@@ -236,8 +246,10 @@ button:not(:disabled):hover {
 }
 
 .timer-wrap {
-    margin-top: 0;
+    min-width: 440px;
+    margin: 0 auto;
 }
+
 .timer {
     background-color: #111a;
     border: 2px solid #000;
@@ -277,7 +289,7 @@ button:not(:disabled):hover {
 
 .carousel, .display-outer {
     margin: 0 auto;
-    max-width: 460px;
+    max-width: 660px;
     opacity: 0;
     height: 0;
     overflow: hidden;
@@ -287,7 +299,7 @@ button:not(:disabled):hover {
     opacity: 1;
     height: unset;
     overflow: unset;
-    padding: 3em 0;
+    padding: 3em 0 2em 0;
 }
 
 .confirmation-buttons {
@@ -359,7 +371,7 @@ button:not(:disabled):hover {
 .display_text {
     max-height: 50vh;
     line-height: 1.5;
-    padding: 0.5rem 3.5rem 0.75rem 0;
+    padding: 0.25rem 0.5rem 0.25rem 0;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -513,6 +525,8 @@ button:not(:disabled):hover {
 
 .level-wrapper {
     justify-self: center;
+    width: fit-content;
+    margin: 0 auto;
 }
 
 .level {
@@ -823,6 +837,6 @@ input[type="checkbox"]:checked + .switch::after {
     }
 
     .carousel, .display-outer {
-        max-width: 320px;
+        max-width: 100vw;
     }
 }
