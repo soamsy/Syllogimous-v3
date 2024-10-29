@@ -207,7 +207,7 @@ button:not(:disabled):hover {
     background-image:  linear-gradient(135deg, #000000 25%, transparent 25%), 
                        linear-gradient(225deg, #000000 25%, transparent 25%), 
                        linear-gradient(45deg, #000000 25%, transparent 25%), 
-                       linear-gradient(315deg, #000000 25%, #2f5961 25%),
+                       linear-gradient(315deg, #000000 25%, #2f2931 25%),
                        repeating-linear-gradient( #00000033, #00000099 );
     border-radius: 20px;
     background-position:  2px 0, 2px 0, 0 0, 0 0;
@@ -232,7 +232,7 @@ button:not(:disabled):hover {
     background-position:  2px 0, 2px 0, 0 0, 0 0;
     background-size: 2px 2px;
     background-repeat: repeat;
-    opacity: 35%;
+    opacity: 50%;
 }
 
 .background-image {
@@ -243,7 +243,7 @@ button:not(:disabled):hover {
     width: 100%;
     height: 100%;
     background-color: #000c;
-    background-image: url(../img/electrocutica.jpg);
+    background-image: url(../img/pixel.jpg);
     background-size: cover;
     background-position: center;
     filter: brightness(0.15);
