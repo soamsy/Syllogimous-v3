@@ -236,7 +236,7 @@ button:not(:disabled):hover {
 }
 
 .timer-wrap {
-    margin-top: 1rem;
+    margin-top: 0;
 }
 .timer {
     background-color: #111a;
@@ -287,7 +287,7 @@ button:not(:disabled):hover {
     opacity: 1;
     height: unset;
     overflow: unset;
-    padding: 5em 0;
+    padding: 3em 0;
 }
 
 .confirmation-buttons {
@@ -357,7 +357,7 @@ button:not(:disabled):hover {
 }
 
 .display_text {
-    max-height: 40vh;
+    max-height: 50vh;
     line-height: 1.5;
     padding: 0.5rem 3.5rem 0.75rem 0;
     overflow-y: auto;
