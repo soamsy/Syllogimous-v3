@@ -40,9 +40,13 @@ function centerText(text, width) {
 }
 
 function createExplanation2D(grid, neededLength) {
-    const biggest = grid.flatMap(row => row).map(val => val?.length ?? 0).reduce((a, b) => Math.max(a, b));
-    const neededLength = biggest + 4;
-    let s = ''
+    if (!neededLength) {
+        const biggest = grid.flatMap(row => row).map(val => val?.length ?? 0).reduce((a, b) => Math.max(a, b));
+        neededLength = biggest + 4;
+    }
+
+    const divider = ''.padStart(grid[0].length * (neededLength+1), '-') + '\n';
+    let s = divider;
     for (let i = grid.length - 1; i >= 0; i--) {
         const row = grid[i];
         for (const val of row) {
@@ -51,16 +55,18 @@ function createExplanation2D(grid, neededLength) {
         }
         s += '|\n';
     }
+    s += divider;
     return s;
 }
 
 function createExplanation3D(grid) {
-    let s = ''
+    const biggest = grid.flatMap(floor => floor.flatMap(row => row)).map(val => val?.length ?? 0).reduce((a, b) => Math.max(a, b));
+    const neededLength = biggest + 4;
+    let s = '';
     for (let i = grid.length - 1; i >= 0; i--) {
         let floor = i + 1;
         s += 'F' + floor + '\n';
-        s += createExplanation2D(grid[i]);
-        s += '\n';
+        s += createExplanation2D(grid[i], neededLength);
     }
     return s;
 }
