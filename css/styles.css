@@ -93,6 +93,14 @@ button:not(:disabled):hover {
     box-shadow: 0 2px 4px #4aa39a;
 }
 
+button.delete {
+    background-color: #981f25;
+}
+
+button.delete:hover {
+    box-shadow: 0 2px 4px #bf3f65;
+}
+
 /* start of Utils */
 .mb-1 {
     margin-bottom: 1rem;
