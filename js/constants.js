@@ -3901,6 +3901,10 @@ const dirString = (x, y, z) => {
     return str;
 }
 
+const dirStringFromCoord = (coord) => {
+    return dirString.apply(null, coord);
+}
+
 const dirCoords3D = [];
 const dirNames3D = [];
 const nameInverseDir3D = {};
