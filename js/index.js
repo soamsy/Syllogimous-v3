@@ -351,9 +351,6 @@ function wowFeedbackMissed(cb) {
 }
 
 function removeAppStateAndSave() {
-    delete question.bucket;
-    delete question.buckets;
-    delete question.wordCoordMap;
     savedata.questions.push(question);
     save();
 }
@@ -521,6 +518,7 @@ function createHQLI(question, i) {
         <div class="hqli-footer">
             <div>${question.category}</div>
             <div class="index"></div>
+            ${createExplanationButton(question)}
             <button class="delete">X</button>
         </div>
     </div>
@@ -530,6 +528,15 @@ function createHQLI(question, i) {
     parent.querySelector(".delete").addEventListener('click', () => {
         deleteQuestion(i, type === 'right');
     });
+    const explanationButton = parent.querySelector(".explanation-button");
+    if (explanationButton) {
+        explanationButton.addEventListener('mouseenter', () => {
+            createExplanationPopup(question);
+        });
+        explanationButton.addEventListener('mouseleave', () => {
+            removeExplanationPopup();
+        });
+    }
     return parent.firstElementChild;
 }
 
