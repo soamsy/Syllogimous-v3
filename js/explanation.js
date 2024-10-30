@@ -39,7 +39,7 @@ function centerText(text, width) {
     return text.padStart(text.length + paddingStart).padEnd(width);
 }
 
-function createExplanation2D(grid) {
+function createExplanation2D(grid, neededLength) {
     const biggest = grid.flatMap(row => row).map(val => val?.length ?? 0).reduce((a, b) => Math.max(a, b));
     const neededLength = biggest + 4;
     let s = ''
@@ -137,7 +137,7 @@ function removeExplanationPopup() {
 }
 
 function createExplanationButton(question) {
-    if (question.category === 'Syllogism') {
+    if (question.category === 'Syllogism' || question.category === 'Space Time') {
         return '';
     }
 
