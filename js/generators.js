@@ -822,8 +822,7 @@ function findDirectionCoord(aCoord, bCoord) {
     const y2 = bCoord[1];
     const dx = ((x - x2)/Math.abs(x - x2)) || 0;
     const dy = ((y - y2)/Math.abs(y - y2)) || 0;
-    const dirIndex = dirCoords.findIndex(c => c[0] === dx && c[1] === dy);
-    return dirCoords[dirIndex];
+    return [dx, dy];
 }
 
 function findDirection(aCoord, bCoord) {
@@ -997,8 +996,7 @@ function findDirectionCoord3D(aCoord, bCoord) {
     const dx = ((x - x2)/Math.abs(x - x2)) || 0;
     const dy = ((y - y2)/Math.abs(y - y2)) || 0;
     const dz = ((z - z2)/Math.abs(z - z2)) || 0;
-    const dirIndex = dirCoords3D.findIndex(c => c[0] === dx && c[1] === dy && c[2] === dz);
-    return dirCoords3D[dirIndex];
+    return [dx, dy, dz];
 }
 
 function findDirection3D(aCoord, bCoord) {
