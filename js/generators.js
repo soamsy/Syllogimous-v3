@@ -856,49 +856,34 @@ function removeDuplicateArrays(arrays) {
 }
 
 function createIncorrectConclusionCoords(usedCoords, correctCoord) {
-    const dirCoords = removeDuplicateArrays(usedCoords);
-    if (dirCoords.length == 0) {
-        return [];
-    }
-
-    let singleDimensionDirections = {}
-    for (const coord of dirCoords) {
-        for (const i in coord) {
-            direction = coord[i];
-            singleDimensionDirections[i] = singleDimensionDirections[i] ?? [];
-            if (singleDimensionDirections[i].indexOf(direction) === -1) {
-                singleDimensionDirections[i].push(direction);
-            }
-            if (singleDimensionDirections[i].indexOf(-direction) === -1) {
-                singleDimensionDirections[i].push(-direction);
-            }
-        }
-    }
-
-    let shiftOneDimension = (base, i, direction) => {
-        if (base[i] == direction)
-            return null;
-        let newCombo = structuredClone(base);
-        newCombo[i] = direction;
-        return newCombo;
-    }
-
     let opposite = correctCoord.map(dir => -dir)
+    if (usedCoords.length <= 3) {
+        return [opposite]; // Few premises == anything that isn't the opposite tends to be easy.
+    }
+    const dirCoords = removeDuplicateArrays(usedCoords);
+
+    let low = structuredClone(dirCoords[0]);
+    let high = structuredClone(dirCoords[0]);
+    let validDirections = {}
+    for (const coord of dirCoords) {
+        validDirections[JSON.stringify(coord)] = true;
+        validDirections[JSON.stringify(coord.map(x => -x))] = true;
+    }
+
+    const allZeroes = correctCoord.map(x => 0);
     let combinations = [];
-    for (const i in singleDimensionDirections) {
-        const directions = singleDimensionDirections[i];
-        for (const direction of directions) {
-            let correctShift = shiftOneDimension(correctCoord, i, direction);
-            let oppositeShift = shiftOneDimension(opposite, i, direction);
-            combinations.push.apply(combinations, [correctShift, oppositeShift].filter(x => x));
+    for (const i in correctCoord) {
+        for (const shift of [-1, 1]) {
+            let newCombo = structuredClone(correctCoord);
+            newCombo[i] += shift;
+            if (validDirections[JSON.stringify(newCombo)]) {
+                combinations.push(newCombo);
+            }
         }
     }
-    combinations = removeDuplicateArrays(combinations);
-    // Give more priority to the opposite direction
+    // Add opposite twice to prioritize it more
     combinations.push(opposite);
     combinations.push(opposite);
-    combinations.push(opposite);
-    combinations = combinations.filter(combo => !arraysEqual(combo, correctCoord));
 
     return combinations;
 }
@@ -914,11 +899,12 @@ function createDirectionQuestion(length) {
     let conclusion;
     let conclusionCoord;
     let conclusionDirName;
-    let usedDirCoords = [];
+    let usedDirCoords;
     while (!conclusionDirName) {
 
         wordCoordMap = {};
         premises = [];
+        usedDirCoords = [];
 
         for (let i = 0; i < words.length - 1; i++) {
             const dirIndex = 1 + Math.floor(Math.random()*(dirNames.length - 1));
@@ -1014,11 +1000,12 @@ function createDirectionQuestion3D(length) {
     let conclusion;
     let conclusionCoord;
     let conclusionDirName;
-    let usedDirCoords = [];
+    let usedDirCoords;
     while (!conclusionDirName) {
 
         wordCoordMap = {};
         premises = [];
+        usedDirCoords = [];
 
         for (let i = 0; i < words.length - 1; i++) {
             const dirIndex = 1 + Math.floor(Math.random()*(dirNames3D.length - 1));
