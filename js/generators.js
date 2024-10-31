@@ -881,10 +881,7 @@ function createIncorrectConclusionCoords(usedCoords, correctCoord) {
             }
         }
     }
-    // Add opposite twice to prioritize it more
     combinations.push(opposite);
-    combinations.push(opposite);
-
     return combinations;
 }
 
