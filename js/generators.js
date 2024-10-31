@@ -857,7 +857,7 @@ function removeDuplicateArrays(arrays) {
 
 function createIncorrectConclusionCoords(usedCoords, correctCoord) {
     let opposite = correctCoord.map(dir => -dir)
-    if (usedCoords.length <= 3) {
+    if (usedCoords.length <= 2) {
         return [opposite]; // Few premises == anything that isn't the opposite tends to be easy.
     }
     const dirCoords = removeDuplicateArrays(usedCoords);
