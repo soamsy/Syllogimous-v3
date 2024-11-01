@@ -80,6 +80,13 @@ function createIncorrectConclusionCoords(usedCoords, correctCoord) {
     return combinations;
 }
 
+function pickRandomDirection(dirNames, dirCoords) {
+    const dirIndex = 1 + Math.floor(Math.random()*(dirNames.length - 1));
+    const dirName = dirNames[dirIndex];
+    const dirCoord = dirCoords[dirIndex];
+    return [dirName, dirCoord];
+}
+
 function createDirectionQuestion(length) {
     length++;
 
@@ -99,9 +106,7 @@ function createDirectionQuestion(length) {
         usedDirCoords = [];
 
         for (let i = 0; i < words.length - 1; i++) {
-            const dirIndex = 1 + Math.floor(Math.random()*(dirNames.length - 1));
-            const dirName = dirNames[dirIndex];
-            const dirCoord = dirCoords[dirIndex];
+            const [dirName, dirCoord] = pickRandomDirection(dirNames, dirCoords);
             usedDirCoords.push(dirCoord);
             if (i === 0) {
                 wordCoordMap[words[i]] = [0,0];
@@ -182,9 +187,7 @@ function createDirectionQuestion3D(length) {
         usedDirCoords = [];
 
         for (let i = 0; i < words.length - 1; i++) {
-            const dirIndex = 1 + Math.floor(Math.random()*(dirNames3D.length - 1));
-            const dirName = dirNames3D[dirIndex];
-            const dirCoord = dirCoords3D[dirIndex];
+            const [dirName, dirCoord] = pickRandomDirection(dirNames3D, dirCoords3D);
             usedDirCoords.push(dirCoord);
             if (i === 0) {
                 wordCoordMap[words[i]] = [0,0,0];
@@ -259,9 +262,7 @@ function createDirectionQuestion4D(length) {
         for (let i = 0; i < words.length - 1; i++) {
             const timeIndex =  pickRandomItems([-1,0,1], 1).picked[0];
             const timeName = timeNames[timeIndex + 1];
-            const dirIndex = 1 + Math.floor(Math.random()*(dirNames3D.length - 1));
-            const dirName = dirNames3D[dirIndex];
-            const dirCoord = dirCoords3D[dirIndex];
+            const [dirName, dirCoord] = pickRandomDirection(dirNames3D, dirCoords3D);
             if (i === 0) {
                 wordCoordMap[words[i]] = [0,0,0,0];
             }
