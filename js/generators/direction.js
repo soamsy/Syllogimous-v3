@@ -107,16 +107,13 @@ function createDirectionQuestion(length) {
     let usedDirCoords;
     while (!conclusionDirName) {
 
-        wordCoordMap = {};
+        wordCoordMap = {[words[0]]: [0, 0]};
         premises = [];
         usedDirCoords = [];
 
         for (let i = 0; i < words.length - 1; i++) {
             const [dirName, dirCoord] = pickRandomDirection(dirNames, dirCoords);
             usedDirCoords.push(dirCoord);
-            if (i === 0) {
-                wordCoordMap[words[i]] = [0,0];
-            }
             wordCoordMap[words[i+1]] = [
                 wordCoordMap[words[i]][0] + dirCoord[0], // x
                 wordCoordMap[words[i]][1] + dirCoord[1]  // y
@@ -186,16 +183,13 @@ function createDirectionQuestion3D(length) {
     let usedDirCoords;
     while (!conclusionDirName) {
 
-        wordCoordMap = {};
+        wordCoordMap = {[words[0]]: [0, 0, 0]};
         premises = [];
         usedDirCoords = [];
 
         for (let i = 0; i < words.length - 1; i++) {
             const [dirName, dirCoord] = pickRandomDirection(dirNames3D, dirCoords3D);
             usedDirCoords.push(dirCoord);
-            if (i === 0) {
-                wordCoordMap[words[i]] = [0,0,0];
-            }
             wordCoordMap[words[i+1]] = [
                 wordCoordMap[words[i]][0] + dirCoord[0], // x
                 wordCoordMap[words[i]][1] + dirCoord[1], // y
@@ -258,16 +252,13 @@ function createDirectionQuestion4D(length) {
     let usedDirCoords = [];
     while (!conclusionDirName.spatial) {
 
-        wordCoordMap = {};
+        wordCoordMap = {[[words[0]]]: [0, 0, 0, 0]};
         premises = [];
 
         for (let i = 0; i < words.length - 1; i++) {
             const timeIndex =  pickRandomItems([-1,0,1], 1).picked[0];
             const timeName = timeNames[timeIndex + 1];
             const [dirName, dirCoord] = pickRandomDirection(dirNames3D, dirCoords3D);
-            if (i === 0) {
-                wordCoordMap[words[i]] = [0,0,0,0];
-            }
             wordCoordMap[words[i+1]] = [
                 wordCoordMap[words[i]][0] + dirCoord[0], // x
                 wordCoordMap[words[i]][1] + dirCoord[1], // y
