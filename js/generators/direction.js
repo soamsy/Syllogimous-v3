@@ -32,21 +32,27 @@ function pickStatement(statements) {
 function createDirectionStatement(source, target, direction, reverseDirection) {
     return pickStatement([
         createDirectionTemplate(source, target, direction, false, 'is at '), 
-        createDirectionTemplate(source, target, reverseDirection, true, 'is at ')
+        createDirectionTemplate(source, target, reverseDirection, true, 'is at '),
+        createDirectionTemplate(target, source, reverseDirection, false, 'is at '), 
+        createDirectionTemplate(target, source, direction, true, 'is at ')
     ]);
 }
 
 function createDirection3DStatement(source, target, direction, reverseDirection) {
     return pickStatement([
         createDirectionTemplate(source, target, direction, false, 'is '), 
-        createDirectionTemplate(source, target, reverseDirection, true, 'is ')
+        createDirectionTemplate(source, target, reverseDirection, true, 'is '),
+        createDirectionTemplate(target, source, reverseDirection, false, 'is '), 
+        createDirectionTemplate(target, source, direction, true, 'is ')
     ]);
 }
 
 function createDirection4DStatement(source, target, direction, reverseDirection, timeName) {
     return pickStatement([
         createDirectionTemplate(source, target, direction, false, timeName + ' '), 
-        createDirectionTemplate(source, target, reverseDirection, true, timeName + ' ')
+        createDirectionTemplate(source, target, reverseDirection, true, timeName + ' '),
+        createDirectionTemplate(target, source, reverseDirection, false, timeName + ' '), 
+        createDirectionTemplate(target, source, direction, true, timeName + ' ')
     ]);
 }
 
