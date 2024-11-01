@@ -105,20 +105,27 @@ function createDirectionQuestion(length) {
     let conclusionCoord;
     let conclusionDirName;
     let usedDirCoords;
-    while (!conclusionDirName) {
-
+    let neighbors;
+    while (true) {
         wordCoordMap = {[words[0]]: [0, 0]};
+        neighbors = {};
         premises = [];
         usedDirCoords = [];
 
         for (let i = 0; i < words.length - 1; i++) {
             const [dirName, dirCoord] = pickRandomDirection(dirNames, dirCoords);
-            usedDirCoords.push(dirCoord);
-            wordCoordMap[words[i+1]] = [
-                wordCoordMap[words[i]][0] + dirCoord[0], // x
-                wordCoordMap[words[i]][1] + dirCoord[1]  // y
+            const baseWord = pickRandomItems(Object.keys(wordCoordMap), 1).picked[0];
+            const nextWord = words[i+1];
+            wordCoordMap[nextWord] = [
+                wordCoordMap[baseWord][0] + dirCoord[0], // x
+                wordCoordMap[baseWord][1] + dirCoord[1]  // y
             ];
-            premises.push(createDirectionStatement(words[i], words[i+1], dirName, nameInverseDir[dirName]));
+            premises.push(createDirectionStatement(baseWord, nextWord, dirName, nameInverseDir[dirName]));
+            usedDirCoords.push(dirCoord);
+            neighbors[baseWord] = neighbors[baseWord] ?? [];
+            neighbors[baseWord].push(nextWord);
+            neighbors[nextWord] = neighbors[nextWord] ?? [];
+            neighbors[nextWord].push(baseWord);
         }
 
         conclusionCoord = findDirectionCoord(
@@ -126,7 +133,14 @@ function createDirectionQuestion(length) {
             wordCoordMap[endWord]
         );
 
+        if (neighbors[startWord].indexOf(endWord) !== -1) {
+            continue;
+        }
+
         conclusionDirName = dirStringFromCoord(conclusionCoord);
+        if (conclusionDirName) {
+            break;
+        }
     }
 
     let isValid;
@@ -181,29 +195,43 @@ function createDirectionQuestion3D(length) {
     let conclusionCoord;
     let conclusionDirName;
     let usedDirCoords;
-    while (!conclusionDirName) {
-
+    let neighbors;
+    while (true) {
         wordCoordMap = {[words[0]]: [0, 0, 0]};
         premises = [];
+        neighbors = {};
         usedDirCoords = [];
 
         for (let i = 0; i < words.length - 1; i++) {
             const [dirName, dirCoord] = pickRandomDirection(dirNames3D, dirCoords3D);
-            usedDirCoords.push(dirCoord);
-            wordCoordMap[words[i+1]] = [
-                wordCoordMap[words[i]][0] + dirCoord[0], // x
-                wordCoordMap[words[i]][1] + dirCoord[1], // y
-                wordCoordMap[words[i]][2] + dirCoord[2], // z
+            const baseWord = pickRandomItems(Object.keys(wordCoordMap), 1).picked[0];
+            const nextWord = words[i+1];
+            wordCoordMap[nextWord] = [
+                wordCoordMap[baseWord][0] + dirCoord[0], // x
+                wordCoordMap[baseWord][1] + dirCoord[1],  // y
+                wordCoordMap[baseWord][2] + dirCoord[2]  // y
             ];
-            premises.push(createDirection3DStatement(words[i], words[i+1], dirName, nameInverseDir3D[dirName]));
+            premises.push(createDirection3DStatement(baseWord, nextWord, dirName, nameInverseDir3D[dirName]));
+            usedDirCoords.push(dirCoord);
+            neighbors[baseWord] = neighbors[baseWord] ?? [];
+            neighbors[baseWord].push(nextWord);
+            neighbors[nextWord] = neighbors[nextWord] ?? [];
+            neighbors[nextWord].push(baseWord);
         }
-        
+
+        if (neighbors[startWord].indexOf(endWord) !== -1) {
+            continue;
+        }
+
         conclusionCoord = findDirectionCoord3D(
             wordCoordMap[startWord],
             wordCoordMap[endWord]
         );
 
         conclusionDirName = dirStringFromCoord(conclusionCoord);
+        if (conclusionDirName) {
+            break;
+        }
     }
 
     let isValid;
