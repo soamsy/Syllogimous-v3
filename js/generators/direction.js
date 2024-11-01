@@ -12,6 +12,44 @@ function findDirection(aCoord, bCoord) {
     return dirStringFromCoord(findDirectionCoord(aCoord, bCoord));
 }
 
+function createDirectionTemplate(source, target, direction, isNegated, decorator='') {
+    let directionElement = direction;
+    if (isNegated) {
+        directionElement = '<span class="is-negated">' + directionElement + '</span>';
+    }
+    directionElement = decorator + directionElement;
+    return `<span class="subject">${target}</span> ${directionElement} of <span class="subject">${source}</span>`;
+}
+
+function pickStatement(statements) {
+    if (!savedata.enableNegation) {
+        return statements[0]
+    } else {
+        return pickRandomItems(statements, 1).picked[0];
+    }
+}
+
+function createDirectionStatement(source, target, direction, reverseDirection) {
+    return pickStatement([
+        createDirectionTemplate(source, target, direction, false, 'is at '), 
+        createDirectionTemplate(source, target, reverseDirection, true, 'is at ')
+    ]);
+}
+
+function createDirection3DStatement(source, target, direction, reverseDirection) {
+    return pickStatement([
+        createDirectionTemplate(source, target, direction, false, 'is '), 
+        createDirectionTemplate(source, target, reverseDirection, true, 'is ')
+    ]);
+}
+
+function createDirection4DStatement(source, target, direction, reverseDirection, timeName) {
+    return pickStatement([
+        createDirectionTemplate(source, target, direction, false, timeName + ' '), 
+        createDirectionTemplate(source, target, reverseDirection, true, timeName + ' ')
+    ]);
+}
+
 function createIncorrectConclusionCoords(usedCoords, correctCoord) {
     let opposite = correctCoord.map(dir => -dir)
     if (usedCoords.length <= 2) {
@@ -72,13 +110,7 @@ function createDirectionQuestion(length) {
                 wordCoordMap[words[i]][0] + dirCoord[0], // x
                 wordCoordMap[words[i]][1] + dirCoord[1]  // y
             ];
-            const ps = [
-                `<span class="subject">${words[i+1]}</span> is at ${dirName} of <span class="subject">${words[i]}</span>`,
-                `<span class="subject">${words[i+1]}</span> is at <span class="is-negated">${nameInverseDir[dirName]}</span> of <span class="subject">${words[i]}</span>`,
-            ];
-            premises.push((!savedata.enableNegation)
-                ? ps[0]
-                : pickRandomItems(ps, 1).picked[0]);
+            premises.push(createDirectionStatement(words[i], words[i+1], dirName, nameInverseDir[dirName]));
         }
 
         conclusionCoord = findDirectionCoord(
@@ -92,26 +124,14 @@ function createDirectionQuestion(length) {
     let isValid;
     if (coinFlip()) { // correct
         isValid = true;
-        const cs = [
-            `<span class="subject">${startWord}</span> is at ${conclusionDirName} of <span class="subject">${endWord}</span>`,
-            `<span class="subject">${startWord}</span> is at <span class="is-negated">${nameInverseDir[conclusionDirName]}</span> of <span class="subject">${endWord}</span>`,
-        ];
-        conclusion = (!savedata.enableNegation)
-            ? cs[0]
-            : pickRandomItems(cs, 1).picked[0];
+        conclusion = createDirectionStatement(startWord, endWord, conclusionDirName, nameInverseDir[conclusionDirName]);
     }
     else {            // wrong
         isValid = false;
         const incorrectCoords = createIncorrectConclusionCoords(usedDirCoords, conclusionCoord);
         const incorrectDirections = incorrectCoords.map(dirStringFromCoord).filter(dirName => dirName);
         const incorrectDirName = pickRandomItems(incorrectDirections, 1).picked[0];
-        const cs = [
-            `<span class="subject">${startWord}</span> is at ${incorrectDirName} of <span class="subject">${endWord}</span>`,
-            `<span class="subject">${startWord}</span> is at <span class="is-negated">${nameInverseDir[incorrectDirName]}</span> of <span class="subject">${endWord}</span>`
-        ];
-        conclusion = (!savedata.enableNegation)
-            ? cs[0]
-            : pickRandomItems(cs, 1).picked[0];;
+        conclusion = createDirectionStatement(startWord, endWord, incorrectDirName, nameInverseDir[incorrectDirName]);
     }
 
     shuffle(premises);
@@ -174,13 +194,7 @@ function createDirectionQuestion3D(length) {
                 wordCoordMap[words[i]][1] + dirCoord[1], // y
                 wordCoordMap[words[i]][2] + dirCoord[2], // z
             ];
-            const ps = [
-                `<span class="subject">${words[i+1]}</span> is ${dirName} of <span class="subject">${words[i]}</span>`,
-                `<span class="subject">${words[i+1]}</span> is <span class="is-negated">${nameInverseDir3D[dirName]}</span> of <span class="subject">${words[i]}</span>`,
-            ];
-            premises.push((!savedata.enableNegation)
-                ? ps[0]
-                : pickRandomItems(ps, 1).picked[0]);
+            premises.push(createDirection3DStatement(words[i], words[i+1], dirName, nameInverseDir3D[dirName]));
         }
         
         conclusionCoord = findDirectionCoord3D(
@@ -194,26 +208,14 @@ function createDirectionQuestion3D(length) {
     let isValid;
     if (coinFlip()) { // correct
         isValid = true;
-        const cs = [
-            `<span class="subject">${startWord}</span> is ${conclusionDirName} of <span class="subject">${endWord}</span>`,
-            `<span class="subject">${startWord}</span> is <span class="is-negated">${nameInverseDir3D[conclusionDirName]}</span> of <span class="subject">${endWord}</span>`,
-        ];
-        conclusion = (!savedata.enableNegation)
-            ? cs[0]
-            : pickRandomItems(cs, 1).picked[0];
+        conclusion = createDirection3DStatement(startWord, endWord, conclusionDirName, nameInverseDir3D[conclusionDirName]);
     }
     else {            // wrong
         isValid = false;
         const incorrectCoords = createIncorrectConclusionCoords(usedDirCoords, conclusionCoord);
         const incorrectDirections = incorrectCoords.map(dirStringFromCoord).filter(dirName => dirName);
         const incorrectDirName = pickRandomItems(incorrectDirections, 1).picked[0];
-        const cs = [
-            `<span class="subject">${startWord}</span> is ${incorrectDirName} of <span class="subject">${endWord}</span>`,
-            `<span class="subject">${startWord}</span> is <span class="is-negated">${nameInverseDir3D[incorrectDirName]}</span> of <span class="subject">${endWord}</span>`
-        ];
-        conclusion = (!savedata.enableNegation)
-            ? cs[0]
-            : pickRandomItems(cs, 1).picked[0];;
+        conclusion = createDirection3DStatement(startWord, endWord, incorrectDirName, nameInverseDir3D[incorrectDirName]);
     }
 
     shuffle(premises);
@@ -269,13 +271,7 @@ function createDirectionQuestion4D(length) {
                 wordCoordMap[words[i]][2] + dirCoord[2], // z
                 wordCoordMap[words[i]][3] + timeIndex,   // time
             ];
-            const ps = [
-                `<span class="subject">${words[i+1]}</span> ${timeName} ${dirName} of <span class="subject">${words[i]}</span>`,
-                `<span class="subject">${words[i+1]}</span> ${timeName} of <span class="is-negated">${nameInverseDir3D[dirName]}</span> of <span class="subject">${words[i]}</span>`,
-            ];
-            premises.push((!savedata.enableNegation)
-                ? ps[0]
-                : pickRandomItems(ps, 1).picked[0]);
+            premises.push(createDirection4DStatement(words[i], words[i+1], dirName, nameInverseDir3D[dirName], timeName));
         }
 
         conclusionDirName = findDirection4D(
@@ -287,13 +283,7 @@ function createDirectionQuestion4D(length) {
     let isValid;
     if (coinFlip()) { // correct
         isValid = true;
-        const cs = [
-            `<span class="subject">${startWord}</span> ${conclusionDirName.temporal} ${conclusionDirName.spatial} of <span class="subject">${endWord}</span>`,
-            `<span class="subject">${startWord}</span> ${conclusionDirName.temporal} of <span class="is-negated">${nameInverseDir3D[conclusionDirName.spatial]}</span> of <span class="subject">${endWord}</span>`,
-        ];
-        conclusion = (!savedata.enableNegation)
-            ? cs[0]
-            : pickRandomItems(cs, 1).picked[0];
+        conclusion = createDirection4DStatement(startWord, endWord, conclusionDirName.spatial, nameInverseDir3D[conclusionDirName.spatial], conclusionDirName.temporal);
     }
     else {            // wrong
         isValid = false;
@@ -301,13 +291,7 @@ function createDirectionQuestion4D(length) {
             wordCoordMap[endWord],
             wordCoordMap[startWord]
         );
-        const cs = [
-            `<span class="subject">${startWord}</span> ${oppositeDirection.temporal} ${oppositeDirection.spatial} of <span class="subject">${endWord}</span>`,
-            `<span class="subject">${startWord}</span> ${oppositeDirection.temporal} of <span class="is-negated">${nameInverseDir3D[oppositeDirection.spatial]}</span> of <span class="subject">${endWord}</span>`
-        ];
-        conclusion = (!savedata.enableNegation)
-            ? cs[0]
-            : pickRandomItems(cs, 1).picked[0];;
+        conclusion = createDirection4DStatement(startWord, endWord, oppositeDirection.spatial, nameInverseDir3D[oppositeDirection.spatial], conclusionDirName.temporal);
     }
 
     shuffle(premises);
