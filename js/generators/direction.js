@@ -129,14 +129,14 @@ function createDirectionQuestion(length) {
     let isValid;
     if (coinFlip()) { // correct
         isValid = true;
-        conclusion = createDirectionStatement(startWord, endWord, conclusionDirName, nameInverseDir[conclusionDirName]);
+        conclusion = createDirectionStatement(endWord, startWord, conclusionDirName, nameInverseDir[conclusionDirName]);
     }
     else {            // wrong
         isValid = false;
         const incorrectCoords = createIncorrectConclusionCoords(usedDirCoords, conclusionCoord);
         const incorrectDirections = incorrectCoords.map(dirStringFromCoord).filter(dirName => dirName);
         const incorrectDirName = pickRandomItems(incorrectDirections, 1).picked[0];
-        conclusion = createDirectionStatement(startWord, endWord, incorrectDirName, nameInverseDir[incorrectDirName]);
+        conclusion = createDirectionStatement(endWord, startWord, incorrectDirName, nameInverseDir[incorrectDirName]);
     }
 
     shuffle(premises);
@@ -211,14 +211,14 @@ function createDirectionQuestion3D(length) {
     let isValid;
     if (coinFlip()) { // correct
         isValid = true;
-        conclusion = createDirection3DStatement(startWord, endWord, conclusionDirName, nameInverseDir3D[conclusionDirName]);
+        conclusion = createDirection3DStatement(endWord, startWord, conclusionDirName, nameInverseDir3D[conclusionDirName]);
     }
     else {            // wrong
         isValid = false;
         const incorrectCoords = createIncorrectConclusionCoords(usedDirCoords, conclusionCoord);
         const incorrectDirections = incorrectCoords.map(dirStringFromCoord).filter(dirName => dirName);
         const incorrectDirName = pickRandomItems(incorrectDirections, 1).picked[0];
-        conclusion = createDirection3DStatement(startWord, endWord, incorrectDirName, nameInverseDir3D[incorrectDirName]);
+        conclusion = createDirection3DStatement(endWord, startWord, incorrectDirName, nameInverseDir3D[incorrectDirName]);
     }
 
     shuffle(premises);
@@ -284,7 +284,7 @@ function createDirectionQuestion4D(length) {
     let isValid;
     if (coinFlip()) { // correct
         isValid = true;
-        conclusion = createDirection4DStatement(startWord, endWord, conclusionDirName.spatial, nameInverseDir3D[conclusionDirName.spatial], conclusionDirName.temporal);
+        conclusion = createDirection4DStatement(endWord, startWord, conclusionDirName.spatial, nameInverseDir3D[conclusionDirName.spatial], conclusionDirName.temporal);
     }
     else {            // wrong
         isValid = false;
@@ -292,7 +292,7 @@ function createDirectionQuestion4D(length) {
             wordCoordMap[endWord],
             wordCoordMap[startWord]
         );
-        conclusion = createDirection4DStatement(startWord, endWord, oppositeDirection.spatial, nameInverseDir3D[oppositeDirection.spatial], conclusionDirName.temporal);
+        conclusion = createDirection4DStatement(endWord, startWord, oppositeDirection.spatial, nameInverseDir3D[oppositeDirection.spatial], conclusionDirName.temporal);
     }
 
     shuffle(premises);
