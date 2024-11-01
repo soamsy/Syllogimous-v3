@@ -93,6 +93,49 @@ function pickRandomDirection(dirNames, dirCoords) {
     return [dirName, dirCoord];
 }
 
+function distanceBetween(start, end, neighbors) {
+    let distance = 0;
+    let layer = [start];
+    let found = {[start]: true};
+    while (layer.length > 0) {
+        distance++;
+        let newLayer = [];
+        for (const node of layer) {
+            for (const neighbor of neighbors[node]) {
+                if (found[neighbor]) {
+                    continue;
+                }
+                if (neighbor === end) {
+                    return distance;
+                }
+                newLayer.push(neighbor);
+                found[neighbor] = true;
+            }
+        }
+        layer = newLayer;
+    }
+    return distance;
+}
+
+function isNeighborTooClose(start, end, neighbors) {
+    if (neighbors[start].indexOf(end) !== -1) {
+        return true;
+    }
+
+    let leaf;
+    for (const key in neighbors) {
+        if (neighbors[key].length < 2) {
+            leaf = key;
+            break;
+        }
+    }
+
+    const endToEnd = distanceBetween(leaf, null, neighbors);
+    const distance = distanceBetween(start, end, neighbors);
+
+    return endToEnd - distance >= 3;
+}
+
 function createDirectionQuestion(length) {
     length++;
 
@@ -133,7 +176,7 @@ function createDirectionQuestion(length) {
             wordCoordMap[endWord]
         );
 
-        if (neighbors[startWord].indexOf(endWord) !== -1) {
+        if (isNeighborTooClose(startWord, endWord, neighbors)) {
             continue;
         }
 
@@ -219,7 +262,7 @@ function createDirectionQuestion3D(length) {
             neighbors[nextWord].push(baseWord);
         }
 
-        if (neighbors[startWord].indexOf(endWord) !== -1) {
+        if (isNeighborTooClose(startWord, endWord, neighbors)) {
             continue;
         }
 
