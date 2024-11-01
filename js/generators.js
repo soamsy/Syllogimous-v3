@@ -97,17 +97,6 @@ function createStimuli(numberOfStimuli) {
     return stimuliCreated
 }
 
-function pickRandomItems(array, n) {
-    const copy = [...array];
-    const picked = [];
-    while (n > 0) {
-        const rnd = Math.floor(Math.random()*copy.length);
-        picked.push(copy.splice(rnd, 1)[0]);
-        n--;
-    }
-    return { picked, remaining: copy };
-}
-
 function createSameOpposite(length) {
     length++;
     
