@@ -80,6 +80,12 @@ function createIncorrectConclusionCoords(usedCoords, correctCoord) {
     return combinations;
 }
 
+function chooseIncorrectDirection(usedCoords, correctCoord) {
+    const incorrectCoords = createIncorrectConclusionCoords(usedCoords, correctCoord);
+    const incorrectDirections = incorrectCoords.map(dirStringFromCoord).filter(dirName => dirName);
+    return pickRandomItems(incorrectDirections, 1).picked[0];
+}
+
 function pickRandomDirection(dirNames, dirCoords) {
     const dirIndex = 1 + Math.floor(Math.random()*(dirNames.length - 1));
     const dirName = dirNames[dirIndex];
@@ -133,9 +139,7 @@ function createDirectionQuestion(length) {
     }
     else {            // wrong
         isValid = false;
-        const incorrectCoords = createIncorrectConclusionCoords(usedDirCoords, conclusionCoord);
-        const incorrectDirections = incorrectCoords.map(dirStringFromCoord).filter(dirName => dirName);
-        const incorrectDirName = pickRandomItems(incorrectDirections, 1).picked[0];
+        const incorrectDirName = chooseIncorrectDirection(usedDirCoords, conclusionCoord);
         conclusion = createDirectionStatement(endWord, startWord, incorrectDirName, nameInverseDir[incorrectDirName]);
     }
 
@@ -215,9 +219,7 @@ function createDirectionQuestion3D(length) {
     }
     else {            // wrong
         isValid = false;
-        const incorrectCoords = createIncorrectConclusionCoords(usedDirCoords, conclusionCoord);
-        const incorrectDirections = incorrectCoords.map(dirStringFromCoord).filter(dirName => dirName);
-        const incorrectDirName = pickRandomItems(incorrectDirections, 1).picked[0];
+        const incorrectDirName = chooseIncorrectDirection(usedDirCoords, conclusionCoord);
         conclusion = createDirection3DStatement(endWord, startWord, incorrectDirName, nameInverseDir3D[incorrectDirName]);
     }
 
