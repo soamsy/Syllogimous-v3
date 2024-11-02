@@ -74,7 +74,7 @@ function createIncorrectConclusionCoords(usedCoords, correctCoord) {
     const allZeroes = correctCoord.map(x => 0);
     let combinations = [];
     for (const i in correctCoord) {
-        for (const shift of [-1, 1]) {
+        for (const shift of [-2, -1, 1, 2]) {
             let newCombo = structuredClone(correctCoord);
             newCombo[i] += shift;
             if (validDirections[JSON.stringify(newCombo)]) {
