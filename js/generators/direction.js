@@ -136,10 +136,11 @@ function isNeighborTooClose(start, end, neighbors) {
         }
     }
 
-    const endToEnd = distanceBetween(leaf, null, neighbors);
     const distance = distanceBetween(start, end, neighbors);
+    const endToEnd = distanceBetween(leaf, null, neighbors);
+    const halfway = endToEnd / 2;
 
-    return endToEnd - distance >= 3;
+    return distance <= halfway;
 }
 
 function createDirectionQuestion(length) {
