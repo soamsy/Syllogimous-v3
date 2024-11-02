@@ -14,6 +14,24 @@ function createQuota() {
     return quota;
 }
 
+function createNonsenseWord() {
+    const vowels = ['A', 'E', 'I', 'O', 'U'], consonants = ['B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z'];
+    for (string = ''; string.length < savedata.nonsenseWordLength;) {
+        if ((string.length + 1) % 2) 
+            string += consonants[Math.floor(Math.random() * 21)];
+        else 
+            string += vowels[Math.floor(Math.random() * 5)];
+
+        if (string.length == savedata.nonsenseWordLength) {
+            if (bannedWords.some(d => string.includes(d))) {
+                string = '';
+            } else {
+                return string;
+            }
+        }
+    }
+}
+
 function createStimuli(numberOfStimuli) {
     const quota = createQuota();
     
@@ -44,19 +62,13 @@ function createStimuli(numberOfStimuli) {
     for (; numberOfStimuli > 0 && stimulusTypes.size; numberOfStimuli -= 1) {
         const randomStimulusType = Array.from(stimulusTypes)[Math.floor(Math.random() * stimulusTypes.size)];
 
-        if (randomStimulusType == 'nonsenseWords') {      
-            const vowels = ['A', 'E', 'I', 'O', 'U'], consonants = ['B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z'];
-            
-            for (string = ''; string.length < savedata.nonsenseWordLength;) {
-                if ((string.length + 1) % 2) string += consonants[Math.floor(Math.random() * 21)];
-                else string += vowels[Math.floor(Math.random() * 5)];
-        
-                if (string.length == savedata.nonsenseWordLength) {
-                    if (uniqueWords.nonsense.has(string)) string = '';
-                    else {
-                        stimuliCreated.push(string);
-                        uniqueWords.nonsense.add(string);
-                    }
+        if (randomStimulusType == 'nonsenseWords') {
+            while (true) {
+                const string = createNonsenseWord();
+                if (!uniqueWords.nonsense.has(string)) {
+                    stimuliCreated.push(string);
+                    uniqueWords.nonsense.add(string);
+                    break;
                 }
             }
 
