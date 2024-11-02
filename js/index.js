@@ -526,7 +526,7 @@ function createHQLI(question, i) {
     parent.innerHTML = html;
     parent.querySelector(".index").textContent = i + 1;
     parent.querySelector(".delete").addEventListener('click', () => {
-        deleteQuestion(i, type === 'right');
+        deleteQuestion(i, question.correctness === 'right');
     });
     const explanationButton = parent.querySelector(".explanation-button");
     if (explanationButton) {
