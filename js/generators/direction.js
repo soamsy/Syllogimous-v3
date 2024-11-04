@@ -143,6 +143,12 @@ function isNeighborTooClose(start, end, neighbors) {
     return distance <= halfway;
 }
 
+function pickBaseWord(wordCoordMap, neighbors) {
+    const baseOptions = Object.keys(wordCoordMap).filter(word => !neighbors[word] || neighbors[word].length < 3);
+    const baseWord = pickRandomItems(baseOptions, 1).picked[0];
+    return baseWord;
+}
+
 function createDirectionQuestion(length) {
     length++;
 
@@ -164,7 +170,7 @@ function createDirectionQuestion(length) {
 
         for (let i = 0; i < words.length - 1; i++) {
             const [dirName, dirCoord] = pickRandomDirection(dirNames, dirCoords);
-            const baseWord = pickRandomItems(Object.keys(wordCoordMap), 1).picked[0];
+            const baseWord = pickBaseWord(wordCoordMap, neighbors);
             const nextWord = words[i+1];
             wordCoordMap[nextWord] = [
                 wordCoordMap[baseWord][0] + dirCoord[0], // x
@@ -254,7 +260,7 @@ function createDirectionQuestion3D(length) {
 
         for (let i = 0; i < words.length - 1; i++) {
             const [dirName, dirCoord] = pickRandomDirection(dirNames3D, dirCoords3D);
-            const baseWord = pickRandomItems(Object.keys(wordCoordMap), 1).picked[0];
+            const baseWord = pickBaseWord(wordCoordMap, neighbors);
             const nextWord = words[i+1];
             wordCoordMap[nextWord] = [
                 wordCoordMap[baseWord][0] + dirCoord[0], // x
