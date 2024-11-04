@@ -149,11 +149,22 @@ function pickBaseWord(wordCoordMap, neighbors) {
     return baseWord;
 }
 
+function pickTwoDistantWords(wordCoordMap, neighbors) {
+    const options = Object.keys(wordCoordMap);
+    let [startWord, endWord] = pickRandomItems(options, 2).picked;
+    while (isNeighborTooClose(startWord, endWord, neighbors)) {
+        [startWord, endWord] = pickRandomItems(options, 2).picked;
+    }
+
+    return [startWord, endWord];
+}
+
 function createDirectionQuestion(length) {
     length++;
 
     const words = createStimuli(length);
-    const [startWord, endWord] = findTwoWords(words);
+    let startWord;
+    let endWord;
 
     let wordCoordMap = {};
     let premises = [];
@@ -184,14 +195,12 @@ function createDirectionQuestion(length) {
             neighbors[nextWord].push(baseWord);
         }
 
+        [startWord, endWord] = pickTwoDistantWords(wordCoordMap, neighbors);
+
         conclusionCoord = findDirectionCoord(
             wordCoordMap[startWord],
             wordCoordMap[endWord]
         );
-
-        if (isNeighborTooClose(startWord, endWord, neighbors)) {
-            continue;
-        }
 
         conclusionDirName = dirStringFromCoord(conclusionCoord);
         if (conclusionDirName) {
@@ -243,7 +252,8 @@ function createDirectionQuestion3D(length) {
     length++;
 
     const words = createStimuli(length);
-    const [startWord, endWord] = findTwoWords(words);
+    let startWord;
+    let endWord;
 
     let wordCoordMap = {};
     let premises = [];
@@ -275,9 +285,7 @@ function createDirectionQuestion3D(length) {
             neighbors[nextWord].push(baseWord);
         }
 
-        if (isNeighborTooClose(startWord, endWord, neighbors)) {
-            continue;
-        }
+        [startWord, endWord] = pickTwoDistantWords(wordCoordMap, neighbors);
 
         conclusionCoord = findDirectionCoord3D(
             wordCoordMap[startWord],
