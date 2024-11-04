@@ -150,7 +150,7 @@ function pickBaseWord(wordCoordMap, neighbors) {
 }
 
 function pickTwoDistantWords(wordCoordMap, neighbors) {
-    const options = Object.keys(wordCoordMap);
+    const options = Object.keys(wordCoordMap).filter(word => neighbors[word].length == 1);
     let [startWord, endWord] = pickRandomItems(options, 2).picked;
     while (isNeighborTooClose(startWord, endWord, neighbors)) {
         [startWord, endWord] = pickRandomItems(options, 2).picked;
