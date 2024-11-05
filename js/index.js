@@ -43,6 +43,8 @@ const displayLabelType = display.querySelector(".display_label_type");
 const displayLabelLevel = display.querySelector(".display_label_level");;
 const displayText = display.querySelector(".display_text");;
 
+const liveStyles = document.getElementById('live-styles');
+
 const confirmationButtons = carousel.querySelector(".confirmation-buttons");
 
 const keySettingMapInverse = Object.entries(keySettingMap)
@@ -79,6 +81,24 @@ for (const key in keySettingMap) {
             savedata[value] = +input.value;
             save();
             init();
+        });
+    }
+
+    // Image handler
+    if (input.type === "file") {
+        input.addEventListener("change", function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const base64String = event.target.result;
+                    savedata[value] = imageKey;
+                    localStorage.setItem(imageKey, base64String);
+                    save();
+                    init();
+                };
+                reader.readAsDataURL(file);
+            }
         });
     }
 }
@@ -141,6 +161,33 @@ function displayInit() {
         ...question.premises.map(p => `<div class="formatted-premise">${p}</div>`),
         '<div class="formatted-conclusion">'+question.conclusion+'</div>'
     ].join('');
+    updateCustomStyles();
+}
+
+function clearBackgroundImage() {
+    const fileInput = document.getElementById('p-24');
+    fileInput.value = '';
+    localStorage.removeItem(imageKey);
+    delete savedata.backgroundImage;
+    save();
+    updateCustomStyles();
+}
+
+function updateCustomStyles() {
+    let styles = '';
+    if (savedata.backgroundImage) {
+        const base64Image = localStorage.getItem(imageKey);
+        if (base64Image) {
+            styles += `
+            .background-image {
+                background-image: url(${base64Image});
+            }
+            `;
+        }
+    }
+    if (liveStyles.innerHTML !== styles) {
+        liveStyles.innerHTML = styles;
+    }
 }
 
 function carouselBack() {

@@ -26,6 +26,7 @@
 		<link rel="icon" type="image/png" href="favicon.png">
 		<link rel="stylesheet" href="css/codec.css">
 		<link rel="stylesheet" href="css/styles.css">
+		<style id="live-styles"></style>
 	</head>
 	<body>
 
@@ -359,6 +360,15 @@
 								<li>Insert 4 or more premises to play Binary questions</li>
 							</ul>
 						</div>												
+						<div class="mb-2">
+							<div class="inline-input__outer">
+								Image
+								<span class="inline-input__inner">
+								  <input type="file" id="p-24" accept="image/*">
+								</span>
+							</div>
+							<button onclick="clearBackgroundImage()" style="float:right;">Clear Image</button>
+						</div>
 						<div>
 							<button onclick="resetApp()">Reset App</button>
 							<ul class="explainer">

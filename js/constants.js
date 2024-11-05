@@ -1,6 +1,8 @@
 // Constants and variables
 const localKey = "sllgms-v3";
 
+const imageKey = 'sllgms-v3-background';
+
 let savedata = {
     "user": {
         "alreadyPrompted": false,
@@ -35,7 +37,8 @@ let savedata = {
     "defaultStimulusType": "nonsenseWords",
     "meaningfulWordNouns": true,
     "meaningfulWordAdjectives": false,
-    "defaultPartOfSpeech": "nouns"
+    "defaultPartOfSpeech": "nouns",
+    "backgroundImage": null
 };
 
 const keySettingMap = {
@@ -61,7 +64,8 @@ const keySettingMap = {
     "p-20": "useNonsenseWords",
     "p-21": "useEmoji",
     "p-22": "meaningfulWordNouns",
-    "p-23": "meaningfulWordAdjectives"
+    "p-23": "meaningfulWordAdjectives",
+    "p-24": "backgroundImage"
 };
 
 const meaningfulWords = {
