@@ -39,7 +39,7 @@ let savedata = {
     "meaningfulWordAdjectives": false,
     "defaultPartOfSpeech": "nouns",
     "backgroundImage": null,
-    "gameAreaColor": "#161F30"
+    "gameAreaColor": "#161F30CC"
 };
 
 const keySettingMap = {
