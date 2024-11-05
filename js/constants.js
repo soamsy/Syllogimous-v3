@@ -38,7 +38,8 @@ let savedata = {
     "meaningfulWordNouns": true,
     "meaningfulWordAdjectives": false,
     "defaultPartOfSpeech": "nouns",
-    "backgroundImage": null
+    "backgroundImage": null,
+    "gameAreaColor": "#161F30"
 };
 
 const keySettingMap = {
@@ -65,7 +66,8 @@ const keySettingMap = {
     "p-21": "useEmoji",
     "p-22": "meaningfulWordNouns",
     "p-23": "meaningfulWordAdjectives",
-    "p-24": "backgroundImage"
+    "p-24": "backgroundImage",
+    "p-25": "gameAreaColor"
 };
 
 const meaningfulWords = {

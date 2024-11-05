@@ -369,6 +369,14 @@
 							</div>
 							<button onclick="clearBackgroundImage()" style="float:right;">Clear Image</button>
 						</div>
+						<div class="mb-2">
+							<div class="inline-input__outer">
+								Color
+								<span class="inline-input__inner">
+								  <input type="text" id="p-25" placeholder="Enter color (e.g. #ff0000)" value="rgb(47, 57, 81)"></input>
+								</span>
+							</div>
+						</div>
 						<div>
 							<button onclick="resetApp()">Reset App</button>
 							<ul class="explainer">
@@ -659,7 +667,7 @@
 
 			<div class="overlay"></div>
 
-			<div class="game-area">
+			<div id="game-area" class="game-area">
 				<div class="timer-wrap">
 					<div class="timer">
 						<div class="timer__bar" style="width: 100%"></div>

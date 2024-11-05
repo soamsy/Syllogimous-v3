@@ -44,6 +44,7 @@ const displayLabelLevel = display.querySelector(".display_label_level");;
 const displayText = display.querySelector(".display_text");;
 
 const liveStyles = document.getElementById('live-styles');
+const gameArea = document.getElementById('game-area');
 
 const confirmationButtons = carousel.querySelector(".confirmation-buttons");
 
@@ -93,12 +94,25 @@ for (const key in keySettingMap) {
                 reader.onload = function(event) {
                     const base64String = event.target.result;
                     savedata[value] = imageKey;
-                    localStorage.setItem(imageKey, base64String);
+                    try {
+                        localStorage.setItem(imageKey, base64String);
+                    } catch (e) {
+                        alert(e);
+                    }
                     save();
                     init();
                 };
                 reader.readAsDataURL(file);
             }
+        });
+    }
+
+    if (input.type === "text") {
+        input.addEventListener("input", function() {
+            const color = this.value;
+            savedata[value] = color;
+            save();
+            init();
         });
     }
 }
@@ -133,6 +147,8 @@ function load() {
         if (input.type === "checkbox")
             input.checked = value;
         else if (input.type === "number")
+            input.value = value;
+        else if (input.type === "text")
             input.value = value;
     }
 
@@ -187,6 +203,13 @@ function updateCustomStyles() {
     }
     if (liveStyles.innerHTML !== styles) {
         liveStyles.innerHTML = styles;
+    }
+
+    const gameAreaColor = savedata.gameAreaColor;
+    if (gameAreaColor) {
+        // const gameAreaImage = `repeating-conic-gradient(${gameAreaColor} 25% 75%, #000000 50% 100%)`;
+        const gameAreaImage = `repeating-linear-gradient(to bottom, black, black 1px, ${gameAreaColor} 1px, ${gameAreaColor} 2px)`
+        gameArea.style.backgroundImage = gameAreaImage;
     }
 }
 
