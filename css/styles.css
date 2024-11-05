@@ -791,7 +791,6 @@ input[type="checkbox"]:checked + .switch::after {
 .hqli {
     background-color: #191817;
     box-shadow: 0 1px 10px 5px #0004;
-    padding: 0 0 1rem 2rem;
     position: relative;
 }
 
