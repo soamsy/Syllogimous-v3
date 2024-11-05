@@ -484,6 +484,7 @@ function resetApp() {
     const confirmed = confirm("Are you sure?");
     if (confirmed) {
         localStorage.removeItem(localKey);
+        localStorage.removeItem(imageKey);
         window.location.reload();
     }
 }
