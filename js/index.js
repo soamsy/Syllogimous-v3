@@ -207,7 +207,6 @@ function updateCustomStyles() {
 
     const gameAreaColor = savedata.gameAreaColor;
     if (gameAreaColor) {
-        // const gameAreaImage = `repeating-conic-gradient(${gameAreaColor} 25% 75%, #000000 50% 100%)`;
         const gameAreaImage = `repeating-linear-gradient(to bottom, black, black 1px, ${gameAreaColor} 1px, ${gameAreaColor} 2px)`
         gameArea.style.backgroundImage = gameAreaImage;
     }
