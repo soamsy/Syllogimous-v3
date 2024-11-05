@@ -150,8 +150,21 @@ function isNeighborTooClose(start, end, neighbors) {
 }
 
 function pickBaseWord(wordCoordMap, neighbors) {
-    const baseOptions = Object.keys(wordCoordMap).filter(word => !neighbors[word] || neighbors[word].length < 3);
-    const baseWord = pickRandomItems(baseOptions, 1).picked[0];
+    const options = Object.keys(wordCoordMap);
+    const neighborLimit = options.length <= 3 ? 1 : 2;
+    let pool = [];
+    for (const word of options) {
+        if (neighbors[word] && neighbors[word].length > neighborLimit) {
+            continue;
+        }
+
+        pool.push(word);
+        pool.push(word);
+        if (neighbors[word] && neighbors[word].length == 1) {
+            pool.push(word);
+        }
+    }
+    const baseWord = pickRandomItems(pool, 1).picked[0];
     return baseWord;
 }
 
