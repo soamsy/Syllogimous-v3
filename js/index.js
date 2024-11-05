@@ -206,10 +206,11 @@ function updateCustomStyles() {
     }
 
     const gameAreaColor = savedata.gameAreaColor;
-    const gameAreaImage = `repeating-linear-gradient(to bottom, black, black 1px, ${gameAreaColor} 1px, ${gameAreaColor} 2px)`
-    if (gameArea.style.backgroundImage !== gameAreaImage) {
-        gameArea.style.backgroundImage = '';
-        gameArea.style.backgroundImage = gameAreaImage;
+    const gameAreaImage = `repeating-linear-gradient(to bottom, #00000020 0px, #00000020 1px, transparent 1px, transparent 2px), ${gameAreaColor}`
+    // const gameAreaImage = `${gameAreaColor}`
+    if (gameArea.style.background !== gameAreaImage) {
+        gameArea.style.background = '';
+        gameArea.style.background = gameAreaImage;
     }
 }
 
