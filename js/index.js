@@ -579,6 +579,7 @@ function createHQLI(question, i) {
     const html =
 `<div class="hqli ${classModifier}">
     <div class="inner">
+        <div class="index"></div>
         <div class="hqli-premises">
             ${htmlPremises}
         </div>
@@ -588,7 +589,6 @@ function createHQLI(question, i) {
         ${responseTimeHtml}
         <div class="hqli-footer">
             <div>${question.category}</div>
-            <div class="index"></div>
             ${createExplanationButton(question)}
             <button class="delete">X</button>
         </div>

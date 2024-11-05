@@ -853,6 +853,13 @@ input[type="checkbox"]:checked + .switch::after {
     justify-content: space-between;
 }
 
+.hqli .inner .index {
+    position: absolute;
+    padding: 4px;
+    top: 0;
+    right: 0;
+}
+
 @media (max-width: 768px) {
     body {
         padding: 0;
