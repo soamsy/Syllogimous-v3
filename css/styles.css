@@ -872,7 +872,7 @@ table {
 }
 
 tr, td {
-  padding: 4px 0;
+  padding: 4px 2px;
   border: 1px solid #ddd;
   text-align: center;
 }
