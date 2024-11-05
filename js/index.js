@@ -206,8 +206,9 @@ function updateCustomStyles() {
     }
 
     const gameAreaColor = savedata.gameAreaColor;
-    if (gameAreaColor) {
-        const gameAreaImage = `repeating-linear-gradient(to bottom, black, black 1px, ${gameAreaColor} 1px, ${gameAreaColor} 2px)`
+    const gameAreaImage = `repeating-linear-gradient(to bottom, black, black 1px, ${gameAreaColor} 1px, ${gameAreaColor} 2px)`
+    if (gameArea.style.backgroundImage !== gameAreaImage) {
+        gameArea.style.backgroundImage = '';
         gameArea.style.backgroundImage = gameAreaImage;
     }
 }
