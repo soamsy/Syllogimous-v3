@@ -1,11 +1,11 @@
+function findDiff2D(aCoord, bCoord) {
+    const [x, y] = aCoord;
+    const [x2, y2] = bCoord;
+    return [x2 - x, y2 - y];
+}
+
 function findDirectionCoord(aCoord, bCoord) {
-    const x = aCoord[0];
-    const y = aCoord[1];
-    const x2 = bCoord[0];
-    const y2 = bCoord[1];
-    const dx = ((x - x2)/Math.abs(x - x2)) || 0;
-    const dy = ((y - y2)/Math.abs(y - y2)) || 0;
-    return [dx, dy];
+    return findDiff2D(aCoord, bCoord).map(c => c/Math.abs(c) || 0);
 }
 
 function findDirection(aCoord, bCoord) {
@@ -56,7 +56,7 @@ function createDirection4DStatement(source, target, direction, reverseDirection,
     ]);
 }
 
-function createIncorrectConclusionCoords(usedCoords, correctCoord) {
+function createIncorrectConclusionCoords(usedCoords, correctCoord, diffCoord) {
     let opposite = correctCoord.map(dir => -dir)
     if (usedCoords.length <= 2) {
         return [opposite]; // Few premises == anything that isn't the opposite tends to be easy.
@@ -72,8 +72,13 @@ function createIncorrectConclusionCoords(usedCoords, correctCoord) {
     }
 
     const allZeroes = correctCoord.map(x => 0);
+    const highest = diffCoord.map(x => Math.abs(x)).reduce((a, b) => Math.max(a, b));
     let combinations = [];
     for (const i in correctCoord) {
+        if (Math.abs(diffCoord[i]) == highest) {
+            continue;
+        }
+
         for (const shift of [-2, -1, 1, 2]) {
             let newCombo = structuredClone(correctCoord);
             newCombo[i] += shift;
@@ -82,12 +87,13 @@ function createIncorrectConclusionCoords(usedCoords, correctCoord) {
             }
         }
     }
-    combinations.push(opposite);
+    if (highest < 2 || combinations.length == 0)
+        combinations.push(opposite);
     return combinations;
 }
 
-function chooseIncorrectDirection(usedCoords, correctCoord) {
-    const incorrectCoords = createIncorrectConclusionCoords(usedCoords, correctCoord);
+function chooseIncorrectDirection(usedCoords, correctCoord, diffCoord) {
+    const incorrectCoords = createIncorrectConclusionCoords(usedCoords, correctCoord, diffCoord);
     const incorrectDirections = incorrectCoords.map(dirStringFromCoord).filter(dirName => dirName);
     return pickRandomItems(incorrectDirections, 1).picked[0];
 }
@@ -171,6 +177,7 @@ function createDirectionQuestion(length) {
     let conclusion;
     let conclusionCoord;
     let conclusionDirName;
+    let diffCoord;
     let usedDirCoords;
     let neighbors;
     while (true) {
@@ -196,12 +203,9 @@ function createDirectionQuestion(length) {
         }
 
         [startWord, endWord] = pickTwoDistantWords(wordCoordMap, neighbors);
-
-        conclusionCoord = findDirectionCoord(
-            wordCoordMap[startWord],
-            wordCoordMap[endWord]
-        );
-
+        const [start, end] = [wordCoordMap[startWord], wordCoordMap[endWord]];
+        diffCoord = findDiff2D(start, end);
+        conclusionCoord = findDirectionCoord(start, end);
         conclusionDirName = dirStringFromCoord(conclusionCoord);
         if (conclusionDirName) {
             break;
@@ -211,12 +215,12 @@ function createDirectionQuestion(length) {
     let isValid;
     if (coinFlip()) { // correct
         isValid = true;
-        conclusion = createDirectionStatement(endWord, startWord, conclusionDirName, nameInverseDir[conclusionDirName]);
+        conclusion = createDirectionStatement(startWord, endWord, conclusionDirName, nameInverseDir[conclusionDirName]);
     }
     else {            // wrong
         isValid = false;
-        const incorrectDirName = chooseIncorrectDirection(usedDirCoords, conclusionCoord);
-        conclusion = createDirectionStatement(endWord, startWord, incorrectDirName, nameInverseDir[incorrectDirName]);
+        const incorrectDirName = chooseIncorrectDirection(usedDirCoords, conclusionCoord, diffCoord);
+        conclusion = createDirectionStatement(startWord, endWord, incorrectDirName, nameInverseDir[incorrectDirName]);
     }
 
     shuffle(premises);
@@ -231,17 +235,14 @@ function createDirectionQuestion(length) {
     }
 }
 
+function findDiff3D(aCoord, bCoord) {
+    const [x, y, z] = aCoord;
+    const [x2, y2, z2] = bCoord;
+    return [x2 - x, y2 - y, z2 - z];
+}
+
 function findDirectionCoord3D(aCoord, bCoord) {
-    const x = aCoord[0];
-    const y = aCoord[1];
-    const z = aCoord[2];
-    const x2 = bCoord[0];
-    const y2 = bCoord[1];
-    const z2 = bCoord[2];
-    const dx = ((x - x2)/Math.abs(x - x2)) || 0;
-    const dy = ((y - y2)/Math.abs(y - y2)) || 0;
-    const dz = ((z - z2)/Math.abs(z - z2)) || 0;
-    return [dx, dy, dz];
+    return findDiff3D(aCoord, bCoord).map(c => c/Math.abs(c) || 0);
 }
 
 function findDirection3D(aCoord, bCoord) {
@@ -260,6 +261,7 @@ function createDirectionQuestion3D(length) {
     let conclusion;
     let conclusionCoord;
     let conclusionDirName;
+    let diffCoord;
     let usedDirCoords;
     let neighbors;
     while (true) {
@@ -286,12 +288,9 @@ function createDirectionQuestion3D(length) {
         }
 
         [startWord, endWord] = pickTwoDistantWords(wordCoordMap, neighbors);
-
-        conclusionCoord = findDirectionCoord3D(
-            wordCoordMap[startWord],
-            wordCoordMap[endWord]
-        );
-
+        const [start, end] = [wordCoordMap[startWord], wordCoordMap[endWord]];
+        diffCoord = findDiff3D(start, end);
+        conclusionCoord = findDirectionCoord3D(start, end);
         conclusionDirName = dirStringFromCoord(conclusionCoord);
         if (conclusionDirName) {
             break;
@@ -301,12 +300,12 @@ function createDirectionQuestion3D(length) {
     let isValid;
     if (coinFlip()) { // correct
         isValid = true;
-        conclusion = createDirection3DStatement(endWord, startWord, conclusionDirName, nameInverseDir3D[conclusionDirName]);
+        conclusion = createDirection3DStatement(startWord, endWord, conclusionDirName, nameInverseDir3D[conclusionDirName]);
     }
     else {            // wrong
         isValid = false;
-        const incorrectDirName = chooseIncorrectDirection(usedDirCoords, conclusionCoord);
-        conclusion = createDirection3DStatement(endWord, startWord, incorrectDirName, nameInverseDir3D[incorrectDirName]);
+        const incorrectDirName = chooseIncorrectDirection(usedDirCoords, conclusionCoord, diffCoord);
+        conclusion = createDirection3DStatement(startWord, endWord, incorrectDirName, nameInverseDir3D[incorrectDirName]);
     }
 
     shuffle(premises);
@@ -327,7 +326,7 @@ function findDirection4D(aCoord, bCoord) {
     const a = aCoord[3];
     const a2 = bCoord[3];
 
-    return { spatial: dirName, temporal: timeNames[Math.sign(a-a2) + 1] };
+    return { spatial: dirName, temporal: timeNames[Math.sign(a2-a) + 1] };
 }
 
 function createDirectionQuestion4D(length) {
@@ -369,15 +368,15 @@ function createDirectionQuestion4D(length) {
     let isValid;
     if (coinFlip()) { // correct
         isValid = true;
-        conclusion = createDirection4DStatement(endWord, startWord, conclusionDirName.spatial, nameInverseDir3D[conclusionDirName.spatial], conclusionDirName.temporal);
+        conclusion = createDirection4DStatement(startWord, endWord, conclusionDirName.spatial, nameInverseDir3D[conclusionDirName.spatial], conclusionDirName.temporal);
     }
     else {            // wrong
         isValid = false;
         let oppositeDirection = findDirection4D(
-            wordCoordMap[endWord],
-            wordCoordMap[startWord]
+            wordCoordMap[startWord],
+            wordCoordMap[endWord]
         );
-        conclusion = createDirection4DStatement(endWord, startWord, oppositeDirection.spatial, nameInverseDir3D[oppositeDirection.spatial], conclusionDirName.temporal);
+        conclusion = createDirection4DStatement(startWord, endWord, oppositeDirection.spatial, nameInverseDir3D[oppositeDirection.spatial], conclusionDirName.temporal);
     }
 
     shuffle(premises);
