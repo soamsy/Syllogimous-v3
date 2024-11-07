@@ -98,11 +98,24 @@ function chooseIncorrectDirection(usedCoords, correctCoord, diffCoord) {
     return pickRandomItems(incorrectDirections, 1).picked[0];
 }
 
+function removeZeroCoords(dirNames, dirCoords) {
+    const nonZeroCoords = dirCoords.slice(1);
+    return dirNames.slice(1).map((name, i) => [name, nonZeroCoords[i]]);
+}
+
 function pickRandomDirection(dirNames, dirCoords) {
-    const dirIndex = 1 + Math.floor(Math.random()*(dirNames.length - 1));
-    const dirName = dirNames[dirIndex];
-    const dirCoord = dirCoords[dirIndex];
-    return [dirName, dirCoord];
+    return pickRandomItems(removeZeroCoords(dirNames, dirCoords), 1).picked[0];
+}
+
+function pickNonOverlappingRandomDirection(dirNames, dirCoords, baseWord, neighbors, wordCoordMap) {
+    const badTargets = (neighbors[baseWord] ?? []).map(word => wordCoordMap[word]);
+    const base = wordCoordMap[baseWord];
+    let pool = removeZeroCoords(dirNames, dirCoords);
+    pool = pool.filter(([name, dirCoord]) => {
+        const endLocation = dirCoord.map((d,i) => d + base[i]);
+        return !badTargets.some(badTarget => arraysEqual(endLocation, badTarget))
+    });
+    return pickRandomItems(pool, 1).picked[0];
 }
 
 function distanceBetween(start, end, neighbors) {
@@ -200,8 +213,8 @@ function createDirectionQuestion(length) {
         usedDirCoords = [];
 
         for (let i = 0; i < words.length - 1; i++) {
-            const [dirName, dirCoord] = pickRandomDirection(dirNames, dirCoords);
             const baseWord = pickBaseWord(wordCoordMap, neighbors);
+            const [dirName, dirCoord] = pickNonOverlappingRandomDirection(dirNames, dirCoords, baseWord, neighbors, wordCoordMap);
             const nextWord = words[i+1];
             wordCoordMap[nextWord] = [
                 wordCoordMap[baseWord][0] + dirCoord[0], // x
@@ -284,8 +297,8 @@ function createDirectionQuestion3D(length) {
         usedDirCoords = [];
 
         for (let i = 0; i < words.length - 1; i++) {
-            const [dirName, dirCoord] = pickRandomDirection(dirNames3D, dirCoords3D);
             const baseWord = pickBaseWord(wordCoordMap, neighbors);
+            const [dirName, dirCoord] = pickNonOverlappingRandomDirection(dirNames3D, dirCoords3D, baseWord, neighbors, wordCoordMap);
             const nextWord = words[i+1];
             wordCoordMap[nextWord] = [
                 wordCoordMap[baseWord][0] + dirCoord[0], // x
