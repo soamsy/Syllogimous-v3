@@ -73,13 +73,15 @@ function createIncorrectConclusionCoords(usedCoords, correctCoord, diffCoord) {
 
     const allZeroes = correctCoord.map(x => 0);
     const highest = diffCoord.map(x => Math.abs(x)).reduce((a, b) => Math.max(a, b));
+    const allShiftedEqually = diffCoord.every(x => Math.abs(x) === highest);
+    const shifts = allShiftedEqually ? [-1, 1] : [-2, -1, 1, 2];
     let combinations = [];
     for (const i in correctCoord) {
-        if (Math.abs(diffCoord[i]) == highest) {
+        if (!allShiftedEqually && Math.abs(diffCoord[i]) === highest) {
             continue;
         }
 
-        for (const shift of [-2, -1, 1, 2]) {
+        for (const shift of shifts) {
             let newCombo = structuredClone(correctCoord);
             newCombo[i] += shift;
             if (validDirections[JSON.stringify(newCombo)]) {
