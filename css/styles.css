@@ -238,7 +238,7 @@ button.delete:hover {
     background-color: #000c;
     background-size: cover;
     background-position: center;
-    filter: brightness(0.20);
+    filter: brightness(0.50);
 }
 
 .metal-gear {
