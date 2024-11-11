@@ -89,8 +89,9 @@ function createIncorrectConclusionCoords(usedCoords, correctCoord, diffCoord) {
             }
         }
     }
-    if (highest < 2 || combinations.length == 0)
-        combinations.push(opposite);
+    combinations.push.apply(combinations, structuredClone(combinations));
+    combinations.push(opposite);
+    console.log(combinations);
     return combinations;
 }
 
