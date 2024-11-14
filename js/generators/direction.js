@@ -91,7 +91,6 @@ function createIncorrectConclusionCoords(usedCoords, correctCoord, diffCoord) {
     }
     combinations.push.apply(combinations, structuredClone(combinations));
     combinations.push(opposite);
-    console.log(combinations);
     return combinations;
 }
 
