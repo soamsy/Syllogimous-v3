@@ -109,23 +109,38 @@ function pickRandomDirection(dirNames, dirCoords) {
     return pickRandomItems(removeZeroCoords(dirNames, dirCoords), 1).picked[0];
 }
 
-function pickNonOverlappingRandomDirection(dirNames, dirCoords, baseWord, neighbors, wordCoordMap) {
+function taxicabDistance(a, b) {
+    return a.map((v,i) => Math.abs(b[i] - v)).reduce((left,right) => left + right)
+}
+
+function pickWeightedRandomDirection(dirNames, dirCoords, baseWord, neighbors, wordCoordMap) {
     const badTargets = (neighbors[baseWord] ?? []).map(word => wordCoordMap[word]);
     const base = wordCoordMap[baseWord];
-    let pool = removeZeroCoords(dirNames, dirCoords);
-    pool = pool.filter(([name, dirCoord]) => {
+    const options = removeZeroCoords(dirNames, dirCoords);
+    let pool = [];
+    for (const [name, dirCoord] of options) {
         const endLocation = dirCoord.map((d,i) => d + base[i]);
-        return !badTargets.some(badTarget => arraysEqual(endLocation, badTarget))
-    });
+        const distanceToClosest = badTargets
+            .map(badTarget => taxicabDistance(badTarget, endLocation))
+            .reduce((a,b) => Math.min(a,b), 999);
+        if (distanceToClosest == 0) {
+            pool.push([name, dirCoord])
+        } else if (distanceToClosest == 1) {
+            pool.push([name, dirCoord]);
+            pool.push([name, dirCoord]);
+            pool.push([name, dirCoord]);
+            pool.push([name, dirCoord]);
+        } else {
+            pool.push([name, dirCoord]);
+            pool.push([name, dirCoord]);
+        }
+    }
+
     return pickRandomItems(pool, 1).picked[0];
 }
 
 function pickDirection(dirNames, dirCoords, baseWord, neighbors, wordCoordMap) {
-    if (coinFlip()) {
-        return pickNonOverlappingRandomDirection(dirNames, dirCoords, baseWord, neighbors, wordCoordMap);
-    } else {
-        return pickRandomDirection(dirNames, dirCoords);
-    }
+    return pickWeightedRandomDirection(dirNames, dirCoords, baseWord, neighbors, wordCoordMap);
 }
 
 function distanceBetween(start, end, neighbors) {
