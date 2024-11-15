@@ -30,6 +30,7 @@ const averageDisplay = document.getElementById("average-display");
 const averageCorrectDisplay = document.getElementById("average-correct-display");
 
 let carouselIndex = 0;
+let carouselEnabled = false;
 let question;
 const carousel = document.querySelector(".carousel");
 const carouselDisplayLabelType = carousel.querySelector(".carousel_display_label_type");
@@ -46,7 +47,7 @@ const displayText = display.querySelector(".display_text");;
 const liveStyles = document.getElementById('live-styles');
 const gameArea = document.getElementById('game-area');
 
-const confirmationButtons = carousel.querySelector(".confirmation-buttons");
+const confirmationButtons = document.querySelector(".confirmation-buttons");
 
 const keySettingMapInverse = Object.entries(keySettingMap)
     .reduce((a, b) => (a[b[1]] = b[0], a), {});
@@ -160,14 +161,7 @@ function load() {
 
 function carouselInit() {
     carouselIndex = 0;
-    confirmationButtons.style.opacity = 0;
-    confirmationButtons.style.pointerEvents = "none";
-    carouselBackButton.disabled = true;
-    carouselNextButton.disabled = false;
-
-    carouselDisplayLabelType.textContent = "Premise";
-    carouselDisplayLabelProgress.textContent = "1/" + question.premises.length;
-    carouselDisplayText.innerHTML = question.premises[0];
+    renderCarousel();
 }
 
 function displayInit() {
@@ -213,39 +207,56 @@ function updateCustomStyles() {
     }
 }
 
-function carouselBack() {
-    carouselIndex--;
-    if (carouselIndex < 1)
+function enableConfirmationButtons() {
+    confirmationButtons.style.pointerEvents = "all";
+    confirmationButtons.style.opacity = 1;
+}
+
+function disableConfirmationButtons() {
+    confirmationButtons.style.pointerEvents = "none";
+    confirmationButtons.style.opacity = 0;
+}
+
+function renderCarousel() {
+    if (!savedata.enableCarouselMode) {
+        display.classList.add("visible");
+        carousel.classList.remove("visible");
+        enableConfirmationButtons();
+        return;
+    }
+
+    carousel.classList.add("visible");
+    display.classList.remove("visible");
+    if (carouselIndex == 0) {
         carouselBackButton.disabled = true;
-    if (carouselIndex < question.premises.length) {
+    } else {
+        carouselBackButton.disabled = false;
+    }
+    
+    if (carouselIndex < question.premises.length - 1) {
         carouselNextButton.disabled = false;
-        confirmationButtons.style.opacity = 0;
+        disableConfirmationButtons();
+    } else {
+        carouselDisplayLabelType.textContent = "Conclusion";
+        carouselDisplayLabelProgress.textContent = "";
+        carouselDisplayText.innerHTML = question.conclusion;
+        carouselNextButton.disabled = true;
+        enableConfirmationButtons();
     }
     
     carouselDisplayLabelType.textContent = "Premise";
     carouselDisplayLabelProgress.textContent = (carouselIndex + 1) + "/" + question.premises.length;
     carouselDisplayText.innerHTML = question.premises[carouselIndex];
 }
+
+function carouselBack() {
+    carouselIndex--;
+    renderCarousel();
+}
   
 function carouselNext() {
     carouselIndex++;
-    if (carouselIndex > 0)
-        carouselBackButton.disabled = false;
-    
-    // Conclusion appears
-    if (carouselIndex === question.premises.length) {
-        confirmationButtons.style.pointerEvents = "all";
-        carouselDisplayLabelType.textContent = "Conclusion";
-        carouselDisplayLabelProgress.textContent = "";
-        carouselDisplayText.innerHTML = question.conclusion;
-        carouselNextButton.disabled = true;
-        confirmationButtons.style.opacity = 1;
-        return;
-    }
-    
-    carouselDisplayLabelType.textContent = "Premise";
-    carouselDisplayLabelProgress.textContent = (carouselIndex + 1) + "/" + question.premises.length;
-    carouselDisplayText.innerHTML = question.premises[carouselIndex];
+    renderCarousel();
 }
 
 function switchButtons() {
@@ -304,14 +315,6 @@ function init() {
     ].reduce((a, c) => a + +c, 0) > 1;
 
     const choices = [];
-    if (savedata.enableCarouselMode) {
-        carousel.classList.add("visible");
-        display.classList.remove("visible");
-    } else {
-        display.classList.add("visible");
-        carousel.classList.remove("visible");
-    }
-
     quota = savedata.premises
     quota = Math.min(quota, createQuota())
 
