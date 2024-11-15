@@ -56,7 +56,7 @@ function createExplanation2D(grid, filler) {
         const row = grid[i];
         s += '<tr>';
         for (const val of row) {
-            s += '<td>' + (val ? val : filler) + '</td>';
+            s += '<td>' + (val ? centerText(val, filler.length) : filler) + '</td>';
         }
         s += '</tr>\n';
     }
@@ -94,7 +94,7 @@ function createExplanation4D(grid) {
 
 function createExplanationBucket(question) {
     if (question.category == 'Comparison') {
-        return structuredClone(question.bucket).reverse().join(' < ');
+        return question.bucket.join(' < ');
     } else {
         return question.bucket.join(" ");
     }

@@ -6,10 +6,11 @@ function createBeforeAfter(length) {
     let isValid;
     let premises;
     let conclusion;
+    let sign;
     do {
         bucket = createStimuli(length);
 
-        let sign = [-1, 1][Math.floor(Math.random() * 2)];
+        sign = [-1, 1][Math.floor(Math.random() * 2)];
 
         premises = [];
         let next;
@@ -87,7 +88,7 @@ function createBeforeAfter(length) {
     return {
         category,
         startedAt: new Date().getTime(),
-        bucket,
+        bucket: (sign === -1 ? structuredClone(bucket).reverse() : bucket),
         isValid,
         premises,
         conclusion
