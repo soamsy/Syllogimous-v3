@@ -135,7 +135,7 @@ function createSameDifferent(length) {
         if (choiceIndex < 1) {
             const cs = [
                 '<div class="analogy-statement">is the same as</div>',
-                '<div class="analogy-statement" style="color: red;">is the same as</div>'
+                '<div class="analogy-statement" style="color: red;">is different from</div>'
             ];
             conclusion += (!savedata.enableNegation)
                 ? cs[0]
@@ -144,7 +144,7 @@ function createSameDifferent(length) {
         else {
             const cs = [
                 '<div class="analogy-statement">has the same relation as</div>',
-                '<div class="analogy-statement" style="color: red">has the same relation as</div>'
+                '<div class="analogy-statement" style="color: red">has a different relation from</div>'
             ];
             conclusion += (!savedata.enableNegation)
                 ? cs[0]
@@ -156,7 +156,7 @@ function createSameDifferent(length) {
         if (choiceIndex < 1) {
             const cs = [
                 '<div class="analogy-statement">is different from</div>',
-                '<div class="analogy-statement" style="color: red;">is different from</div>'
+                '<div class="analogy-statement" style="color: red;">is the same as</div>'
             ];
             conclusion += (!savedata.enableNegation)
                 ? cs[0]
@@ -166,7 +166,7 @@ function createSameDifferent(length) {
         else {
             const cs = [
                 '<div class="analogy-statement">has a different relation from</div>',
-                '<div class="analogy-statement" style="color: red">has a different relation from</div>',
+                '<div class="analogy-statement" style="color: red">has the same relation as</div>',
             ];
             conclusion += (!savedata.enableNegation)
                 ? cs[0]
