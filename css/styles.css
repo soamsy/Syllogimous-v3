@@ -321,14 +321,14 @@ button.delete:hover {
     opacity: 1;
     height: unset;
     overflow: unset;
-    padding: 3em 0 2em 0;
+    padding: 3em 0 0 0;
 }
 
 .confirmation-buttons {
     display: flex;
     gap: 1rem;
     justify-content: center;
-    margin-top: 3rem;
+    margin: 1rem 0;
     transition: all 0.3s ease-out;
 }
 
