@@ -261,6 +261,7 @@ button.delete:hover {
 .timer-wrap {
     min-width: 440px;
     margin: 0 auto;
+    margin-bottom: 2rem;
 }
 
 .timer {
@@ -307,16 +308,15 @@ button.delete:hover {
 
 .game-area {
     display: flex;
+    gap: 0.5rem;
     flex-direction: column;
     border-radius: 0 0 20px 20px;
 }
 
 .carousel, .display-outer {
     margin: 0 auto;
-    max-width: 660px;
-    padding: 3em 0 0 0;
+    max-width: 900px;
     height: fit-content;
-    overflow: hidden;
     display: none;
 }
 
@@ -886,24 +886,8 @@ tr, td {
 }
 
 @media (max-width: 768px) {
-    body {
-        padding: 0;
-    }
-
     .main-view {
         border: 0;
         box-shadow: none;
-    }
-
-    .metal-gear {
-        font-size: 10px;
-    }
-
-    .metal-gear h1 {
-        font-size: 20px;
-    }
-
-    .carousel, .display-outer {
-        max-width: 100vw;
     }
 }
