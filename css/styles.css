@@ -568,6 +568,11 @@ button.delete:hover {
     text-transform: uppercase;
 }
 
+.analogy-statement {
+    font-size: 14px;
+    margin: 2px 0;
+}
+
 .level-wrapper {
     justify-self: center;
     width: fit-content;

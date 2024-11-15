@@ -140,8 +140,8 @@ function createSameDifferent(length) {
         isValid = isValidSame;
         if (choiceIndex < 1) {
             const cs = [
-                '<div style="margin: 2px 0;">is the same as</div>',
-                '<div style="color: red; margin: 2px 0;">is the same as</div>'
+                '<div class="analogy-statement">is the same as</div>',
+                '<div class="analogy-statement" style="color: red;">is the same as</div>'
             ];
             conclusion += (!savedata.enableNegation)
                 ? cs[0]
@@ -149,8 +149,8 @@ function createSameDifferent(length) {
         }
         else {
             const cs = [
-                '<div style="font-size: 14px; margin: 2px 0;">has the same relation as</div>',
-                '<div style="color: red; font-size: 14px; margin: 2px 0;">has the same relation as</div>'
+                '<div class="analogy-statement">has the same relation as</div>',
+                '<div class="analogy-statement" style="color: red">has the same relation as</div>'
             ];
             conclusion += (!savedata.enableNegation)
                 ? cs[0]
@@ -161,8 +161,8 @@ function createSameDifferent(length) {
         isValid = !isValidSame;
         if (choiceIndex < 1) {
             const cs = [
-                '<div style="margin: 2px 0;">is different from</div>',
-                '<div style="color: red; margin: 2px 0;">is different from</div>'
+                '<div class="analogy-statement">is different from</div>',
+                '<div class="analogy-statement" style="color: red;">is different from</div>'
             ];
             conclusion += (!savedata.enableNegation)
                 ? cs[0]
@@ -171,8 +171,8 @@ function createSameDifferent(length) {
         }
         else {
             const cs = [
-                '<div style="font-size: 12px; margin: 4px 0;">has a different relation from</div>',
-                '<div style="color: red; font-size: 12px; margin: 4px 0;">has a different relation from</div>',
+                '<div class="analogy-statement">has a different relation from</div>',
+                '<div class="analogy-statement" style="color: red">has a different relation from</div>',
             ];
             conclusion += (!savedata.enableNegation)
                 ? cs[0]
