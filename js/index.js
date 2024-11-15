@@ -495,7 +495,7 @@ function clearHistory() {
         savedata.questions = [];
         savedata.score = 0;
         save();
-        window.location.reload();
+        renderHQL();
     }
 }
 
