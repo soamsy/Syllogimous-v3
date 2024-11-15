@@ -3904,4 +3904,26 @@ xs.map(x =>
     )
 );
 
+const dirCoords4D = [];
+xs.map(x =>
+    xs.map(y =>
+        xs.map(z => {
+            xs.map(time => {
+                if (x === 0 && y === 0 && z === 0 && time === 0) return;
+                dirCoords4D.push([ x, y, z, time ]);
+            })
+        })
+    )
+);
+
 const timeNames = ['was', 'is', 'will be'];
+const timeMapping = {
+    [-1]: 'was',
+    [0]: 'is',
+    [1]: 'will be'
+}
+const reverseTimeNames = {
+    'was': 'will be',
+    'is': 'is',
+    'will be': 'was'
+}

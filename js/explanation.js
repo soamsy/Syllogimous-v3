@@ -39,11 +39,16 @@ function centerText(text, width) {
     return text.padStart(text.length + paddingStart).padEnd(width);
 }
 
+function createFiller(grid) {
+    const lengths = grid.flat(Infinity).map(x => x.length);
+    const biggest = lengths.reduce((a, b) => Math.max(a, b));
+    const neededLength = biggest + 2;
+    return ' '.repeat(neededLength);
+}
+
 function createExplanation2D(grid, filler) {
     if (!filler) {
-        const biggest = grid.flatMap(row => row).map(val => val?.length ?? 0).reduce((a, b) => Math.max(a, b));
-        const neededLength = biggest + 2;
-        filler = ' '.repeat(neededLength);
+        filler = createFiller(grid);
     }
 
     let s = '<table>\n';
@@ -59,16 +64,31 @@ function createExplanation2D(grid, filler) {
     return s;
 }
 
-function createExplanation3D(grid) {
-    const biggest = grid.flatMap(floor => floor.flatMap(row => row)).map(val => val?.length ?? 0).reduce((a, b) => Math.max(a, b));
-    const neededLength = biggest + 2;
-    const filler = ' '.repeat(neededLength)
+function createExplanation3D(grid, filler) {
+    if (!filler) {
+        filler = createFiller(grid);
+    }
     let s = '';
     for (let i = grid.length - 1; i >= 0; i--) {
         let floor = i + 1;
         s += '<span>F' + floor + '</span>\n';
         s += createExplanation2D(grid[i], filler);
     }
+    return s;
+}
+
+function createExplanation4D(grid) {
+    const filler = createFiller(grid);
+    let s = '<div style="display: flex; gap: 0.5rem;">';
+    for (let i = 0; i < grid.length; i++) {
+        let time = i + 1;
+        s += '<div>';
+        s += '<div>Time ' + time + '</div>'
+        s += '<div>---------</div>'
+        s += createExplanation3D(grid[i], filler);
+        s += '</div>';
+    }
+    s += '</div>'
     return s;
 }
 
@@ -105,7 +125,9 @@ function createExplanation(question) {
 
     if (question.wordCoordMap) {
         const grid = createGridFromMap(question.wordCoordMap);
-        if (grid && Array.isArray(grid[0]) && Array.isArray(grid[0][0])) {
+        if (grid && Array.isArray(grid[0]) && Array.isArray(grid[0][0]) && Array.isArray(grid[0][0][0])) {
+            return createExplanation4D(grid);
+        } else if (grid && Array.isArray(grid[0]) && Array.isArray(grid[0][0])) {
             return createExplanation3D(grid);
         } else {
             return createExplanation2D(grid);
@@ -144,7 +166,7 @@ function removeExplanationPopup() {
 }
 
 function createExplanationButton(question) {
-    if (question.category === 'Syllogism' || question.category === 'Space Time') {
+    if (question.category === 'Syllogism') {
         return '';
     }
 
