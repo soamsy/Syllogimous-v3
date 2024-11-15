@@ -159,7 +159,6 @@ function pickWeightedRandomDirection(dirCoords, baseWord, neighbors, wordCoordMa
             pool.push(dirCoord);
             pool.push(dirCoord);
             pool.push(dirCoord);
-            pool.push(dirCoord);
         } else if (distanceToClosest == 2) {
             pool.push(dirCoord);
             pool.push(dirCoord);
