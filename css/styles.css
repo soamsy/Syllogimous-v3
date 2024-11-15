@@ -212,8 +212,6 @@ button.delete:hover {
     flex-direction: column;
     max-height: 100vh;
     border-radius: 0 0 20px 20px;
-    background-size: 2px 2px;
-    background-repeat: repeat;
 }
 
 .overlay {
