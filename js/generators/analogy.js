@@ -124,15 +124,9 @@ function createSameDifferent(length) {
             conclusion += `<span class="subject">${a}</span> to <span class="subject">${b}</span>`;
 
             // Find if A to B has same relation of C to D
-            const {
-                spatial,
-                temporal
-            } = findDirection4D(choice.wordCoordMap[a], choice.wordCoordMap[b]);
-            const {
-                spatial: spatial2,
-                temporal: temporal2
-            } = findDirection4D(choice.wordCoordMap[c], choice.wordCoordMap[d]);
-            isValidSame = spatial === spatial2 && temporal === temporal2;
+            const coord = findDirectionCoord4D(choice.wordCoordMap[a], choice.wordCoordMap[b]);
+            const coord2 = findDirectionCoord4D(choice.wordCoordMap[c], choice.wordCoordMap[d]);
+            isValidSame = arraysEqual(coord, coord2);
         }
     }
 
