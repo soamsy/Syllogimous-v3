@@ -207,13 +207,6 @@ button.delete:hover {
     position: relative;
 }
 
-.game-area {
-    display: flex;
-    flex-direction: column;
-    max-height: 100vh;
-    border-radius: 0 0 20px 20px;
-}
-
 .overlay {
     position: absolute;
     top: 0;
@@ -307,26 +300,35 @@ button.delete:hover {
     color: #000;
 }
 
+.game-display {
+    flex-grow: 1;
+    max-height: calc(100% - 116px);
+}
+
+.game-area {
+    display: flex;
+    flex-direction: column;
+    border-radius: 0 0 20px 20px;
+}
+
 .carousel, .display-outer {
     margin: 0 auto;
     max-width: 660px;
-    opacity: 0;
-    height: 0;
+    padding: 3em 0 0 0;
+    height: fit-content;
     overflow: hidden;
+    display: none;
 }
 
 .carousel.visible, .display-outer.visible {
-    opacity: 1;
-    height: unset;
-    overflow: unset;
-    padding: 3em 0 0 0;
+    display: block;
 }
 
 .confirmation-buttons {
     display: flex;
     gap: 1rem;
     justify-content: center;
-    margin: 1rem 0;
+    margin: 0.5rem 0;
     transition: all 0.3s ease-out;
 }
 
@@ -356,12 +358,12 @@ button.delete:hover {
 
 .carousel_display_label-wrapper, .display-inner {
     position: relative;
-    display: grid;
     gap: 1em;
 }
 
 .carousel_display_label-wrapper {
     padding: 1.5em 1em;
+    margin: 0 1.5rem;
 }
 
 .display-outer {
@@ -384,6 +386,8 @@ button.delete:hover {
     position: absolute;
     width: 100%;
     gap: 0.5rem;
+    top: 0;
+    left: 0;
 }
 
 .carousel_display_label_progress, .display_label_level {
@@ -391,10 +395,10 @@ button.delete:hover {
 }
 
 .display_text {
-    max-height: 50vh;
+    max-height: calc(100vh - 240px);
     min-width: 220px;
     line-height: 1.5;
-    padding: 0.25rem 0.5rem 0.25rem 0;
+    padding: 0.25rem 0.5rem 0 0;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -520,6 +524,7 @@ button.delete:hover {
 .border-right {
     height: 100%;
     width: 4px;
+    top: 0;
 }
 
 .border-left {
