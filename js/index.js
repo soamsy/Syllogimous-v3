@@ -48,6 +48,7 @@ const liveStyles = document.getElementById('live-styles');
 const gameArea = document.getElementById('game-area');
 
 const confirmationButtons = document.querySelector(".confirmation-buttons");
+let imagePromise = Promise.resolve();
 
 const keySettingMapInverse = Object.entries(keySettingMap)
     .reduce((a, b) => (a[b[1]] = b[0], a), {});
@@ -95,11 +96,7 @@ for (const key in keySettingMap) {
                 reader.onload = function(event) {
                     const base64String = event.target.result;
                     savedata[value] = imageKey;
-                    try {
-                        localStorage.setItem(imageKey, base64String);
-                    } catch (e) {
-                        alert(e);
-                    }
+                    imagePromise = imagePromise.then(() => storeImage(imageKey, base64String));
                     save();
                     init();
                 };
@@ -171,22 +168,22 @@ function displayInit() {
         ...question.premises.map(p => `<div class="formatted-premise">${p}</div>`),
         '<div class="formatted-conclusion">'+question.conclusion+'</div>'
     ].join('');
-    updateCustomStyles();
+    imagePromise = imagePromise.then(() => updateCustomStyles());
 }
 
 function clearBackgroundImage() {
     const fileInput = document.getElementById('p-24');
     fileInput.value = '';
-    localStorage.removeItem(imageKey);
     delete savedata.backgroundImage;
     save();
-    updateCustomStyles();
+    imagePromise = imagePromise.then(() => deleteImage(imageKey));
+    imagePromise = imagePromise.then(() => updateCustomStyles());
 }
 
-function updateCustomStyles() {
+async function updateCustomStyles() {
     let styles = '';
     if (savedata.backgroundImage) {
-        const base64Image = localStorage.getItem(imageKey);
+        const base64Image = await getImage(imageKey);
         if (base64Image) {
             styles += `
             .background-image {
