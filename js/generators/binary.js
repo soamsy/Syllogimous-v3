@@ -76,6 +76,7 @@ function createBinaryQuestion(length) {
     return {
         category: `Binary: ${choice.category} ${operandNames[operandIndex]} ${choice2.category}`,
         startedAt: new Date().getTime(),
+        subresults: [choice, choice2],
         isValid,
         premises,
         conclusion
@@ -161,6 +162,7 @@ function createNestedBinaryQuestion(length) {
     return {
         category: `Nested Binary: ${category}`,
         startedAt: new Date().getTime(),
+        subresults: questions,
         isValid,
         premises,
         conclusion

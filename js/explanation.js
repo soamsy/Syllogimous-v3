@@ -133,6 +133,10 @@ function createExplanation(question) {
             return createExplanation2D(grid);
         }
     }
+
+    if (question.subresults) {
+        return question.subresults.map(createExplanation).join('<div class="binary-explainer-separator"></div>');
+    }
 }
 
 function createExplanationPopup(question) {
@@ -170,7 +174,7 @@ function createExplanationButton(question) {
         return '';
     }
 
-    if (question.wordCoordMap || question.bucket || question.buckets) {
+    if (question.wordCoordMap || question.bucket || question.buckets || question.subresults) {
         return `<button class="explanation-button">Explanation</button>`;
     }
 
