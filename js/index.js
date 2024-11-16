@@ -345,15 +345,17 @@ function init() {
     ) {
         choices.push(createSameDifferent(quota));
     }
+
+    const binaryQuota = getPremisesFor('overrideBinaryPremises', quota);
     if (
      savedata.enableBinary
      && !savedata.onlyAnalogy
      && binaryEnable
     ) {
         if ((savedata.maxNestedBinaryDepth ?? 1) <= 1)
-            choices.push(createBinaryQuestion(quota));
+            choices.push(createBinaryQuestion(binaryQuota));
         else
-            choices.push(createNestedBinaryQuestion(quota));
+            choices.push(createNestedBinaryQuestion(binaryQuota));
     }
 
     if (savedata.enableAnalogy && !analogyEnable) {

@@ -1,4 +1,5 @@
 function createBinaryQuestion(length) {
+    length = Math.max(4, length);
     const operands = [
         "a&&b",                 // and
         "!(a&&b)",              // nand
@@ -28,21 +29,20 @@ function createBinaryQuestion(length) {
 
     const pool = [];
     if (savedata.enableDistinction)
-        pool.push([createSameOpposite, getPremisesFor('overrideDistinctionPremises', length)]);
+        pool.push(createSameOpposite);
     if (savedata.enableComparison)
-        pool.push([createMoreLess, getPremisesFor('overrideComparisonPremises', length)]);
+        pool.push(createMoreLess);
     if (savedata.enableTemporal)
-        pool.push([createBeforeAfter, getPremisesFor('overrideTemporalPremises', length)]);
+        pool.push(createBeforeAfter);
     if (savedata.enableSyllogism)
-        pool.push([createSyllogism, getPremisesFor('overrideSyllogismPremises', length)]);
+        pool.push(createSyllogism);
     if (savedata.enableDirection)
-        pool.push([createDirectionQuestion, getPremisesFor('overrideDirectionPremises', length)]);
+        pool.push(createDirectionQuestion);
     if (savedata.enableDirection3D)
-        pool.push([createDirectionQuestion3D, getPremisesFor('overrideDirection3DPremises', length)]);
+        pool.push(createDirectionQuestion3D);
     if (savedata.enableDirection4D)
-        pool.push([createDirectionQuestion4D, getPremisesFor('overrideDirection4DPremises', length)]);
+        pool.push(createDirectionQuestion4D);
 
-    const premiseOffset = getPremisesFor('offsetBinaryPremises', 0);
     let choice;
     let choice2;
     let premises;
@@ -52,8 +52,7 @@ function createBinaryQuestion(length) {
     const operandIndex = Math.floor(Math.random()*operands.length);
     const operand = operands[operandIndex];
     while (flip !== isValid) {
-        let [[generator, len], [generator2, len2]] = pickRandomItems(pool, 2).picked;
-        length = Math.max(4, Math.floor((len + len2) / 2) + premiseOffset);
+        let [generator, generator2] = pickRandomItems(pool, 2).picked;
 
         [choice, choice2] = [
             generator(Math.floor(length/2)),
@@ -120,8 +119,7 @@ function createNestedBinaryQuestion(length) {
     if (savedata.enableSyllogism)
         pool.push(createSyllogism);
 
-    const premiseOffset = getPremisesFor('offsetBinaryPremises', 0);
-    length = Math.max(4, length + premiseOffset);
+    length = Math.max(4, length);
     const halfLength = Math.floor(length / 2);
     const questions = Array(halfLength).fill(0)
         .map(() => pool[Math.floor(Math.random() * pool.length)](2));

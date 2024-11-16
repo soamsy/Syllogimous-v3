@@ -45,7 +45,7 @@ let savedata = {
     "overrideSyllogismPremises": null,
     "offsetAnalogyPremises": null,
     "overrideDirectionPremises": null,
-    "offsetBinaryPremises": null,
+    "overrideBinaryPremises": null,
     "overrideTemporalPremises": null,
     "overrideDirection3DPremises": null,
     "overrideDirection4DPremises": null
@@ -64,7 +64,7 @@ const keySettingMap = {
     "p-6": "enableDirection",
     "p-6-premises": "overrideDirectionPremises",
     "p-7": "enableBinary",
-    "p-7-premises": "offsetBinaryPremises",
+    "p-7-premises": "overrideBinaryPremises",
     "p-8": "useMeaningfulWords",
     "p-9": "enableCarouselMode",
     "p-10": "enableTemporal",
