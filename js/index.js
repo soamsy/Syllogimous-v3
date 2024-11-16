@@ -343,8 +343,10 @@ function init() {
      && !savedata.onlyAnalogy
      && binaryEnable
     ) {
-        choices.push(createBinaryQuestion(quota));
-        choices.push(createNestedBinaryQuestion(quota));
+        if ((savedata.maxNestedBinaryDepth ?? 1) <= 1)
+            choices.push(createBinaryQuestion(quota));
+        else
+            choices.push(createNestedBinaryQuestion(quota));
     }
 
     if (savedata.enableAnalogy && !analogyEnable) {
