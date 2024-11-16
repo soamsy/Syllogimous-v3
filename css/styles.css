@@ -320,7 +320,6 @@ button.delete:hover {
 
 .game-display {
     flex-grow: 1;
-    max-height: calc(100% - 116px);
 }
 
 .game-area {
@@ -332,7 +331,7 @@ button.delete:hover {
 
 .carousel, .display-outer {
     margin: 0 auto;
-    max-width: 900px;
+    max-width: 750px;
     height: fit-content;
     display: none;
 }
