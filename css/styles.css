@@ -291,7 +291,8 @@ button.delete:hover {
     padding: .25rem;
 }
 .inline-input__inner > input,
-.inline-input__inner > select {
+.inline-input__inner > select,
+.inline-premise-spinner > input {
     background-color: #0000;
     border: none;
     color: #fff;
@@ -299,6 +300,22 @@ button.delete:hover {
 
 .inline-input__inner > select option {
     color: #000;
+}
+
+.inline-premise-wrapper {
+    align-items: center;
+    background-color: #000a;
+    display: flex;
+    gap: 1.25rem;
+    justify-content: space-between;
+    padding: .25rem .75rem;
+    margin-left: 1.5rem;
+}
+
+.inline-premise-spinner {
+    background-color: #111a;
+    font-family: "MGS2", sans-serif;
+    padding: .25rem;
 }
 
 .game-display {

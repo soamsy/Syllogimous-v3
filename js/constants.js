@@ -39,23 +39,41 @@ let savedata = {
     "meaningfulWordAdjectives": false,
     "defaultPartOfSpeech": "nouns",
     "backgroundImage": null,
-    "gameAreaColor": "#161F30CC"
+    "gameAreaColor": "#161F30CC",
+    "overrideDistinctionPremises": null,
+    "overrideComparisonPremises": null,
+    "overrideSyllogismPremises": null,
+    "overrideAnalogyPremises": null,
+    "overrideDirectionPremises": null,
+    "overrideBinaryPremises": null,
+    "overrideTemporalPremises": null,
+    "overrideDirection3DPremises": null,
+    "overrideDirection4DPremises": null
 };
 
 const keySettingMap = {
     "p-1": "enableDistinction",
+    "p-1-premises": "overrideDistinctionPremises",
     "p-2": "enableComparison",
+    "p-2-premises": "overrideComparisonPremises",
     "p-3": "enableSyllogism",
+    "p-3-premises": "overrideSyllogismPremises",
     "p-4": "enableAnalogy",
+    "p-4-premises": "overrideAnalogyPremises",
     "p-5": "premises",
     "p-6": "enableDirection",
+    "p-6-premises": "overrideDirectionPremises",
     "p-7": "enableBinary",
+    "p-7-premises": "overrideBinaryPremises",
     "p-8": "useMeaningfulWords",
     "p-9": "enableCarouselMode",
     "p-10": "enableTemporal",
+    "p-10-premises": "overrideTemporalPremises",
     "p-11": "enableNegation",
     "p-12": "enableDirection3D",
+    "p-12-premises": "overrideDirection3DPremises",
     "p-13": "enableDirection4D",
+    "p-13-premises": "overrideDirection4DPremises",
     "p-14": "onlyAnalogy",
     "p-15": "onlyBinary",
     "p-16": "enableMeta",
@@ -67,7 +85,7 @@ const keySettingMap = {
     "p-22": "meaningfulWordNouns",
     "p-23": "meaningfulWordAdjectives",
     "p-24": "backgroundImage",
-    "p-25": "gameAreaColor"
+    "p-25": "gameAreaColor",
 };
 
 const meaningfulWords = {

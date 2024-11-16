@@ -73,15 +73,25 @@ for (const key in keySettingMap) {
     if (input.type === "number") {
         input.addEventListener("input", evt => {
 
-            // Fix infinite loop on mobile when changing # of premises
-            if (input.value === undefined || input.value === null)
-                return;
-            if (input.min && +input.value < +input.min)
-                return;
-            if (input.max && +input.value > +input.max)
-                return;
+            let num = input?.value;
+            if (num === undefined || num === null || num === '')
+                num = null;
+            if (input.min && +num < +input.min)
+                num = null;
+            if (input.max && +num > +input.max)
+                num = null;
 
-            savedata[value] = +input.value;
+            if (num == null) {
+                if (key.endsWith("premises")) {
+                    savedata[value] = null;
+                } else {
+                    // Fix infinite loop on mobile when changing # of premises
+                    return;
+                }
+            } else {
+                savedata[value] = +num;
+            }
+            console.log(value, savedata[value]);
             save();
             init();
         });
@@ -289,6 +299,14 @@ function animateTimerBar() {
     }
 }
 
+function getQuota(key, defaultQuota) {
+    if (savedata[key] && typeof savedata[key] === 'number' && isFinite(savedata[key])) {
+        return savedata[key];
+    } else {
+        return defaultQuota;
+    }
+}
+
 function init() {
     stopCountDown();
 
@@ -316,37 +334,39 @@ function init() {
     quota = Math.min(quota, createQuota())
 
     if (savedata.enableDistinction && !(savedata.onlyAnalogy || savedata.onlyBinary))
-        choices.push(createSameOpposite(quota));
+        choices.push(createSameOpposite(getQuota('overrideDistinctionPremises', quota)));
     if (savedata.enableComparison && !(savedata.onlyAnalogy || savedata.onlyBinary))
-        choices.push(createMoreLess(quota));
+        choices.push(createMoreLess(getQuota('overrideComparisonPremises', quota)));
     if (savedata.enableTemporal && !(savedata.onlyAnalogy || savedata.onlyBinary))
-        choices.push(createBeforeAfter(quota));
+        choices.push(createBeforeAfter(getQuota('overrideTemporalPremises', quota)));
     if (savedata.enableSyllogism && !(savedata.onlyAnalogy || savedata.onlyBinary))
-        choices.push(createSyllogism(quota));
+        choices.push(createSyllogism(getQuota('overrideSyllogismPremises', quota)));
     if (savedata.enableDirection && !(savedata.onlyAnalogy || savedata.onlyBinary))
-        choices.push(createDirectionQuestion(quota));
+        choices.push(createDirectionQuestion(getQuota('overrideDirectionPremises', quota)));
     if (savedata.enableDirection3D && !(savedata.onlyAnalogy || savedata.onlyBinary))
-        choices.push(createDirectionQuestion3D(quota));
+        choices.push(createDirectionQuestion3D(getQuota('overrideDirection3DPremises', quota)));
     if (savedata.enableDirection4D && !(savedata.onlyAnalogy || savedata.onlyBinary))
-        choices.push(createDirectionQuestion4D(quota));
+        choices.push(createDirectionQuestion4D(getQuota('overrideDirection4DPremises', quota)));
+    const analogyQuota = getQuota('overrideAnalogyPremises', quota);
+    const binaryQuota = getQuota('overrideBinaryPremises', quota);
     if (
-        quota > 2
+        analogyQuota > 2
      && savedata.enableAnalogy
      && !savedata.onlyBinary
      && analogyEnable
     ) {
-        choices.push(createSameDifferent(quota));
+        choices.push(createSameDifferent(analogyQuota));
     }
     if (
-        quota > 3
+        binaryQuota > 3
      && savedata.enableBinary
      && !savedata.onlyAnalogy
      && binaryEnable
     ) {
         if ((savedata.maxNestedBinaryDepth ?? 1) <= 1)
-            choices.push(createBinaryQuestion(quota));
+            choices.push(createBinaryQuestion(binaryQuota));
         else
-            choices.push(createNestedBinaryQuestion(quota));
+            choices.push(createNestedBinaryQuestion(binaryQuota));
     }
 
     if (savedata.enableAnalogy && !analogyEnable) {
@@ -354,7 +374,7 @@ function init() {
         if (savedata.onlyAnalogy)
             return;
     }
-    if (savedata.enableAnalogy && analogyEnable && quota < 3) {
+    if (savedata.enableAnalogy && analogyEnable && analogyQuota < 3) {
         alert('ANALOGY needs at least 3 premises.');
         if (savedata.onlyAnalogy)
             return;
@@ -366,7 +386,7 @@ function init() {
         if (savedata.onlyBinary)
             return;
     }
-    if (savedata.enableBinary && binaryEnable && quota < 4) {
+    if (savedata.enableBinary && binaryEnable && binaryQuota < 4) {
         alert('BINARY needs at least 4 premises.');
         if (savedata.onlyBinary)
             return;
