@@ -422,8 +422,12 @@ function createDirectionQuestion4D(length) {
 
         for (let i = 0; i < words.length - 1; i++) {
             const baseWord = pickBaseWord(wordCoordMap, neighbors);
-            const dirCoord = pickDirection(dirCoords4D, baseWord, neighbors, wordCoordMap);
-            const dirName = dirStringFromCoord(dirCoord);
+            let dirCoord;
+            let dirName;
+            while (!dirName) {
+                dirCoord = pickDirection(dirCoords4D, baseWord, neighbors, wordCoordMap);
+                dirName = dirStringFromCoord(dirCoord);
+            }
             const timeName = timeMapping[dirCoord[3]];
             const nextWord = words[i+1];
             wordCoordMap[nextWord] = [
