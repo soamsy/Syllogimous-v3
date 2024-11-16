@@ -86,12 +86,12 @@ function createBinaryQuestion(length) {
 
 function createNestedBinaryQuestion(length) {
     const humanOperands = [
-        '<span class="is-connector DEPTH">(</span>à<span class="is-connector DEPTH">)</span> <span class="is-connector DEPTH">AND</span><br> <span class="is-connector DEPTH">(</span>ò<span class="is-connector DEPTH">)</span>',
-        '<span class="is-connector DEPTH">(</span>à<span class="is-connector DEPTH">)</span> <span class="is-connector DEPTH">NAND</span><br> <span class="is-connector DEPTH">(</span>ò<span class="is-connector DEPTH">)</span>',
-        '<span class="is-connector DEPTH">(</span>à<span class="is-connector DEPTH">)</span> <span class="is-connector DEPTH">OR</span><br> <span class="is-connector DEPTH">(</span>ò<span class="is-connector DEPTH">)</span>',
-        '<span class="is-connector DEPTH">(</span>à<span class="is-connector DEPTH">)</span> <span class="is-connector DEPTH">NOR</span><br> <span class="is-connector DEPTH">(</span>ò<span class="is-connector DEPTH">)</span>',
-        '<span class="is-connector DEPTH">(</span>à<span class="is-connector DEPTH">)</span> <span class="is-connector DEPTH">XOR</span><br> <span class="is-connector DEPTH">(</span>ò<span class="is-connector DEPTH">)</span>',
-        '<span class="is-connector DEPTH">(</span>à<span class="is-connector DEPTH">)</span> <span class="is-connector DEPTH">XNOR</span><br> <span class="is-connector DEPTH">(</span>ò<span class="is-connector DEPTH">)</span>'
+        '<span class="is-connector DEPTH">(</span>à<span class="is-connector DEPTH">)</span> <span class="is-connector DEPTH">AND</span><br><span class="INDENT"></span><span class="is-connector DEPTH">(</span>ò<span class="is-connector DEPTH">)</span>',
+        '<span class="is-connector DEPTH">(</span>à<span class="is-connector DEPTH">)</span> <span class="is-connector DEPTH">NAND</span><br><span class="INDENT"></span><span class="is-connector DEPTH">(</span>ò<span class="is-connector DEPTH">)</span>',
+        '<span class="is-connector DEPTH">(</span>à<span class="is-connector DEPTH">)</span> <span class="is-connector DEPTH">OR</span><br><span class="INDENT"></span><span class="is-connector DEPTH">(</span>ò<span class="is-connector DEPTH">)</span>',
+        '<span class="is-connector DEPTH">(</span>à<span class="is-connector DEPTH">)</span> <span class="is-connector DEPTH">NOR</span><br><span class="INDENT"></span><span class="is-connector DEPTH">(</span>ò<span class="is-connector DEPTH">)</span>',
+        '<span class="is-connector DEPTH">(</span>à<span class="is-connector DEPTH">)</span> <span class="is-connector DEPTH">XOR</span><br><span class="INDENT"></span><span class="is-connector DEPTH">(</span>ò<span class="is-connector DEPTH">)</span>',
+        '<span class="is-connector DEPTH">(</span>à<span class="is-connector DEPTH">)</span> <span class="is-connector DEPTH">XNOR</span><br><span class="INDENT"></span><span class="is-connector DEPTH">(</span>ò<span class="is-connector DEPTH">)</span>'
     ];
 
     const evalOperands =[
@@ -142,10 +142,10 @@ function createNestedBinaryQuestion(length) {
             ? generator(right, depth+1)
             : (i++) % halfLength;
         const letter = String.fromCharCode(97 + depth);
-        const className = 'depth-' + letter;
         return {
             human: humanOperand
-                .replaceAll('DEPTH', className)
+                .replaceAll('DEPTH', 'depth-' + letter)
+                .replaceAll('INDENT', 'indent-' + letter)
                 .replace('à', val > - 1 ? val : val.human)
                 .replace('ò', val2 > - 1 ? val2 : val2.human),
             eval: evalOperand

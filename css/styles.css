@@ -944,6 +944,16 @@ tr, td {
     color: #000080;
 }
 
+.indent-a::before { content: ''; visibility: hidden; }
+.indent-b::before { content: '('; visibility: hidden; }
+.indent-c::before { content: '(('; visibility: hidden; }
+.indent-d::before { content: '((('; visibility: hidden; }
+.indent-e::before { content: '(((('; visibility: hidden; }
+.indent-f::before { content: '((((('; visibility: hidden; }
+.indent-g::before { content: '(((((('; visibility: hidden; }
+.indent-h::before { content: '((((((('; visibility: hidden; }
+.indent-i::before { content: '(((((((('; visibility: hidden; }
+
 @media (max-width: 768px) {
     .main-view {
         border: 0;
