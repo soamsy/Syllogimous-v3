@@ -109,10 +109,6 @@
 									<input id="p-5" type="number" min="2" value="2" style="width: 5ch">qty
 								</span>
 							</div>
-							<ul class="explainer">
-								<li>Insert 3 or more premises to play Analogies</li>
-								<li>Insert 4 or more premises to play Binary questions</li>
-							</ul>
 						</div>												
 						<div class="mb-1">
 							<div class="ctrl__inner">
@@ -302,11 +298,14 @@
 								<li>A is to B as B is to C</li>
 							</ul>
 							<div class="inline-premise-wrapper">
-								Custom Premises
+								Premise Offset
 								<span class="inline-premise-spinner">
-									<input id="p-4-premises" type="number" placeholder="" min="3" value="" style="width: 5ch">ps
+									<input id="p-4-premises" type="number" placeholder="" value="" style="width: 5ch">ps
 								</span>
 							</div>
+							<ul class="explainer">
+								<li>Shifts the underlying question's premise count. Try -1</li>
+							</ul>
 						</div>
 						<div class="mb-2" style="margin-left: 2rem;">
 							<div class="ctrl__inner">
@@ -388,9 +387,9 @@
 								<li>C is at North-West of D</li>
 							</ul>
 							<div class="inline-premise-wrapper">
-								Custom Premises
+								Premise Offset
 								<span class="inline-premise-spinner">
-									<input id="p-7-premises" type="number" placeholder="" min="4" value="" style="width: 5ch">ps
+									<input id="p-7-premises" type="number" placeholder="" value="" style="width: 5ch">ps
 								</span>
 							</div>
 						</div>
@@ -405,13 +404,13 @@
 						</div>
 						<div class="mb-2" style="margin-left: 2rem;">
 							<div class="inline-input__outer">
-								Max Depth
+								Operators
 								<span class="inline-input__inner">
 									<input id="p-17" type="number" min="1" value="1" max="8" style="width: 5ch">lvl
 								</span>
 							</div>
 							<ul class="explainer">
-								<li>Maximum recursion depth for Nested Binary</li>
+								<li>Number of binary operators to use in the conclusion</li>
 							</ul>
 						</div>
 						<div class="mb-2">

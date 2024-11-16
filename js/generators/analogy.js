@@ -1,5 +1,6 @@
 function createSameDifferent(length) {
 
+    const premiseOffset = getPremisesFor('offsetAnalogyPremises', 0);
     // Create a pool based on user preferences
     const choiceIndices = [];
 
@@ -26,7 +27,7 @@ function createSameDifferent(length) {
 
     if (choiceIndex === 0) {
 
-        choice = createSameOpposite(length);
+        choice = createSameOpposite(Math.max(3, getPremisesFor("overrideDistinctionPremises", length) + premiseOffset));
         subtype = "Same/Opposite";
 
         // Pick 4 different items
@@ -50,7 +51,7 @@ function createSameDifferent(length) {
     }
     else if (choiceIndex === 1) {
 
-        choice = createMoreLess(length);
+        choice = createMoreLess(Math.max(3, getPremisesFor("overrideComparisonPremises", length) + premiseOffset));
         subtype = "More/Less";
 
         // Pick 4 different items
@@ -65,7 +66,7 @@ function createSameDifferent(length) {
     }
     else if (choiceIndex === 2) {
 
-        choice = createBeforeAfter(length);
+        choice = createBeforeAfter(Math.max(3, getPremisesFor("overrideTemporalPremises", length) + premiseOffset));
         subtype = "Before/After";
 
         // Pick 4 different items
@@ -85,7 +86,7 @@ function createSameDifferent(length) {
         const flip = coinFlip();
         while (flip !== isValidSame) {
             conclusion = "";
-            choice = createDirectionQuestion(length);
+            choice = createDirectionQuestion(Math.max(3, getPremisesFor("overrideDirectionPremises", length) + premiseOffset));
 
             // Pick 4 different items
             [a, b, c, d] = pickRandomItems(Object.keys(choice.wordCoordMap), 4).picked;
@@ -101,7 +102,7 @@ function createSameDifferent(length) {
         const flip = coinFlip();
         while (flip !== isValidSame) {
             conclusion = "";
-            choice = createDirectionQuestion3D(length);
+            choice = createDirectionQuestion3D(Math.max(3, getPremisesFor("overrideDirection3DPremises", length) + premiseOffset));
 
             // Pick 4 different items
             [a, b, c, d] = pickRandomItems(Object.keys(choice.wordCoordMap), 4).picked;
@@ -117,7 +118,7 @@ function createSameDifferent(length) {
         const flip = coinFlip();
         while (flip !== isValidSame) {
             conclusion = "";
-            choice = createDirectionQuestion4D(length);
+            choice = createDirectionQuestion4D(Math.max(3, getPremisesFor("overrideDirection4DPremises", length) + premiseOffset));
 
             // Pick 4 different items
             [a, b, c, d] = pickRandomItems(Object.keys(choice.wordCoordMap), 4).picked;

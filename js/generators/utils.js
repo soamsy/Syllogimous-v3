@@ -49,3 +49,10 @@ function removeDuplicateArrays(arrays) {
     return uniqueArrays;
 }
 
+function getPremisesFor(key, defaultQuota) {
+    if (savedata[key] && typeof savedata[key] === 'number' && isFinite(savedata[key])) {
+        return savedata[key];
+    } else {
+        return defaultQuota;
+    }
+}

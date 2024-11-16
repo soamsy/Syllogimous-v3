@@ -91,7 +91,6 @@ for (const key in keySettingMap) {
             } else {
                 savedata[value] = +num;
             }
-            console.log(value, savedata[value]);
             save();
             init();
         });
@@ -299,14 +298,6 @@ function animateTimerBar() {
     }
 }
 
-function getQuota(key, defaultQuota) {
-    if (savedata[key] && typeof savedata[key] === 'number' && isFinite(savedata[key])) {
-        return savedata[key];
-    } else {
-        return defaultQuota;
-    }
-}
-
 function init() {
     stopCountDown();
 
@@ -334,39 +325,35 @@ function init() {
     quota = Math.min(quota, createQuota())
 
     if (savedata.enableDistinction && !(savedata.onlyAnalogy || savedata.onlyBinary))
-        choices.push(createSameOpposite(getQuota('overrideDistinctionPremises', quota)));
+        choices.push(createSameOpposite(getPremisesFor('overrideDistinctionPremises', quota)));
     if (savedata.enableComparison && !(savedata.onlyAnalogy || savedata.onlyBinary))
-        choices.push(createMoreLess(getQuota('overrideComparisonPremises', quota)));
+        choices.push(createMoreLess(getPremisesFor('overrideComparisonPremises', quota)));
     if (savedata.enableTemporal && !(savedata.onlyAnalogy || savedata.onlyBinary))
-        choices.push(createBeforeAfter(getQuota('overrideTemporalPremises', quota)));
+        choices.push(createBeforeAfter(getPremisesFor('overrideTemporalPremises', quota)));
     if (savedata.enableSyllogism && !(savedata.onlyAnalogy || savedata.onlyBinary))
-        choices.push(createSyllogism(getQuota('overrideSyllogismPremises', quota)));
+        choices.push(createSyllogism(getPremisesFor('overrideSyllogismPremises', quota)));
     if (savedata.enableDirection && !(savedata.onlyAnalogy || savedata.onlyBinary))
-        choices.push(createDirectionQuestion(getQuota('overrideDirectionPremises', quota)));
+        choices.push(createDirectionQuestion(getPremisesFor('overrideDirectionPremises', quota)));
     if (savedata.enableDirection3D && !(savedata.onlyAnalogy || savedata.onlyBinary))
-        choices.push(createDirectionQuestion3D(getQuota('overrideDirection3DPremises', quota)));
+        choices.push(createDirectionQuestion3D(getPremisesFor('overrideDirection3DPremises', quota)));
     if (savedata.enableDirection4D && !(savedata.onlyAnalogy || savedata.onlyBinary))
-        choices.push(createDirectionQuestion4D(getQuota('overrideDirection4DPremises', quota)));
-    const analogyQuota = getQuota('overrideAnalogyPremises', quota);
-    const binaryQuota = getQuota('overrideBinaryPremises', quota);
+        choices.push(createDirectionQuestion4D(getPremisesFor('overrideDirection4DPremises', quota)));
     if (
-        analogyQuota > 2
-     && savedata.enableAnalogy
+     savedata.enableAnalogy
      && !savedata.onlyBinary
      && analogyEnable
     ) {
-        choices.push(createSameDifferent(analogyQuota));
+        choices.push(createSameDifferent(quota));
     }
     if (
-        binaryQuota > 3
-     && savedata.enableBinary
+     savedata.enableBinary
      && !savedata.onlyAnalogy
      && binaryEnable
     ) {
         if ((savedata.maxNestedBinaryDepth ?? 1) <= 1)
-            choices.push(createBinaryQuestion(binaryQuota));
+            choices.push(createBinaryQuestion(quota));
         else
-            choices.push(createNestedBinaryQuestion(binaryQuota));
+            choices.push(createNestedBinaryQuestion(quota));
     }
 
     if (savedata.enableAnalogy && !analogyEnable) {
@@ -374,24 +361,12 @@ function init() {
         if (savedata.onlyAnalogy)
             return;
     }
-    if (savedata.enableAnalogy && analogyEnable && analogyQuota < 3) {
-        alert('ANALOGY needs at least 3 premises.');
-        if (savedata.onlyAnalogy)
-            return;
-    }
-
 
     if (savedata.enableBinary && !binaryEnable) {
         alert('BINARY needs at least 2 other question class (ANALOGY do not count).');
         if (savedata.onlyBinary)
             return;
     }
-    if (savedata.enableBinary && binaryEnable && binaryQuota < 4) {
-        alert('BINARY needs at least 4 premises.');
-        if (savedata.onlyBinary)
-            return;
-    }
-
     if (choices.length === 0)
         return;
 

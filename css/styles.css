@@ -908,6 +908,38 @@ tr, td {
     background-color: #2bdef9;
 }
 
+.depth-a {
+    color: cyan;
+}
+
+.depth-b {
+    color: green;
+}
+
+.depth-c {
+    color: pink;
+}
+
+.depth-d {
+    color: yellow;
+}
+
+.depth-e {
+    color: orange;
+}
+
+.depth-f {
+    color: purple;
+}
+
+.depth-g {
+    color: saddlebrown;
+}
+
+.depth-h {
+    color: cornsilk;
+}
+
 @media (max-width: 768px) {
     .main-view {
         border: 0;

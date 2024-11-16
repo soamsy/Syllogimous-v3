@@ -1647,7 +1647,6 @@ const qtys = {
 
 negationCheck.addEventListener('input', evt => {
     savedata.enableNegation = evt.target.checked;
-    console.log(savedata.enableNegation);
 });
 
 for (let key in qtys) {
