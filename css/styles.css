@@ -909,35 +909,39 @@ tr, td {
 }
 
 .depth-a {
-    color: cyan;
+    color: #FFFF00;
 }
 
 .depth-b {
-    color: green;
+    color: #00FFFF;
 }
 
 .depth-c {
-    color: pink;
+    color: #FF00FF;
 }
 
 .depth-d {
-    color: yellow;
+    color: #00FF00;
 }
 
 .depth-e {
-    color: orange;
+    color: #FF8000;
 }
 
 .depth-f {
-    color: purple;
+    color: #0080FF;
 }
 
 .depth-g {
-    color: saddlebrown;
+    color: #8000FF;
 }
 
 .depth-h {
-    color: cornsilk;
+    color: #008040;
+}
+
+.depth-i {
+    color: #000080;
 }
 
 @media (max-width: 768px) {
