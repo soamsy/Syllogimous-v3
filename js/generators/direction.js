@@ -87,8 +87,6 @@ function createIncorrectConclusionCoords(usedCoords, correctCoord, diffCoord) {
     }
     const dirCoords = removeDuplicateArrays(usedCoords);
 
-    let low = structuredClone(dirCoords[0]);
-    let high = structuredClone(dirCoords[0]);
     let validDirections = {}
     for (const coord of dirCoords) {
         validDirections[JSON.stringify(coord)] = true;
