@@ -954,6 +954,15 @@ tr, td {
 .indent-h::before { content: '((((((('; visibility: hidden; }
 .indent-i::before { content: '(((((((('; visibility: hidden; }
 
+table.distinction td {
+    vertical-align: top;
+    min-width: 1em;
+}
+
+table.distinction {
+    margin: 0 auto;
+}
+
 @media (max-width: 768px) {
     .main-view {
         border: 0;
