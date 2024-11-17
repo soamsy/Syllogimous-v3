@@ -33,6 +33,8 @@ let savedata = {
     "questions": [],
     "nonsenseWordLength": 3,
     "useNonsenseWords": true,
+    "garbageWordLength": 3,
+    "useGarbageWords": false,
     "useEmoji": false,
     "defaultStimulusType": "nonsenseWords",
     "meaningfulWordNouns": true,
@@ -86,6 +88,8 @@ const keySettingMap = {
     "p-23": "meaningfulWordAdjectives",
     "p-24": "backgroundImage",
     "p-25": "gameAreaColor",
+    "p-26": "garbageWordLength",
+    "p-27": "useGarbageWords"
 };
 
 const meaningfulWords = {
