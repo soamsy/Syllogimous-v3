@@ -201,29 +201,9 @@ function distanceBetween(start, end, neighbors) {
     return distance;
 }
 
-function isNeighborTooClose(start, end, neighbors) {
-    if (neighbors[start].indexOf(end) !== -1) {
-        return true;
-    }
-
-    let leaf;
-    for (const key in neighbors) {
-        if (neighbors[key].length < 2) {
-            leaf = key;
-            break;
-        }
-    }
-
-    const distance = distanceBetween(start, end, neighbors);
-    const endToEnd = distanceBetween(leaf, null, neighbors);
-    const halfway = endToEnd / 2;
-
-    return distance <= halfway;
-}
-
-function pickBaseWord(wordCoordMap, neighbors) {
+function pickBaseWord(wordCoordMap, neighbors, branchesAllowed) {
     const options = Object.keys(wordCoordMap);
-    const neighborLimit = options.length <= 3 ? 1 : 2;
+    const neighborLimit = (!branchesAllowed || options.length <= 3) ? 1 : 2;
     let pool = [];
     for (const word of options) {
         if (neighbors[word] && neighbors[word].length > neighborLimit) {
@@ -240,14 +220,41 @@ function pickBaseWord(wordCoordMap, neighbors) {
     return baseWord;
 }
 
+function rankPairs(pool, neighbors) {
+    let pairs = []
+    for (let i = 0; i < pool.length; i++) {
+        for (let j = i+1; j < pool.length; j++) {
+            const start = pool[i];
+            const end = pool[j];
+            const dist = distanceBetween(start, end, neighbors)
+            if (dist > 1) {
+                pairs.push([start, end, dist]);
+            }
+        }
+    }
+
+    groups = {}
+    for (const [a, b, dist] of pairs) {
+        groups[dist] = groups?.[dist] ?? []
+        groups[dist].push([a, b]);
+    }
+
+    return Object.entries(groups).sort(([distA, _], [distB, __]) => distB - distA);
+}
+
 function pickTwoDistantWords(wordCoordMap, neighbors) {
     let options = Object.keys(wordCoordMap);
-    if (coinFlip()) {
-        options = options.filter(word => neighbors[word].length == 1); // Only pick edges in the graph
-    }
-    let [startWord, endWord] = pickRandomItems(options, 2).picked;
-    while (isNeighborTooClose(startWord, endWord, neighbors)) {
-        [startWord, endWord] = pickRandomItems(options, 2).picked;
+    let pool = [];
+    single_edges = options.filter(word => neighbors[word].length == 1);
+    single_edge_neighbors = options.filter(word => single_edges.some(edge => neighbors[edge].indexOf(word) !== -1))
+    pool.push.apply(pool, single_edges);
+    pool.push.apply(pool, single_edge_neighbors);
+
+    const ranks = rankPairs(pool, neighbors);
+    let [startWord, endWord] = pickRandomItems(ranks[0][1], 1).picked[0];
+    const requireMaxPossible = Object.keys(neighbors).length <= 5 || Math.random() > 0.6;
+    if (ranks.length > 1 && !requireMaxPossible && Math.random() > 0.6) {
+        [startWord, endWord] = pickRandomItems(ranks[1][1], 1).picked[0];
     }
 
     return [startWord, endWord];
@@ -268,6 +275,7 @@ function createDirectionQuestion(length) {
     let diffCoord;
     let usedDirCoords;
     let neighbors;
+    const branchesAllowed = Math.random() > 0.2;
     while (true) {
         wordCoordMap = {[words[0]]: [0, 0]};
         neighbors = {};
@@ -275,7 +283,7 @@ function createDirectionQuestion(length) {
         usedDirCoords = [];
 
         for (let i = 0; i < words.length - 1; i++) {
-            const baseWord = pickBaseWord(wordCoordMap, neighbors);
+            const baseWord = pickBaseWord(wordCoordMap, neighbors, branchesAllowed);
             const dirCoord = pickDirection(dirCoords, baseWord, neighbors, wordCoordMap);
             const dirName = dirStringFromCoord(dirCoord);
             const nextWord = words[i+1];
@@ -339,6 +347,7 @@ function createDirectionQuestion3D(length) {
     let diffCoord;
     let usedDirCoords;
     let neighbors;
+    const branchesAllowed = Math.random() > 0.2;
     while (true) {
         wordCoordMap = {[words[0]]: [0, 0, 0]};
         premises = [];
@@ -346,7 +355,7 @@ function createDirectionQuestion3D(length) {
         usedDirCoords = [];
 
         for (let i = 0; i < words.length - 1; i++) {
-            const baseWord = pickBaseWord(wordCoordMap, neighbors);
+            const baseWord = pickBaseWord(wordCoordMap, neighbors, branchesAllowed);
             const dirCoord = pickDirection(dirCoords3D, baseWord, neighbors, wordCoordMap);
             const dirName = dirStringFromCoord(dirCoord);
             const nextWord = words[i+1];
@@ -412,6 +421,7 @@ function createDirectionQuestion4D(length) {
     let diffCoord;
     let usedDirCoords;
     let neighbors;
+    const branchesAllowed = Math.random() > 0.2;
     while (true) {
         wordCoordMap = {[words[0]]: [0, 0, 0, 0]};
         premises = [];
@@ -419,7 +429,7 @@ function createDirectionQuestion4D(length) {
         usedDirCoords = [];
 
         for (let i = 0; i < words.length - 1; i++) {
-            const baseWord = pickBaseWord(wordCoordMap, neighbors);
+            const baseWord = pickBaseWord(wordCoordMap, neighbors, branchesAllowed);
             let dirCoord;
             let dirName;
             while (!dirName) {
