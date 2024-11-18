@@ -88,7 +88,7 @@ function createBeforeAfter(length) {
     return {
         category,
         startedAt: new Date().getTime(),
-        bucket: (sign === -1 ? structuredClone(bucket).reverse() : bucket),
+        bucket: (sign === -1 ? bucket.slice().reverse() : bucket),
         isValid,
         premises,
         conclusion
