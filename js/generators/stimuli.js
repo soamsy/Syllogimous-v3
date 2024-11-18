@@ -15,7 +15,7 @@ function maxStimuliAllowed() {
         if (savedata.meaningfulWordAdjectives) quota = Math.min(quota, meaningfulWords.adjectives.length);
     }   
     if (savedata.useEmoji) quota = Math.min(quota, emoji.length);
-    if (savedata.useJunkEmoji) quota = Math.min(quota, allJunkEmoji.length);
+    if (savedata.useJunkEmoji) quota = Math.min(quota, JUNK_EMOJI_COUNT);
     
     return quota - 1;
 }
@@ -52,7 +52,7 @@ function createGarbageWord() {
 }
 
 function createJunkEmoji() {
-    const id = Math.floor(Math.random() * allJunkEmoji.length);
+    const id = Math.floor(Math.random() * JUNK_EMOJI_COUNT);
     return [id, `[junk]${id}[/junk]`];
 }
 
