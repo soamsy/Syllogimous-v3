@@ -34,13 +34,18 @@ function createGridFromMap(wordCoordMap) {
 }
 
 function centerText(text, width) {
+    if (text.length > 50) {
+        const half = Math.floor(width / 2);
+        const padding = ' '.repeat(half);
+        return padding + text + padding;
+    }
     const totalPadding = width - text.length;
     const paddingStart = Math.floor(totalPadding / 2);
     return text.padStart(text.length + paddingStart).padEnd(width);
 }
 
 function createFiller(grid) {
-    const lengths = grid.flat(Infinity).map(x => x.length);
+    const lengths = grid.flat(Infinity).map(x => x.length > 50 ? 1 : x.length);
     const biggest = lengths.reduce((a, b) => Math.max(a, b));
     const neededLength = biggest + 2;
     return ' '.repeat(neededLength);

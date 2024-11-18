@@ -50,7 +50,8 @@ let savedata = {
     "overrideBinaryPremises": null,
     "overrideTemporalPremises": null,
     "overrideDirection3DPremises": null,
-    "overrideDirection4DPremises": null
+    "overrideDirection4DPremises": null,
+    "useJunkEmoji": false
 };
 
 const keySettingMap = {
@@ -89,7 +90,8 @@ const keySettingMap = {
     "p-24": "backgroundImage",
     "p-25": "gameAreaColor",
     "p-26": "garbageWordLength",
-    "p-27": "useGarbageWords"
+    "p-27": "useGarbageWords",
+    "p-28": "useJunkEmoji"
 };
 
 const meaningfulWords = {

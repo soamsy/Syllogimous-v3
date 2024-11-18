@@ -171,11 +171,12 @@ function carouselInit() {
 }
 
 function displayInit() {
-    displayLabelType.textContent = question.category.split(":")[0];
-    displayLabelLevel.textContent = question.premises.length + " ps";
+    const q = renderJunkEmojis(question);
+    displayLabelType.textContent = q.category.split(":")[0];
+    displayLabelLevel.textContent = q.premises.length + " ps";
     displayText.innerHTML = [
-        ...question.premises.map(p => `<div class="formatted-premise">${p}</div>`),
-        '<div class="formatted-conclusion">'+question.conclusion+'</div>'
+        ...q.premises.map(p => `<div class="formatted-premise">${p}</div>`),
+        '<div class="formatted-conclusion">'+q.conclusion+'</div>'
     ].join('');
     imagePromise = imagePromise.then(() => updateCustomStyles());
 }
@@ -322,7 +323,7 @@ function init() {
 
     const choices = [];
     quota = savedata.premises
-    quota = Math.min(quota, createQuota())
+    quota = Math.min(quota, maxStimuliAllowed());
 
     if (savedata.enableDistinction && !(savedata.onlyAnalogy || savedata.onlyBinary))
         choices.push(createSameOpposite(getPremisesFor('overrideDistinctionPremises', quota)));
@@ -547,32 +548,33 @@ function updateAverage(reverseChronological) {
 }
 
 function createHQLI(question, i) {
+    const q = renderJunkEmojis(question);
     const parent = document.createElement("DIV");
 
-    const answerUser = question.answerUser;
-    const answer = question.isValid;
+    const answerUser = q.answerUser;
+    const answer = q.isValid;
     let classModifier = {
         'missed': '',
         'right': 'hqli--right',
         'wrong': 'hqli--wrong'
-    }[question.correctness];
+    }[q.correctness];
     
     let answerDisplay = ('' + answer).toUpperCase();
     let answerUserDisplay = {
         'missed': '(TIMED OUT)',
         'right': ('' + answerUser).toUpperCase(),
         'wrong': ('' + answerUser).toUpperCase()
-    }[question.correctness];
+    }[q.correctness];
 
-    const htmlPremises = question.premises
+    const htmlPremises = q.premises
         .map(p => `<div class="hqli-premise">${p}</div>`)
         .join("\n");
 
     let responseTimeHtml = '';
-    if (question.startedAt && question.answeredAt)
+    if (q.startedAt && q.answeredAt)
         responseTimeHtml =
 `
-        <div class="hqli-response-time">${Math.round((question.answeredAt - question.startedAt) / 1000)} sec</div>
+        <div class="hqli-response-time">${Math.round((q.answeredAt - q.startedAt) / 1000)} sec</div>
 `;
     
     const html =
@@ -582,13 +584,13 @@ function createHQLI(question, i) {
         <div class="hqli-premises">
             ${htmlPremises}
         </div>
-        <div class="hqli-conclusion">${question.conclusion}</div>
+        <div class="hqli-conclusion">${q.conclusion}</div>
         <div class="hqli-answer-user">${answerUserDisplay}</div>
         <div class="hqli-answer">${answerDisplay}</div>
         ${responseTimeHtml}
         <div class="hqli-footer">
-            <div>${question.category}</div>
-            ${createExplanationButton(question)}
+            <div>${q.category}</div>
+            ${createExplanationButton(q)}
             <button class="delete">X</button>
         </div>
     </div>
@@ -596,12 +598,12 @@ function createHQLI(question, i) {
     parent.innerHTML = html;
     parent.querySelector(".index").textContent = i + 1;
     parent.querySelector(".delete").addEventListener('click', () => {
-        deleteQuestion(i, question.correctness === 'right');
+        deleteQuestion(i, q.correctness === 'right');
     });
     const explanationButton = parent.querySelector(".explanation-button");
     if (explanationButton) {
         explanationButton.addEventListener('mouseenter', () => {
-            createExplanationPopup(question);
+            createExplanationPopup(q);
         });
         explanationButton.addEventListener('mouseleave', () => {
             removeExplanationPopup();

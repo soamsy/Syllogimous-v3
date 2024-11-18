@@ -1,5 +1,5 @@
-function createQuota() {
-    let quota = Infinity;
+function maxStimuliAllowed() {
+    let quota = 999;
 
     if (savedata.useNonsenseWords) {
         if (savedata.nonsenseWordLength % 2)
@@ -15,8 +15,9 @@ function createQuota() {
         if (savedata.meaningfulWordAdjectives) quota = Math.min(quota, meaningfulWords.adjectives.length);
     }   
     if (savedata.useEmoji) quota = Math.min(quota, emoji.length);
+    if (savedata.useJunkEmoji) quota = Math.min(quota, allJunkEmoji.length);
     
-    return quota;
+    return quota - 1;
 }
 
 function createNonsenseWord() {
@@ -50,8 +51,13 @@ function createGarbageWord() {
     return string;
 }
 
+function createJunkEmoji() {
+    const id = Math.floor(Math.random() * allJunkEmoji.length);
+    return [id, `[junk]${id}[/junk]`];
+}
+
 function createStimuli(numberOfStimuli) {
-    const quota = createQuota();
+    const quota = maxStimuliAllowed();
     
     const uniqueWords = {
         meaningful: {
@@ -59,9 +65,10 @@ function createStimuli(numberOfStimuli) {
             adjectives: new Set()
         },
         nonsense: new Set(),
-        garbage: new Set()
-    }
-    const uniqueEmoji = new Set();
+        garbage: new Set(),
+        emoji: new Set(),
+        junkEmoji: new Set(),
+    };
 
     const stimulusTypes = new Set();
     
@@ -69,6 +76,7 @@ function createStimuli(numberOfStimuli) {
     if (savedata.useGarbageWords) stimulusTypes.add('garbageWords');
     if (savedata.useMeaningfulWords) stimulusTypes.add('meaningfulWords');
     if (savedata.useEmoji) stimulusTypes.add('emoji');
+    if (savedata.useJunkEmoji) { stimulusTypes.add('junkEmoji'); }
     if (!stimulusTypes.size) stimulusTypes.add(savedata.defaultStimulusType);
 
     const stimuliCreated = [];
@@ -122,18 +130,25 @@ function createStimuli(numberOfStimuli) {
 
             if (uniqueWords.meaningful[randomPartOfSpeech].size >= quota) partsOfSpeech.delete(randomPartOfSpeech);
         } else if (randomStimulusType == 'emoji') {
-            let randomEmoji;
+            let emojiWord;
 
             do {
-                if (uniqueEmoji.size >= emoji.length) uniqueEmoji = new Set();
-                
-                randomEmoji = emoji[Math.floor(Math.random() * emoji.length)];           
-            } while (uniqueEmoji.has(randomEmoji));
+                emojiWord = emoji[Math.floor(Math.random() * emoji.length)];           
+            } while (uniqueWords.emoji.has(emojiWord));
             
-            stimuliCreated.push(randomEmoji);
-            uniqueEmoji.add(randomEmoji);
+            stimuliCreated.push(emojiWord);
+            uniqueWords.emoji.add(emojiWord);
             
-            if (uniqueEmoji.size >= quota) stimulusTypes.delete(randomStimulusType);
+            if (uniqueWords.emoji.size >= quota) stimulusTypes.delete(randomStimulusType);
+        } else if (randomStimulusType == 'junkEmoji') {
+            let junkId;
+            let junkEmoji;
+            do {
+                [junkId, junkEmoji] = createJunkEmoji();
+            } while (uniqueWords.junkEmoji.has(junkId))
+            stimuliCreated.push(junkEmoji);
+            uniqueWords.junkEmoji.add(junkId);
+            if (uniqueWords.junkEmoji.size >= quota) stimulusTypes.delete(randomStimulusType);
         } else break;
     }
 
