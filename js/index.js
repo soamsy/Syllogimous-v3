@@ -442,7 +442,7 @@ function checkIfTrue() {
     }
     question.answeredAt = new Date().getTime();
     removeAppStateAndSave();
-    renderHQL();
+    renderHQL(true);
 }
 
 function checkIfFalse() {
@@ -462,7 +462,7 @@ function checkIfFalse() {
     }
     question.answeredAt = new Date().getTime();
     removeAppStateAndSave();
-    renderHQL();
+    renderHQL(true);
 }
 
 function timeElapsed() {
@@ -475,7 +475,7 @@ function timeElapsed() {
     question.answerUser = undefined;
     question.answeredAt = new Date().getTime();
     removeAppStateAndSave();
-    renderHQL();
+    renderHQL(true);
 
     wowFeedbackMissed(init);
 }
@@ -506,20 +506,27 @@ function deleteQuestion(i, isRight) {
     renderHQL();
 }
 
-function renderHQL() {
-    historyList.innerHTML = "";
+function renderHQL(didAddSingleQuestion=false) {
+    if (didAddSingleQuestion) {
+        const index = savedata.questions.length - 1;
+        const recentQuestion = savedata.questions[index];
+        const firstChild = historyList.firstElementChild;
+        historyList.insertBefore(createHQLI(recentQuestion, index), firstChild);
+    } else {
+        historyList.innerHTML = "";
 
-    const len = savedata.questions.length;
-    const reverseChronological = structuredClone(savedata.questions).reverse();
+        const len = savedata.questions.length;
+        const reverseChronological = savedata.questions.slice().reverse();
 
-    reverseChronological
-        .map((q, i) => {
-            const el = createHQLI(q, len - i - 1);
-            return el;
-        })
-        .forEach(el => historyList.appendChild(el));
+        reverseChronological
+            .map((q, i) => {
+                const el = createHQLI(q, len - i - 1);
+                return el;
+            })
+            .forEach(el => historyList.appendChild(el));
+    }
 
-    updateAverage(reverseChronological);
+    updateAverage(savedata.questions);
     correctlyAnsweredEl.innerText = savedata.score;
     nextLevelEl.innerText = savedata.questions.length;
 }
