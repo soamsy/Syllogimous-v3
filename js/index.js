@@ -162,6 +162,7 @@ function load() {
     timerInput.value = savedData.timer;
     timerTime = timerInput.value;
 
+    embedEmojisInHTML();
     renderHQL();
 }
 
