@@ -212,7 +212,9 @@ function pickBaseWord(wordCoordMap, neighbors, branchesAllowed) {
 
         pool.push(word);
         pool.push(word);
+        pool.push(word);
         if (neighbors[word] && neighbors[word].length == 1) {
+            pool.push(word);
             pool.push(word);
         }
     }
@@ -275,7 +277,7 @@ function createDirectionQuestion(length) {
     let diffCoord;
     let usedDirCoords;
     let neighbors;
-    const branchesAllowed = Math.random() > 0.2;
+    const branchesAllowed = Math.random() > 0.33;
     while (true) {
         wordCoordMap = {[words[0]]: [0, 0]};
         neighbors = {};
@@ -347,7 +349,7 @@ function createDirectionQuestion3D(length) {
     let diffCoord;
     let usedDirCoords;
     let neighbors;
-    const branchesAllowed = Math.random() > 0.2;
+    const branchesAllowed = Math.random() > 0.33;
     while (true) {
         wordCoordMap = {[words[0]]: [0, 0, 0]};
         premises = [];
@@ -421,7 +423,7 @@ function createDirectionQuestion4D(length) {
     let diffCoord;
     let usedDirCoords;
     let neighbors;
-    const branchesAllowed = Math.random() > 0.2;
+    const branchesAllowed = Math.random() > 0.33;
     while (true) {
         wordCoordMap = {[words[0]]: [0, 0, 0, 0]};
         premises = [];
