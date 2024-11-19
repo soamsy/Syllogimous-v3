@@ -254,8 +254,8 @@ function pickTwoDistantWords(wordCoordMap, neighbors) {
 
     const ranks = rankPairs(pool, neighbors);
     let [startWord, endWord] = pickRandomItems(ranks[0][1], 1).picked[0];
-    const requireMaxPossible = Object.keys(neighbors).length <= 5 || Math.random() > 0.6;
-    if (ranks.length > 1 && !requireMaxPossible && Math.random() > 0.6) {
+    const useMaxPossible = Object.keys(neighbors).length <= 5 || Math.random() > 0.20;
+    if (ranks.length > 1 && !useMaxPossible) {
         [startWord, endWord] = pickRandomItems(ranks[1][1], 1).picked[0];
     }
 
