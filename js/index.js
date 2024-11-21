@@ -231,6 +231,7 @@ function renderCarousel() {
         enableConfirmationButtons();
         return;
     }
+    const q = renderJunkEmojis(question);
 
     carousel.classList.add("visible");
     display.classList.remove("visible");
@@ -240,20 +241,19 @@ function renderCarousel() {
         carouselBackButton.disabled = false;
     }
     
-    if (carouselIndex < question.premises.length - 1) {
+    if (carouselIndex < q.premises.length) {
         carouselNextButton.disabled = false;
         disableConfirmationButtons();
+        carouselDisplayLabelType.textContent = "Premise";
+        carouselDisplayLabelProgress.textContent = (carouselIndex + 1) + "/" + q.premises.length;
+        carouselDisplayText.innerHTML = q.premises[carouselIndex];
     } else {
-        carouselDisplayLabelType.textContent = "Conclusion";
-        carouselDisplayLabelProgress.textContent = "";
-        carouselDisplayText.innerHTML = question.conclusion;
         carouselNextButton.disabled = true;
         enableConfirmationButtons();
+        carouselDisplayLabelType.textContent = "Conclusion";
+        carouselDisplayLabelProgress.textContent = "";
+        carouselDisplayText.innerHTML = q.conclusion;
     }
-    
-    carouselDisplayLabelType.textContent = "Premise";
-    carouselDisplayLabelProgress.textContent = (carouselIndex + 1) + "/" + question.premises.length;
-    carouselDisplayText.innerHTML = question.premises[carouselIndex];
 }
 
 function carouselBack() {
