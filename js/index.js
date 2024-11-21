@@ -176,6 +176,7 @@ function displayInit() {
     displayLabelLevel.textContent = q.premises.length + " ps";
     displayText.innerHTML = [
         ...q.premises.map(p => `<div class="formatted-premise">${p}</div>`),
+        '<div class="conclusion-padding"></div>',
         '<div class="formatted-conclusion">'+q.conclusion+'</div>'
     ].join('');
     imagePromise = imagePromise.then(() => updateCustomStyles());
@@ -559,6 +560,12 @@ function createHQLI(question, i) {
     const parent = document.createElement("DIV");
 
     const answerUser = q.answerUser;
+    const answerUserClassName = {
+        'missed': '',
+        'right': answerUser,
+        'wrong': answerUser,
+    }[q.correctness];
+    
     const answer = q.isValid;
     let classModifier = {
         'missed': '',
@@ -592,8 +599,8 @@ function createHQLI(question, i) {
             ${htmlPremises}
         </div>
         <div class="hqli-conclusion">${q.conclusion}</div>
-        <div class="hqli-answer-user">${answerUserDisplay}</div>
-        <div class="hqli-answer">${answerDisplay}</div>
+        <div class="hqli-answer-user ${answerUserClassName}">${answerUserDisplay}</div>
+        <div class="hqli-answer ${answer}">${answerDisplay}</div>
         ${responseTimeHtml}
         <div class="hqli-footer">
             <div>${q.category}</div>
