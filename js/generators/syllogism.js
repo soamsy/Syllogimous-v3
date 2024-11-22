@@ -1,8 +1,5 @@
 function getSyllogism(s, p, m, rule) {
-    const _forms = (!savedata.enableNegation)
-        ? forms[0]
-        : pickRandomItems(forms, 1).picked[0];
-
+    const _forms = pickNegatable(forms);
     let major = _forms[rule[0]];
     let minor = _forms[rule[1]];
     let conclusion = _forms[rule[2]];

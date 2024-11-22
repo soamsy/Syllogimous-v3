@@ -3,7 +3,7 @@ function pickLinearPremise(a, b, comparison, reverseComparison) {
     `<span class="subject">${a}</span> is ${comparison} <span class="subject">${b}</span>`,
     `<span class="subject">${a}</span> is <span class="is-negated">${reverseComparison}</span> <span class="subject">${b}</span>`,
     ];
-    return savedata.enableNegation ? pickRandomItems(ps, 1).picked[0] : ps[0];
+    return pickNegatable(ps);
 }
 
 function findTwoWordIndexes(words) {
