@@ -49,3 +49,7 @@ function getPremisesFor(key, defaultQuota) {
         return defaultQuota;
     }
 }
+
+function pickNegatable(cs) {
+    return savedata.enableNegation ? pickRandomItems(cs, 1).picked[0] : cs[0];
+}

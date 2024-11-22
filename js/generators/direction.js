@@ -23,14 +23,6 @@ function createDirectionTemplate(source, target, direction, isNegated, decorator
     return `<span class="subject">${target}</span> ${directionElement} of <span class="subject">${source}</span>`;
 }
 
-function pickStatement(statements) {
-    if (!savedata.enableNegation) {
-        return statements[0]
-    } else {
-        return pickRandomItems(statements, 1).picked[0];
-    }
-}
-
 function taxicabDistance(a, b) {
     return a.map((v,i) => Math.abs(b[i] - v)).reduce((left,right) => left + right)
 }
@@ -79,12 +71,10 @@ class Direction2D {
     }
 
     _pickDirectionStatement(a, b, direction, reverseDirection) {
-        return pickStatement([
-            createDirectionTemplate(a, b, direction, false, 'is at '), 
-            createDirectionTemplate(a, b, reverseDirection, true, 'is at '),
-            createDirectionTemplate(b, a, reverseDirection, false, 'is at '), 
-            createDirectionTemplate(b, a, direction, true, 'is at ')
-        ]);
+        return pickRandomItems([
+            pickNegatable([createDirectionTemplate(a, b, direction, false, 'is at '), createDirectionTemplate(a, b, reverseDirection, true, 'is at ')]),
+            pickNegatable([createDirectionTemplate(b, a, reverseDirection, false, 'is at '), createDirectionTemplate(b, a, direction, true, 'is at ')])
+        ], 1).picked[0];
     }
 
     initialCoord() {
@@ -107,12 +97,10 @@ class Direction3D {
     }
 
     _pickDirectionStatement(a, b, direction, reverseDirection) {
-        return pickStatement([
-            createDirectionTemplate(a, b, direction, false, 'is '), 
-            createDirectionTemplate(a, b, reverseDirection, true, 'is '),
-            createDirectionTemplate(b, a, reverseDirection, false, 'is '), 
-            createDirectionTemplate(b, a, direction, true, 'is ')
-        ]);
+        return pickRandomItems([
+            pickNegatable([createDirectionTemplate(a, b, direction, false, 'is '), createDirectionTemplate(a, b, reverseDirection, true, 'is ')]),
+            pickNegatable([createDirectionTemplate(b, a, reverseDirection, false, 'is '), createDirectionTemplate(b, a, direction, true, 'is ')])
+        ], 1).picked[0];
     }
 
     initialCoord() {
@@ -140,12 +128,10 @@ class Direction4D {
     }
 
     _pickDirectionStatement(a, b, direction, reverseDirection, timeName, reverseTimeName) {
-        return pickStatement([
-            createDirectionTemplate(a, b, direction, false, timeName + ' '), 
-            createDirectionTemplate(a, b, reverseDirection, true, reverseTimeName + ' '),
-            createDirectionTemplate(b, a, reverseDirection, false, reverseTimeName + ' '), 
-            createDirectionTemplate(b, a, direction, true, timeName + ' ')
-        ]);
+        return pickRandomItems([
+            pickNegatable([createDirectionTemplate(a, b, direction, false, timeName + ' '), createDirectionTemplate(a, b, reverseDirection, true, reverseTimeName + ' ')]),
+            pickNegatable([createDirectionTemplate(b, a, reverseDirection, false, reverseTimeName + ' '), createDirectionTemplate(b, a, direction, true, timeName + ' ')])
+        ], 1).picked[0];
     }
 
     initialCoord() {
