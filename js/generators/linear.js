@@ -82,14 +82,44 @@ class LinearQuestion {
         this.bucket = bucket;
     }
 
+    createAnalogy(length) {
+        this.generate(length);
+        const [a, b, c, d] = pickRandomItems(this.bucket, 4).picked;
+
+        const [indexOfA, indexOfB] = [this.bucket.indexOf(a), this.bucket.indexOf(b)];
+        const [indexOfC, indexOfD] = [this.bucket.indexOf(c), this.bucket.indexOf(d)];
+        const isValidSame = indexOfA > indexOfB && indexOfC > indexOfD
+                   || indexOfA < indexOfB && indexOfC < indexOfD;
+
+        let conclusion = analogyTo(a, b);
+        let isValid;
+        if (coinFlip()) {
+            conclusion += pickAnalogyStatementSame();
+            isValid = isValidSame;
+        } else {
+            conclusion += pickAnalogyStatementDifferent();
+            isValid = !isValidSame;
+        }
+        conclusion += analogyTo(c, d);
+
+        return {
+            category: 'Analogy: ' + this.generator.getName(),
+            startedAt: new Date().getTime(),
+            bucket: this.bucket,
+            premises: this.premises,
+            isValid,
+            conclusion,
+        }
+    }
+
     createQuestion(length) {
         this.generate(length);
         return {
             category: this.generator.getName(),
             startedAt: new Date().getTime(),
             bucket: this.bucket,
-            isValid: this.isValid,
             premises: this.premises,
+            isValid: this.isValid,
             conclusion: this.conclusion,
         }
     }

@@ -123,14 +123,53 @@ class DistinctionQuestion {
         const category = "Distinction";
     }
 
+    createAnalogy(length) {
+        this.generate(length);
+        const [a, b, c, d] = pickRandomItems([...this.buckets[0], ...this.buckets[1]], 4).picked;
+
+        const [
+            indexOfA,
+            indexOfB,
+            indexOfC,
+            indexOfD
+        ] = [
+            Number(this.buckets[0].indexOf(a) !== -1),
+            Number(this.buckets[0].indexOf(b) !== -1),
+            Number(this.buckets[0].indexOf(c) !== -1),
+            Number(this.buckets[0].indexOf(d) !== -1)
+        ];
+        const isValidSame = indexOfA === indexOfB && indexOfC === indexOfD
+                   || indexOfA !== indexOfB && indexOfC !== indexOfD;
+
+        let conclusion = analogyTo(a, b);
+        let isValid;
+        if (coinFlip()) {
+            conclusion += pickAnalogyStatementSameTwoOptions();
+            isValid = isValidSame;
+        } else {
+            conclusion += pickAnalogyStatementDifferentTwoOptions();
+            isValid = !isValidSame;
+        }
+        conclusion += analogyTo(c, d);
+
+        return {
+            category: "Analogy: Distinction",
+            startedAt: new Date().getTime(),
+            buckets: this.buckets,
+            premises: this.premises,
+            isValid,
+            conclusion,
+        };
+    }
+
     createQuestion(length) {
         this.generate(length);
         return {
             category: "Distinction",
             startedAt: new Date().getTime(),
             buckets: this.buckets,
-            isValid: this.isValid,
             premises: this.premises,
+            isValid: this.isValid,
             conclusion: this.conclusion,
         };
     }

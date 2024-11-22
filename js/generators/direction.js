@@ -151,7 +151,6 @@ class DirectionQuestion {
     }
 
     generate(length) {
-        const words = createStimuli(length + 1);
         let startWord;
         let endWord;
 
@@ -164,24 +163,7 @@ class DirectionQuestion {
         let neighbors;
         const branchesAllowed = Math.random() > 0.33;
         while (true) {
-            wordCoordMap = {[words[0]]: this.generator.initialCoord() };
-            neighbors = {};
-            premises = [];
-            usedDirCoords = [];
-
-            for (let i = 0; i < words.length - 1; i++) {
-                const baseWord = this._pickBaseWord(wordCoordMap, neighbors, branchesAllowed);
-                const dirCoord = this.generator.pickDirection(baseWord, neighbors, wordCoordMap);
-                const nextWord = words[i+1];
-                wordCoordMap[nextWord] = addCoords(wordCoordMap[baseWord], dirCoord);
-                premises.push(this.generator.createDirectionStatement(baseWord, nextWord, dirCoord));
-                usedDirCoords.push(dirCoord);
-                neighbors[baseWord] = neighbors[baseWord] ?? [];
-                neighbors[baseWord].push(nextWord);
-                neighbors[nextWord] = neighbors[nextWord] ?? [];
-                neighbors[nextWord].push(baseWord);
-            }
-
+            [wordCoordMap, neighbors, premises, usedDirCoords] = this.createWordMap(length, branchesAllowed);
             [startWord, endWord] = this.pairChooser.pickTwoDistantWords(wordCoordMap, neighbors);
             const [start, end] = [wordCoordMap[startWord], wordCoordMap[endWord]];
             diffCoord = diffCoords(start, end);
@@ -207,6 +189,64 @@ class DirectionQuestion {
         this.isValid = isValid;
         this.premises = premises;
         this.conclusion = conclusion;
+    }
+
+    createAnalogy(length) {
+        let isValid;
+        let isValidSame;
+        let wordCoordMap;
+        let neighbors;
+        let premises;
+        let usedDirCoords;
+        let [a, b, c, d] = [];
+        const branchesAllowed = Math.random() > 0.2;
+        const flip = coinFlip();
+        while (flip !== isValidSame) {
+            [wordCoordMap, neighbors, premises, usedDirCoords] = this.createWordMap(length, branchesAllowed);
+            [a, b, c, d] = pickRandomItems(Object.keys(wordCoordMap), 4).picked;
+            isValidSame = arraysEqual(findDirection(wordCoordMap[a], wordCoordMap[b]), findDirection(wordCoordMap[c], wordCoordMap[d]));
+        }
+        let conclusion = analogyTo(a, b);
+        if (coinFlip()) {
+            conclusion += pickAnalogyStatementSame();
+            isValid = isValidSame;
+        } else {
+            conclusion += pickAnalogyStatementDifferent();
+            isValid = !isValidSame;
+        }
+        conclusion += analogyTo(c, d);
+
+        return {
+            category: 'Analogy: ' + this.generator.getName(),
+            startedAt: new Date().getTime(),
+            wordCoordMap,
+            isValid,
+            premises,
+            conclusion,
+        }
+    }
+
+    createWordMap(length, branchesAllowed) {
+        const words = createStimuli(length + 1);
+        let wordCoordMap = {[words[0]]: this.generator.initialCoord() };
+        let neighbors = {};
+        let premises = [];
+        let usedDirCoords = [];
+
+        for (let i = 0; i < words.length - 1; i++) {
+            const baseWord = this._pickBaseWord(wordCoordMap, neighbors, branchesAllowed);
+            const dirCoord = this.generator.pickDirection(baseWord, neighbors, wordCoordMap);
+            const nextWord = words[i+1];
+            wordCoordMap[nextWord] = addCoords(wordCoordMap[baseWord], dirCoord);
+            premises.push(this.generator.createDirectionStatement(baseWord, nextWord, dirCoord));
+            usedDirCoords.push(dirCoord);
+            neighbors[baseWord] = neighbors[baseWord] ?? [];
+            neighbors[baseWord].push(nextWord);
+            neighbors[nextWord] = neighbors[nextWord] ?? [];
+            neighbors[nextWord].push(baseWord);
+        }
+
+        return [wordCoordMap, neighbors, premises, usedDirCoords];
     }
 
     _pickBaseWord(wordCoordMap, neighbors, branchesAllowed) {
