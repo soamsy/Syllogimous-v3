@@ -30,13 +30,6 @@ function randomInclusive(start, end) {
     return Math.floor(Math.random() * (end - start + 1)) + start;
 }
 
-function findTwoWords(words) {
-    let wordsJump = Math.max(2, randomInclusive(words.length - 3, words.length - 1));
-    let wordsOffset = randomInclusive(0, words.length - wordsJump - 1);
-    let wordsEnd = Math.min(words.length - 1, wordsOffset + wordsJump);
-    return [words[wordsOffset], words[wordsEnd]];
-}
-
 function arraysEqual(arr1, arr2) {
     return arr1.length === arr2.length && arr1.every((value, index) => value === arr2[index]);
 }

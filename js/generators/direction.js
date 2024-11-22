@@ -1,39 +1,17 @@
-function findDiff2D(aCoord, bCoord) {
-    const [x, y] = aCoord;
-    const [x2, y2] = bCoord;
-    return [x2 - x, y2 - y];
+function diffCoords(a, b) {
+    return b.map((c, i) => c - a[i]);
 }
 
-function findDiff3D(aCoord, bCoord) {
-    const [x, y, z] = aCoord;
-    const [x2, y2, z2] = bCoord;
-    return [x2 - x, y2 - y, z2 - z];
+function addCoords(a, b) {
+    return a.map((c, i) => c + b[i]);
 }
 
-function findDiff4D(aCoord, bCoord) {
-    const [x, y, z, time] = aCoord;
-    const [x2, y2, z2, time2] = bCoord;
-    return [x2 - x, y2 - y, z2 - z, time2 - time];
+function normalize(a) {
+    return a.map(c => c/Math.abs(c) || 0);
 }
 
-function findDirectionCoord(aCoord, bCoord) {
-    return findDiff2D(aCoord, bCoord).map(c => c/Math.abs(c) || 0);
-}
-
-function findDirection(aCoord, bCoord) {
-    return dirStringFromCoord(findDirectionCoord(aCoord, bCoord));
-}
-
-function findDirectionCoord3D(aCoord, bCoord) {
-    return findDiff3D(aCoord, bCoord).map(c => c/Math.abs(c) || 0);
-}
-
-function findDirection3D(aCoord, bCoord) {
-    return dirStringFromCoord(findDirectionCoord3D(aCoord, bCoord));
-}
-
-function findDirectionCoord4D(aCoord, bCoord) {
-    return findDiff4D(aCoord, bCoord).map(c => c/Math.abs(c) || 0);
+function findDirection(a, b) {
+    return normalize(diffCoords(a, b));
 }
 
 function createDirectionTemplate(source, target, direction, isNegated, decorator='') {
@@ -53,88 +31,6 @@ function pickStatement(statements) {
     }
 }
 
-function createDirectionStatement(source, target, direction, reverseDirection) {
-    return pickStatement([
-        createDirectionTemplate(source, target, direction, false, 'is at '), 
-        createDirectionTemplate(source, target, reverseDirection, true, 'is at '),
-        createDirectionTemplate(target, source, reverseDirection, false, 'is at '), 
-        createDirectionTemplate(target, source, direction, true, 'is at ')
-    ]);
-}
-
-function createDirection3DStatement(source, target, direction, reverseDirection) {
-    return pickStatement([
-        createDirectionTemplate(source, target, direction, false, 'is '), 
-        createDirectionTemplate(source, target, reverseDirection, true, 'is '),
-        createDirectionTemplate(target, source, reverseDirection, false, 'is '), 
-        createDirectionTemplate(target, source, direction, true, 'is ')
-    ]);
-}
-
-function createDirection4DStatement(source, target, direction, reverseDirection, timeName, reverseTimeName) {
-    return pickStatement([
-        createDirectionTemplate(source, target, direction, false, timeName + ' '), 
-        createDirectionTemplate(source, target, reverseDirection, true, reverseTimeName + ' '),
-        createDirectionTemplate(target, source, reverseDirection, false, reverseTimeName + ' '), 
-        createDirectionTemplate(target, source, direction, true, timeName + ' ')
-    ]);
-}
-
-function createIncorrectConclusionCoords(usedCoords, correctCoord, diffCoord) {
-    let opposite = correctCoord.map(dir => -dir)
-    if (usedCoords.length <= 2) {
-        return [opposite]; // Few premises == anything that isn't the opposite tends to be easy.
-    }
-    const dirCoords = removeDuplicateArrays(usedCoords);
-
-    let validDirections = {}
-    for (const coord of dirCoords) {
-        validDirections[JSON.stringify(coord)] = true;
-        validDirections[JSON.stringify(coord.map(x => -x))] = true;
-    }
-
-    const allZeroes = correctCoord.map(x => 0);
-    const highest = diffCoord.map(x => Math.abs(x)).reduce((a, b) => Math.max(a, b));
-    const allShiftedEqually = diffCoord.every(x => Math.abs(x) === highest);
-    const shifts = allShiftedEqually ? [-1, 1] : [-2, -1, 1, 2];
-    let combinations = [];
-    for (const i in correctCoord) {
-        if (!allShiftedEqually && Math.abs(diffCoord[i]) === highest) {
-            continue;
-        }
-
-        for (const shift of shifts) {
-            let newCombo = structuredClone(correctCoord);
-            newCombo[i] += shift;
-            if (validDirections[JSON.stringify(newCombo)]) {
-                combinations.push(newCombo);
-            }
-        }
-    }
-    combinations.push.apply(combinations, structuredClone(combinations));
-    combinations.push(opposite);
-    return combinations;
-}
-
-function chooseIncorrectCoord(usedCoords, correctCoord, diffCoord) {
-    const incorrectCoords = createIncorrectConclusionCoords(usedCoords, correctCoord, diffCoord);
-    const incorrectDirections = incorrectCoords.map(dirStringFromCoord).filter(dirName => dirName);
-    return pickRandomItems(incorrectCoords, 1).picked[0];
-}
-
-function chooseIncorrectDirection(usedCoords, correctCoord, diffCoord) {
-    const chosen = chooseIncorrectCoord(usedCoords, correctCoord, diffCoord);
-    return dirStringFromCoord(chosen);
-}
-
-function removeZeroCoords(dirCoords) {
-    return dirCoords.slice(1);
-}
-
-function pickRandomDirection(dirCoords) {
-    return pickRandomItems(removeZeroCoords(dirCoords), 1).picked[0];
-}
-
 function taxicabDistance(a, b) {
     return a.map((v,i) => Math.abs(b[i] - v)).reduce((left,right) => left + right)
 }
@@ -142,9 +38,8 @@ function taxicabDistance(a, b) {
 function pickWeightedRandomDirection(dirCoords, baseWord, neighbors, wordCoordMap) {
     const badTargets = (neighbors[baseWord] ?? []).map(word => wordCoordMap[word]);
     const base = wordCoordMap[baseWord];
-    const options = removeZeroCoords(dirCoords);
     let pool = [];
-    for (const dirCoord of options) {
+    for (const dirCoord of dirCoords) {
         const endLocation = dirCoord.map((d,i) => d + base[i]);
         const distanceToClosest = badTargets
             .map(badTarget => taxicabDistance(badTarget, endLocation))
@@ -173,319 +68,203 @@ function pickWeightedRandomDirection(dirCoords, baseWord, neighbors, wordCoordMa
     return pickRandomItems(pool, 1).picked[0];
 }
 
-function pickDirection(dirCoords, baseWord, neighbors, wordCoordMap) {
-    return pickWeightedRandomDirection(dirCoords, baseWord, neighbors, wordCoordMap);
+class Direction2D {
+    pickDirection(baseWord, neighbors, wordCoordMap) {
+        return pickWeightedRandomDirection(dirCoords.slice(1), baseWord, neighbors, wordCoordMap);
+    }
+
+    createDirectionStatement(a, b, dirCoord) {
+        const dirName = dirStringFromCoord(dirCoord);
+        return this._pickDirectionStatement(a, b, dirName, nameInverseDir[dirName])
+    }
+
+    _pickDirectionStatement(a, b, direction, reverseDirection) {
+        return pickStatement([
+            createDirectionTemplate(a, b, direction, false, 'is at '), 
+            createDirectionTemplate(a, b, reverseDirection, true, 'is at '),
+            createDirectionTemplate(b, a, reverseDirection, false, 'is at '), 
+            createDirectionTemplate(b, a, direction, true, 'is at ')
+        ]);
+    }
+
+    initialCoord() {
+        return [0, 0];
+    }
+
+    getName() {
+        return "Space Two D";
+    }
 }
 
-function distanceBetween(start, end, neighbors) {
-    let distance = 0;
-    let layer = [start];
-    let found = {[start]: true};
-    while (layer.length > 0) {
-        distance++;
-        let newLayer = [];
-        for (const node of layer) {
-            for (const neighbor of neighbors[node]) {
-                if (found[neighbor]) {
-                    continue;
-                }
-                if (neighbor === end) {
-                    return distance;
-                }
-                newLayer.push(neighbor);
-                found[neighbor] = true;
+class Direction3D {
+    pickDirection(baseWord, neighbors, wordCoordMap) {
+        return pickWeightedRandomDirection(dirCoords3D, baseWord, neighbors, wordCoordMap);
+    }
+
+    createDirectionStatement(a, b, dirCoord) {
+        const dirName = dirStringFromCoord(dirCoord);
+        return this._pickDirectionStatement(a, b, dirName, nameInverseDir3D[dirName])
+    }
+
+    _pickDirectionStatement(a, b, direction, reverseDirection) {
+        return pickStatement([
+            createDirectionTemplate(a, b, direction, false, 'is '), 
+            createDirectionTemplate(a, b, reverseDirection, true, 'is '),
+            createDirectionTemplate(b, a, reverseDirection, false, 'is '), 
+            createDirectionTemplate(b, a, direction, true, 'is ')
+        ]);
+    }
+
+    initialCoord() {
+        return [0, 0, 0];
+    }
+
+    getName() {
+        return "Space Three D";
+    }
+}
+
+class Direction4D {
+    pickDirection(baseWord, neighbors, wordCoordMap) {
+        let dirCoord
+        do {
+            dirCoord = pickWeightedRandomDirection(dirCoords4D, baseWord, neighbors, wordCoordMap);
+        } while (dirCoord.slice(0, 3).every(c => c === 0))
+        return dirCoord
+    }
+
+    createDirectionStatement(a, b, dirCoord) {
+        const dirName = dirStringFromCoord(dirCoord);
+        const timeName = timeMapping[dirCoord[3]];
+        return this._pickDirectionStatement(a, b, dirName, nameInverseDir3D[dirName], timeName, reverseTimeNames[timeName])
+    }
+
+    _pickDirectionStatement(a, b, direction, reverseDirection, timeName, reverseTimeName) {
+        return pickStatement([
+            createDirectionTemplate(a, b, direction, false, timeName + ' '), 
+            createDirectionTemplate(a, b, reverseDirection, true, reverseTimeName + ' '),
+            createDirectionTemplate(b, a, reverseDirection, false, reverseTimeName + ' '), 
+            createDirectionTemplate(b, a, direction, true, timeName + ' ')
+        ]);
+    }
+
+    initialCoord() {
+        return [0, 0, 0, 0];
+    }
+
+    getName() {
+        return "Space Time";
+    }
+}
+
+class DirectionQuestion {
+    constructor(directionGenerator) {
+        this.generator = directionGenerator;
+        this.pairChooser = new DirectionPairChooser();
+        this.incorrectDirections = new IncorrectDirections();
+    }
+
+    generate(length) {
+        const words = createStimuli(length + 1);
+        let startWord;
+        let endWord;
+
+        let wordCoordMap = {};
+        let premises = [];
+        let conclusion;
+        let conclusionCoord;
+        let diffCoord;
+        let usedDirCoords;
+        let neighbors;
+        const branchesAllowed = Math.random() > 0.33;
+        while (true) {
+            wordCoordMap = {[words[0]]: this.generator.initialCoord() };
+            neighbors = {};
+            premises = [];
+            usedDirCoords = [];
+
+            for (let i = 0; i < words.length - 1; i++) {
+                const baseWord = this._pickBaseWord(wordCoordMap, neighbors, branchesAllowed);
+                const dirCoord = this.generator.pickDirection(baseWord, neighbors, wordCoordMap);
+                const nextWord = words[i+1];
+                wordCoordMap[nextWord] = addCoords(wordCoordMap[baseWord], dirCoord);
+                premises.push(this.generator.createDirectionStatement(baseWord, nextWord, dirCoord));
+                usedDirCoords.push(dirCoord);
+                neighbors[baseWord] = neighbors[baseWord] ?? [];
+                neighbors[baseWord].push(nextWord);
+                neighbors[nextWord] = neighbors[nextWord] ?? [];
+                neighbors[nextWord].push(baseWord);
+            }
+
+            [startWord, endWord] = this.pairChooser.pickTwoDistantWords(wordCoordMap, neighbors);
+            const [start, end] = [wordCoordMap[startWord], wordCoordMap[endWord]];
+            diffCoord = diffCoords(start, end);
+            conclusionCoord = normalize(diffCoord);
+            if (conclusionCoord.slice(0, 3).some(c => c !== 0)) {
+                break;
             }
         }
-        layer = newLayer;
-    }
-    return distance;
-}
 
-function pickBaseWord(wordCoordMap, neighbors, branchesAllowed) {
-    const options = Object.keys(wordCoordMap);
-    const neighborLimit = (!branchesAllowed || options.length <= 3) ? 1 : 2;
-    let pool = [];
-    for (const word of options) {
-        if (neighbors[word] && neighbors[word].length > neighborLimit) {
-            continue;
+        let isValid;
+        if (coinFlip()) { // correct
+            isValid = true;
+            conclusion = this.generator.createDirectionStatement(startWord, endWord, conclusionCoord);
+        }
+        else {            // wrong
+            isValid = false;
+            const incorrectCoord = this.incorrectDirections.chooseIncorrectCoord(usedDirCoords, conclusionCoord, diffCoord);
+            conclusion = this.generator.createDirectionStatement(startWord, endWord, incorrectCoord);
         }
 
-        pool.push(word);
-        pool.push(word);
-        pool.push(word);
-        if (neighbors[word] && neighbors[word].length == 1) {
-            pool.push(word);
-            pool.push(word);
-        }
+        shuffle(premises);
+        this.wordCoordMap = wordCoordMap;
+        this.isValid = isValid;
+        this.premises = premises;
+        this.conclusion = conclusion;
     }
-    const baseWord = pickRandomItems(pool, 1).picked[0];
-    return baseWord;
-}
 
-function rankPairs(pool, neighbors) {
-    let pairs = []
-    for (let i = 0; i < pool.length; i++) {
-        for (let j = i+1; j < pool.length; j++) {
-            const start = pool[i];
-            const end = pool[j];
-            const dist = distanceBetween(start, end, neighbors)
-            if (dist > 1) {
-                pairs.push([start, end, dist]);
+    _pickBaseWord(wordCoordMap, neighbors, branchesAllowed) {
+        const options = Object.keys(wordCoordMap);
+        const neighborLimit = (!branchesAllowed || options.length <= 3) ? 1 : 2;
+        let pool = [];
+        for (const word of options) {
+            if (neighbors[word] && neighbors[word].length > neighborLimit) {
+                continue;
+            }
+
+            pool.push(word);
+            pool.push(word);
+            pool.push(word);
+            if (neighbors[word] && neighbors[word].length == 1) {
+                pool.push(word);
+                pool.push(word);
             }
         }
+        const baseWord = pickRandomItems(pool, 1).picked[0];
+        return baseWord;
     }
 
-    groups = {}
-    for (const [a, b, dist] of pairs) {
-        groups[dist] = groups?.[dist] ?? []
-        groups[dist].push([a, b]);
+    createQuestion(length) {
+        this.generate(length);
+        return {
+            category: this.generator.getName(),
+            startedAt: new Date().getTime(),
+            wordCoordMap: this.wordCoordMap,
+            isValid: this.isValid,
+            premises: this.premises,
+            conclusion: this.conclusion,
+        }
     }
-
-    return Object.entries(groups).sort(([distA, _], [distB, __]) => distB - distA);
-}
-
-function pickTwoDistantWords(wordCoordMap, neighbors) {
-    let options = Object.keys(wordCoordMap);
-    let pool = [];
-    single_edges = options.filter(word => neighbors[word].length == 1);
-    single_edge_neighbors = options.filter(word => single_edges.some(edge => neighbors[edge].indexOf(word) !== -1))
-    pool.push.apply(pool, single_edges);
-    pool.push.apply(pool, single_edge_neighbors);
-
-    const ranks = rankPairs(pool, neighbors);
-    let [startWord, endWord] = pickRandomItems(ranks[0][1], 1).picked[0];
-    const useMaxPossible = Object.keys(neighbors).length <= 5 || Math.random() > 0.20;
-    if (ranks.length > 1 && !useMaxPossible) {
-        [startWord, endWord] = pickRandomItems(ranks[1][1], 1).picked[0];
-    }
-
-    return [startWord, endWord];
 }
 
 function createDirectionQuestion(length) {
-    length++;
-
-    const words = createStimuli(length);
-    let startWord;
-    let endWord;
-
-    let wordCoordMap = {};
-    let premises = [];
-    let conclusion;
-    let conclusionCoord;
-    let conclusionDirName;
-    let diffCoord;
-    let usedDirCoords;
-    let neighbors;
-    const branchesAllowed = Math.random() > 0.33;
-    while (true) {
-        wordCoordMap = {[words[0]]: [0, 0]};
-        neighbors = {};
-        premises = [];
-        usedDirCoords = [];
-
-        for (let i = 0; i < words.length - 1; i++) {
-            const baseWord = pickBaseWord(wordCoordMap, neighbors, branchesAllowed);
-            const dirCoord = pickDirection(dirCoords, baseWord, neighbors, wordCoordMap);
-            const dirName = dirStringFromCoord(dirCoord);
-            const nextWord = words[i+1];
-            wordCoordMap[nextWord] = [
-                wordCoordMap[baseWord][0] + dirCoord[0], // x
-                wordCoordMap[baseWord][1] + dirCoord[1]  // y
-            ];
-            premises.push(createDirectionStatement(baseWord, nextWord, dirName, nameInverseDir[dirName]));
-            usedDirCoords.push(dirCoord);
-            neighbors[baseWord] = neighbors[baseWord] ?? [];
-            neighbors[baseWord].push(nextWord);
-            neighbors[nextWord] = neighbors[nextWord] ?? [];
-            neighbors[nextWord].push(baseWord);
-        }
-
-        [startWord, endWord] = pickTwoDistantWords(wordCoordMap, neighbors);
-        const [start, end] = [wordCoordMap[startWord], wordCoordMap[endWord]];
-        diffCoord = findDiff2D(start, end);
-        conclusionCoord = findDirectionCoord(start, end);
-        conclusionDirName = dirStringFromCoord(conclusionCoord);
-        if (conclusionDirName) {
-            break;
-        }
-    }
-
-    let isValid;
-    if (coinFlip()) { // correct
-        isValid = true;
-        conclusion = createDirectionStatement(startWord, endWord, conclusionDirName, nameInverseDir[conclusionDirName]);
-    }
-    else {            // wrong
-        isValid = false;
-        const incorrectDirName = chooseIncorrectDirection(usedDirCoords, conclusionCoord, diffCoord);
-        conclusion = createDirectionStatement(startWord, endWord, incorrectDirName, nameInverseDir[incorrectDirName]);
-    }
-
-    shuffle(premises);
-    
-    return {
-        category: "Space Two D",
-        startedAt: new Date().getTime(),
-        wordCoordMap,
-        isValid,
-        premises,
-        conclusion
-    }
+    return new DirectionQuestion(new Direction2D()).createQuestion(length);
 }
 
 function createDirectionQuestion3D(length) {
-    length++;
-
-    const words = createStimuli(length);
-    let startWord;
-    let endWord;
-
-    let wordCoordMap = {};
-    let premises = [];
-    let conclusion;
-    let conclusionCoord;
-    let conclusionDirName;
-    let diffCoord;
-    let usedDirCoords;
-    let neighbors;
-    const branchesAllowed = Math.random() > 0.33;
-    while (true) {
-        wordCoordMap = {[words[0]]: [0, 0, 0]};
-        premises = [];
-        neighbors = {};
-        usedDirCoords = [];
-
-        for (let i = 0; i < words.length - 1; i++) {
-            const baseWord = pickBaseWord(wordCoordMap, neighbors, branchesAllowed);
-            const dirCoord = pickDirection(dirCoords3D, baseWord, neighbors, wordCoordMap);
-            const dirName = dirStringFromCoord(dirCoord);
-            const nextWord = words[i+1];
-            wordCoordMap[nextWord] = [
-                wordCoordMap[baseWord][0] + dirCoord[0], // x
-                wordCoordMap[baseWord][1] + dirCoord[1],  // y
-                wordCoordMap[baseWord][2] + dirCoord[2]  // y
-            ];
-            premises.push(createDirection3DStatement(baseWord, nextWord, dirName, nameInverseDir3D[dirName]));
-            usedDirCoords.push(dirCoord);
-            neighbors[baseWord] = neighbors[baseWord] ?? [];
-            neighbors[baseWord].push(nextWord);
-            neighbors[nextWord] = neighbors[nextWord] ?? [];
-            neighbors[nextWord].push(baseWord);
-        }
-
-        [startWord, endWord] = pickTwoDistantWords(wordCoordMap, neighbors);
-        const [start, end] = [wordCoordMap[startWord], wordCoordMap[endWord]];
-        diffCoord = findDiff4D(start, end);
-        conclusionCoord = findDirectionCoord3D(start, end);
-        conclusionDirName = dirStringFromCoord(conclusionCoord);
-        if (conclusionDirName) {
-            break;
-        }
-    }
-
-    let isValid;
-    if (coinFlip()) { // correct
-        isValid = true;
-        conclusion = createDirection3DStatement(startWord, endWord, conclusionDirName, nameInverseDir3D[conclusionDirName]);
-    }
-    else {            // wrong
-        isValid = false;
-        const incorrectDirName = chooseIncorrectDirection(usedDirCoords, conclusionCoord, diffCoord);
-        conclusion = createDirection3DStatement(startWord, endWord, incorrectDirName, nameInverseDir3D[incorrectDirName]);
-    }
-
-    shuffle(premises);
-    
-    return {
-        category: "Space Three D",
-        startedAt: new Date().getTime(),
-        wordCoordMap,
-        isValid,
-        premises,
-        conclusion
-    }
+    return new DirectionQuestion(new Direction3D()).createQuestion(length);
 }
 
 function createDirectionQuestion4D(length) {
-    length++;
-
-    const words = createStimuli(length);
-    let startWord;
-    let endWord;
-
-    let wordCoordMap = {};
-    let premises = [];
-    let conclusion;
-    let conclusionCoord;
-    let conclusionDirName;
-    let conclusionTimeName;
-    let diffCoord;
-    let usedDirCoords;
-    let neighbors;
-    const branchesAllowed = Math.random() > 0.33;
-    while (true) {
-        wordCoordMap = {[words[0]]: [0, 0, 0, 0]};
-        premises = [];
-        neighbors = {};
-        usedDirCoords = [];
-
-        for (let i = 0; i < words.length - 1; i++) {
-            const baseWord = pickBaseWord(wordCoordMap, neighbors, branchesAllowed);
-            let dirCoord;
-            let dirName;
-            while (!dirName) {
-                dirCoord = pickDirection(dirCoords4D, baseWord, neighbors, wordCoordMap);
-                dirName = dirStringFromCoord(dirCoord);
-            }
-            const timeName = timeMapping[dirCoord[3]];
-            const nextWord = words[i+1];
-            wordCoordMap[nextWord] = [
-                wordCoordMap[baseWord][0] + dirCoord[0], // x
-                wordCoordMap[baseWord][1] + dirCoord[1],  // y
-                wordCoordMap[baseWord][2] + dirCoord[2],  // y
-                wordCoordMap[baseWord][3] + dirCoord[3]  // time
-            ];
-            premises.push(createDirection4DStatement(baseWord, nextWord, dirName, nameInverseDir3D[dirName], timeName, reverseTimeNames[timeName]));
-            usedDirCoords.push(dirCoord);
-            neighbors[baseWord] = neighbors[baseWord] ?? [];
-            neighbors[baseWord].push(nextWord);
-            neighbors[nextWord] = neighbors[nextWord] ?? [];
-            neighbors[nextWord].push(baseWord);
-        }
-
-        [startWord, endWord] = pickTwoDistantWords(wordCoordMap, neighbors);
-        const [start, end] = [wordCoordMap[startWord], wordCoordMap[endWord]];
-        diffCoord = findDiff4D(start, end);
-        conclusionCoord = findDirectionCoord4D(start, end);
-        conclusionDirName = dirStringFromCoord(conclusionCoord);
-        conclusionTimeName = timeMapping[conclusionCoord[3]]
-        if (conclusionDirName) {
-            break;
-        }
-    }
-
-    let isValid;
-    if (coinFlip()) { // correct
-        isValid = true;
-        conclusion = createDirection4DStatement(startWord, endWord, conclusionDirName, nameInverseDir3D[conclusionDirName], conclusionTimeName, reverseTimeNames[conclusionTimeName]);
-    }
-    else {            // wrong
-        isValid = false;
-        const incorrectCoord = chooseIncorrectCoord(usedDirCoords, conclusionCoord, diffCoord);
-        const incorrectDirName = dirStringFromCoord(incorrectCoord);
-        const incorrectTimeName = timeMapping[incorrectCoord[3]];
-        conclusion = createDirection4DStatement(startWord, endWord, incorrectDirName, nameInverseDir3D[incorrectDirName], incorrectTimeName, reverseTimeNames[incorrectTimeName]);
-    }
-
-    shuffle(premises);
-    
-    return {
-        category: "Space Time",
-        startedAt: new Date().getTime(),
-        wordCoordMap,
-        isValid,
-        premises,
-        conclusion
-    }
+    return new DirectionQuestion(new Direction4D()).createQuestion(length);
 }

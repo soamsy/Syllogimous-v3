@@ -93,7 +93,7 @@ function createSameDifferent(length) {
             conclusion += `<span class="subject">${a}</span> to <span class="subject">${b}</span>`;
 
             // Find if A to B has same relation of C to D
-            isValidSame = findDirection(choice.wordCoordMap[a], choice.wordCoordMap[b]) === findDirection(choice.wordCoordMap[c], choice.wordCoordMap[d]);
+            isValidSame = arraysEqual(findDirection(choice.wordCoordMap[a], choice.wordCoordMap[b]), findDirection(choice.wordCoordMap[c], choice.wordCoordMap[d]));
         }
     } else if (choiceIndex === 4) {
 
@@ -109,7 +109,7 @@ function createSameDifferent(length) {
             conclusion += `<span class="subject">${a}</span> to <span class="subject">${b}</span>`;
 
             // Find if A to B has same relation of C to D
-            isValidSame = findDirection3D(choice.wordCoordMap[a], choice.wordCoordMap[b]) === findDirection3D(choice.wordCoordMap[c], choice.wordCoordMap[d]);
+            isValidSame = arraysEqual(findDirection(choice.wordCoordMap[a], choice.wordCoordMap[b]), findDirection(choice.wordCoordMap[c], choice.wordCoordMap[d]));
         }
     } else {
 
@@ -125,8 +125,8 @@ function createSameDifferent(length) {
             conclusion += `<span class="subject">${a}</span> to <span class="subject">${b}</span>`;
 
             // Find if A to B has same relation of C to D
-            const coord = findDirectionCoord4D(choice.wordCoordMap[a], choice.wordCoordMap[b]);
-            const coord2 = findDirectionCoord4D(choice.wordCoordMap[c], choice.wordCoordMap[d]);
+            const coord = findDirection(choice.wordCoordMap[a], choice.wordCoordMap[b]);
+            const coord2 = findDirection(choice.wordCoordMap[c], choice.wordCoordMap[d]);
             isValidSame = arraysEqual(coord, coord2);
         }
     }

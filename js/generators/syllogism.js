@@ -1,60 +1,4 @@
-function createSyllogism(length) {
-    length++;
-
-    const category = "Syllogism";
-    let bucket;
-    let isValid;
-    let rule;
-    let premises;
-    let conclusion;
-    do {
-        bucket = createStimuli(length);
-        premises = [];
-
-        conclusion;
-        isValid = coinFlip();
-        if (isValid) {
-            rule = validRules[Math.floor(Math.random() * validRules.length)];
-            [premises[0], premises[1], conclusion] = getSyllogism(
-                bucket[0],
-                bucket[1],
-                bucket[2],
-                rule
-            );
-        } else {
-            rule = getRandomInvalidRule();
-            [premises[0], premises[1], conclusion] = getSyllogism(
-                bucket[0],
-                bucket[1],
-                bucket[2],
-                getRandomInvalidRule()
-            );
-        }
-    } while(isPremiseSimilarToConlusion(premises, conclusion));
-
-    for (let i = 3; i < bucket.length; i++) {
-        let rnd = Math.floor(Math.random() * (i - 1));
-        let flip = coinFlip();
-        let p = flip ? bucket[i] : bucket[rnd];
-        let m = flip ? bucket[rnd] : bucket[i];
-        premises.push(getSyllogism("#####", p, m, getRandomInvalidRule())[0]);
-    }
-
-    premises = shuffle(premises);
-
-    return {
-        category,
-        rule,
-        startedAt: new Date().getTime(),
-        bucket,
-        isValid,
-        premises,
-        conclusion
-    }
-}
-
 function getSyllogism(s, p, m, rule) {
-
     const _forms = (!savedata.enableNegation)
         ? forms[0]
         : pickRandomItems(forms, 1).picked[0];
@@ -122,4 +66,74 @@ function isPremiseSimilarToConlusion(premises, conclusion) {
 
 function extractSubjects(phrase) {
     return [...phrase.matchAll(/<span class="subject">(.*?)<\/span>/g)].map(a => a[1]);
+}
+
+class SyllogismQuestion {
+    constructor() {
+    }
+
+    generate(length) {
+        let bucket;
+        let isValid;
+        let rule;
+        let premises;
+        let conclusion;
+        do {
+            bucket = createStimuli(length + 1);
+            premises = [];
+
+            conclusion;
+            isValid = coinFlip();
+            if (isValid) {
+                rule = validRules[Math.floor(Math.random() * validRules.length)];
+                [premises[0], premises[1], conclusion] = getSyllogism(
+                    bucket[0],
+                    bucket[1],
+                    bucket[2],
+                    rule
+                );
+            } else {
+                rule = getRandomInvalidRule();
+                [premises[0], premises[1], conclusion] = getSyllogism(
+                    bucket[0],
+                    bucket[1],
+                    bucket[2],
+                    getRandomInvalidRule()
+                );
+            }
+        } while(isPremiseSimilarToConlusion(premises, conclusion));
+
+        for (let i = 3; i < bucket.length; i++) {
+            let rnd = Math.floor(Math.random() * (i - 1));
+            let flip = coinFlip();
+            let p = flip ? bucket[i] : bucket[rnd];
+            let m = flip ? bucket[rnd] : bucket[i];
+            premises.push(getSyllogism("#####", p, m, getRandomInvalidRule())[0]);
+        }
+
+        shuffle(premises);
+        this.rule = rule;
+        this.bucket = bucket;
+        this.isValid = isValid;
+        this.premises = premises;
+        this.conclusion = conclusion;
+    }
+
+    createQuestion(length) {
+        this.generate(length);
+
+        return {
+            category: 'Syllogism',
+            startedAt: new Date().getTime(),
+            rule: this.rule,
+            bucket: this.bucket,
+            isValid: this.isValid,
+            premises: this.premises,
+            conclusion: this.conclusion,
+        };
+    }
+}
+
+function createSyllogism(length) {
+    return new SyllogismQuestion().createQuestion(length);
 }
