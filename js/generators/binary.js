@@ -1,3 +1,24 @@
+function createBinaryQuestionPool() {
+    const pool = [];
+
+    if (savedata.enableDistinction)
+        pool.push(createSameOpposite);
+    if (savedata.enableComparison)
+        pool.push(createMoreLess);
+    if (savedata.enableTemporal)
+        pool.push(createBeforeAfter);
+    if (savedata.enableSyllogism)
+        pool.push(createSyllogism);
+    if (savedata.enableDirection)
+        pool.push((len) => new DirectionQuestion(new Direction2D(false)).createQuestion(len));
+    if (savedata.enableDirection3D)
+        pool.push((len) => new DirectionQuestion(new Direction3D(false)).createQuestion(len));
+    if (savedata.enableDirection4D)
+        pool.push(createDirectionQuestion4D);
+
+    return pool;
+}
+
 function createBinaryQuestion(length) {
     length = Math.max(4, length);
     const operands = [
@@ -27,22 +48,7 @@ function createBinaryQuestion(length) {
         '<div class="is-connector">Both</div> $a <div class="is-connector">and</div> $b <div class="is-connector">are the same</div>'
     ];
 
-    const pool = [];
-    if (savedata.enableDistinction)
-        pool.push(createSameOpposite);
-    if (savedata.enableComparison)
-        pool.push(createMoreLess);
-    if (savedata.enableTemporal)
-        pool.push(createBeforeAfter);
-    if (savedata.enableSyllogism)
-        pool.push(createSyllogism);
-    if (savedata.enableDirection)
-        pool.push(createDirectionQuestion);
-    if (savedata.enableDirection3D)
-        pool.push(createDirectionQuestion3D);
-    if (savedata.enableDirection4D)
-        pool.push(createDirectionQuestion4D);
-
+    const pool = createBinaryQuestionPool();
     let choice;
     let choice2;
     let premises;
@@ -102,22 +108,7 @@ function createNestedBinaryQuestion(length) {
         "!(!((a)&&(b))&&((a)||(b)))"
     ];
 
-    const pool = [];
-
-    if (savedata.enableDistinction)
-        pool.push(createSameOpposite);
-    if (savedata.enableComparison)
-        pool.push(createMoreLess);
-    if (savedata.enableTemporal)
-        pool.push(createBeforeAfter);
-    if (savedata.enableDirection)
-        pool.push(createDirectionQuestion);
-    if (savedata.enableDirection3D)
-        pool.push(createDirectionQuestion3D);
-    if (savedata.enableDirection4D)
-        pool.push(createDirectionQuestion4D);
-    if (savedata.enableSyllogism)
-        pool.push(createSyllogism);
+    const pool = createBinaryQuestionPool();
 
     length = Math.max(4, length);
     const halfLength = Math.floor(length / 2);
