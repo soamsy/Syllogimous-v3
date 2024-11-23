@@ -235,8 +235,8 @@ class DirectionQuestion {
             }
         }
 
-        let operations = [];
-        let hardModeDimensions = [];
+        let operations;
+        let hardModeDimensions;
         if (this.generator.hardModeAllowed()) {
             [wordCoordMap, operations, diffCoord, conclusionCoord, hardModeDimensions] = this.spaceHardMode.basicHardMode(wordCoordMap, startWord, endWord, conclusionCoord);
         }

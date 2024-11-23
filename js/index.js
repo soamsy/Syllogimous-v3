@@ -249,6 +249,13 @@ function renderCarousel() {
         carouselDisplayLabelType.textContent = "Premise";
         carouselDisplayLabelProgress.textContent = (carouselIndex + 1) + "/" + q.premises.length;
         carouselDisplayText.innerHTML = q.premises[carouselIndex];
+    } else if (q.operations && carouselIndex < q.operations.length + q.premises.length) {
+        carouselNextButton.disabled = false;
+        const operationIndex = carouselIndex - q.premises.length;
+        disableConfirmationButtons();
+        carouselDisplayLabelType.textContent = "Transformation";
+        carouselDisplayLabelProgress.textContent = (operationIndex + 1) + "/" + q.operations.length;
+        carouselDisplayText.innerHTML = q.operations[operationIndex];
     } else {
         carouselNextButton.disabled = true;
         enableConfirmationButtons();
