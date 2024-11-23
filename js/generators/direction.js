@@ -235,9 +235,10 @@ class DirectionQuestion {
             }
         }
 
-        let operations;
+        let operations = [];
+        let hardModeDimensions = [];
         if (this.generator.hardModeAllowed()) {
-            [wordCoordMap, diffCoord, conclusionCoord, operations] = this.spaceHardMode.basicHardMode(wordCoordMap, startWord, endWord, conclusionCoord);
+            [wordCoordMap, diffCoord, conclusionCoord, operations, hardModeDimensions] = this.spaceHardMode.basicHardMode(wordCoordMap, startWord, endWord, conclusionCoord);
         }
 
         let isValid;
@@ -247,7 +248,7 @@ class DirectionQuestion {
         }
         else {            // wrong
             isValid = false;
-            const incorrectCoord = this.incorrectDirections.chooseIncorrectCoord(usedDirCoords, conclusionCoord, diffCoord);
+            const incorrectCoord = this.incorrectDirections.chooseIncorrectCoord(usedDirCoords, conclusionCoord, diffCoord, hardModeDimensions);
             conclusion = this.generator.createDirectionStatement(startWord, endWord, incorrectCoord);
         }
 
