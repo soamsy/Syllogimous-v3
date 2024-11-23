@@ -53,3 +53,34 @@ function getPremisesFor(key, defaultQuota) {
 function pickNegatable(cs) {
     return savedata.enableNegation ? pickRandomItems(cs, 1).picked[0] : cs[0];
 }
+
+function interleaveArrays(arr1, arr2) {
+    const maxLength = Math.max(arr1.length, arr2.length); // Get the longer array's length
+    const result = [];
+
+    for (let i = 0; i < maxLength; i++) {
+        if (i < arr1.length) {
+            result.push(arr1[i]); // Add element from the first array if it exists
+        }
+        if (i < arr2.length) {
+            result.push(arr2[i]); // Add element from the second array if it exists
+        }
+    }
+
+    return result;
+}
+
+function pairwise(arr, callback) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        callback(arr[i], arr[i + 1], i, arr);
+    }
+}
+
+function repeatArrayUntil(arr, n) {
+    const result = [];
+    while (result.length < n) {
+        result.push(...arr); // Spread the array and append it to the result
+    }
+    return result.slice(0, n); // Trim the array to exactly 'n' elements
+}
+

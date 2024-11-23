@@ -14,6 +14,13 @@ function findDirection(a, b) {
     return normalize(diffCoords(a, b));
 }
 
+function getConclusionCoords(wordCoordMap, startWord, endWord) {
+    const [start, end] = [wordCoordMap[startWord], wordCoordMap[endWord]];
+    const diffCoord = diffCoords(start, end);
+    const conclusionCoord = normalize(diffCoord);
+    return [diffCoord, conclusionCoord];
+}
+
 function createDirectionTemplate(source, target, direction, isNegated, decorator='') {
     let directionElement = direction;
     if (isNegated) {
@@ -103,6 +110,11 @@ class Direction2D {
         return true;
     }
 
+    hardModeLevel() {
+        return savedata.spaceHardModeLevel;
+    }
+
+
     pickDiagonalDirection() {
         return pickRandomItems(this.diagonals, 1).picked[0];
     }
@@ -153,6 +165,10 @@ class Direction3D {
         return true;
     }
 
+    hardModeLevel() {
+        return savedata.spaceHardModeLevel;
+    }
+
     pickDiagonalDirection() {
         return pickRandomItems(this.diagonals, 1).picked[0];
     }
@@ -198,13 +214,7 @@ class DirectionQuestion {
         this.generator = directionGenerator;
         this.pairChooser = new DirectionPairChooser();
         this.incorrectDirections = new IncorrectDirections();
-    }
-
-    getConclusion(wordCoordMap, startWord, endWord) {
-        const [start, end] = [wordCoordMap[startWord], wordCoordMap[endWord]];
-        const diffCoord = diffCoords(start, end);
-        const conclusionCoord = normalize(diffCoord);
-        return [diffCoord, conclusionCoord];
+        this.spaceHardMode = new SpaceHardMode(directionGenerator);
     }
 
     generate(length) {
@@ -219,46 +229,15 @@ class DirectionQuestion {
         while (true) {
             [wordCoordMap, neighbors, premises, usedDirCoords] = this.createWordMap(length, branchesAllowed);
             [startWord, endWord] = this.pairChooser.pickTwoDistantWords(wordCoordMap, neighbors);
-            [diffCoord, conclusionCoord] = this.getConclusion(wordCoordMap, startWord, endWord);
+            [diffCoord, conclusionCoord] = getConclusionCoords(wordCoordMap, startWord, endWord);
             if (conclusionCoord.slice(0, 3).some(c => c !== 0)) {
                 break;
             }
         }
 
         let operations;
-        const level = savedata.spaceHardModeLevel;
-        if (level && level > 0 && this.generator.hardModeAllowed()) {
-            let newWordMap;
-            let newDiffCoord;
-            let newConclusionCoord;
-            const demandClose = Math.random() > 0.3;
-            const demandChange = Math.random() > 0.3;
-            let closeTries = 10;
-            let changeTries = 10;
-            while (true) {
-                newWordMap = structuredClone(wordCoordMap)
-                operations = this.applyHardMode(level, newWordMap, neighbors, startWord, endWord);
-                [newDiffCoord, newConclusionCoord] = this.getConclusion(newWordMap, startWord, endWord);
-                if (newConclusionCoord.slice(0, 3).every(c => c === 0)) {
-                    continue;
-                }
-                const distanceFromNeighbor = newDiffCoord.map((v, i) => Math.abs(v - newConclusionCoord[i])).reduce((a, b) => a + b);
-                const distanceLimit = Math.max(2, Math.floor(Object.keys(newWordMap).length / 3));
-                const isClose = distanceFromNeighbor < distanceLimit;
-                if (demandClose && !isClose && closeTries > 0) {
-                    closeTries--;
-                    continue;
-                }
-                const isChanged = !arraysEqual(conclusionCoord, newConclusionCoord);
-                if (demandChange && !isChanged && changeTries > 0) {
-                    changeTries--;
-                    continue;
-                }
-                break;
-            }
-            wordCoordMap = newWordMap;
-            diffCoord = newDiffCoord;
-            conclusionCoord = newConclusionCoord;
+        if (this.generator.hardModeAllowed()) {
+            [wordCoordMap, diffCoord, conclusionCoord, operations] = this.spaceHardMode.basicHardMode(wordCoordMap, startWord, endWord, conclusionCoord);
         }
 
         let isValid;
@@ -335,128 +314,6 @@ class DirectionQuestion {
         return [wordCoordMap, neighbors, premises, usedDirCoords];
     }
 
-    applyHardMode(level, wordCoordMap, neighbors, leftStart, rightStart) {
-        const findDimension = (lastDimension, lastUsed, words) => {
-            let dimensions = wordCoordMap[leftStart].map(w => 0);
-            pairwise(words, (a, b) => {
-                dimensions = addCoords(dimensions, normalize(diffCoords(wordCoordMap[a], wordCoordMap[b])).map(c => Math.abs(c)));
-            })
-            let dimension = (lastUsed + 1) % dimensions.length;
-            let best = dimensions[dimension];
-            dimensions.forEach((v, i) => {
-                if (v > best) {
-                    best = v;
-                    dimension = i;
-                }
-            });
-            if (dimension === lastDimension) {
-                dimension = (dimension + 1) % dimensions.length;
-            }
-            return dimension;
-        }
-        const bannedFromPool = new Set([leftStart, rightStart]);
-        const pool = Object.keys(wordCoordMap).filter(word => !bannedFromPool.has(word));
-        let leftChains = []
-        let rightChains = []
-        let lastUsed = -1;
-        let remaining = level;
-        let wordSequence = repeatArrayUntil(shuffle(pool.slice()), level);
-        while (remaining > 0) {
-            let chainSize = Math.min(remaining, pickRandomItems([1, 1, 2, 2, 2, 3], 1).picked[0]);
-            if (chainSize == remaining && leftChains.length == 0 && rightChains.length == 0)
-                chainSize = 1;
-            let words = wordSequence.splice(0, chainSize);
-            let dimension;
-            if (coinFlip()) {
-                words.push(leftStart);
-                let lastDimension;
-                if (leftChains.length > 0) {
-                    lastDimension = leftChains[leftChains.length-1][1];
-                }
-                dimension = findDimension(lastDimension, lastUsed, words);
-                lastUsed = dimension;
-                leftChains.push([words, dimension]);
-            } else {
-                words.push(rightStart);
-                let lastDimension;
-                if (rightChains.length > 0) {
-                    lastDimension = rightChains[rightChains.length-1][1];
-                }
-                dimension = findDimension(lastDimension, lastUsed, words);
-                lastUsed = dimension;
-                rightChains.push([words, dimension]);
-            }
-
-            remaining -= chainSize;
-        }
-
-        // const firstExp = createExplanation({wordCoordMap});
-
-        const leftOperations = this.applyChain(wordCoordMap, leftChains, leftStart);
-        const rightOperations = this.applyChain(wordCoordMap, rightChains, rightStart);
-        // return [firstExp, ...leftOperations, ...rightOperations];
-        return [...leftOperations, ...rightOperations];
-    }
-
-    applyChain(wordCoordMap, chains, refWord) {
-        if (chains.length === 0) {
-            return [];
-        }
-        let operations = [];
-        const mirror = (a, b, index) => {
-            const p1 = wordCoordMap[a];
-            const p2 = wordCoordMap[b];
-            const diff = p2[index] - p1[index];
-            const newPoint = p2.slice();
-            newPoint[index] = p1[index] - diff;
-            operations.push(createMirrorTemplate(a, b, dimensionNames[index]));
-            return newPoint;
-        }
-
-        const set = (a, b, index) => {
-            const p1 = wordCoordMap[a];
-            const p2 = wordCoordMap[b];
-            const newPoint = p2.slice();
-            newPoint[index] = p1[index];
-            operations.push(createSetTemplate(a, b, dimensionNames[index]));
-            return newPoint;
-        }
-
-        const scale = (a, b, index) => {
-            const p1 = wordCoordMap[a];
-            const p2 = wordCoordMap[b];
-            const diff = p2[index] - p1[index];
-            const newPoint = p2.slice();
-            const magnifier = 2;
-            operations.push(createScaleTemplate(a, b, dimensionNames[index], magnifier));
-            newPoint[index] = p1[index] + magnifier * diff;
-            return newPoint;
-        }
-
-        let commandPool = [mirror, mirror, mirror, scale, scale];
-        let starterCommandPool = [set, mirror, scale];
-        let usedCommands = [];
-
-        let count = 0;
-        for (const [chain, dimension] of chains) {
-            for (let i = 1; i < chain.length; i++) {
-                const a = chain[i-1];
-                const b = chain[i];
-                let cpool = (i === 1 ? starterCommandPool : commandPool).slice();
-                if (usedCommands.length > 1) {
-                    cpool = cpool.filter(c => c !== usedCommands[usedCommands.length - 1]);
-                }
-
-                const command = pickRandomItems(cpool, 1).picked[0];
-                wordCoordMap[b] = command.call(null, a, b, dimension);
-                usedCommands.push(command);
-                // operations.push(createExplanation({wordCoordMap}));
-            }
-            count += 1;
-        }
-        return operations;
-    }
-
     _pickBaseWord(wordCoordMap, neighbors, branchesAllowed) {
         const options = Object.keys(wordCoordMap);
         const neighborLimit = (!branchesAllowed || options.length <= 3) ? 1 : 2;
@@ -502,47 +359,4 @@ function createDirectionQuestion3D(length) {
 
 function createDirectionQuestion4D(length) {
     return new DirectionQuestion(new Direction4D()).createQuestion(length);
-}
-
-function createMirrorTemplate(a, b, dimension) {
-    return `<span class="subject">${b}</span> is <span class="highlight">${dimension}</span>-mirrored across <span class="subject">${a}</span>`;
-}
-function createScaleTemplate(a, b, dimension, scale) {
-    return ` <span class="subject">${b}</span> is <span class="highlight">${dimension}</span>-scaled <span class="highlight">${scale}×</span> from <span class="subject">${a}</span>`;
-}
-function createSetTemplate(a, b, dimension) {
-    return `<span class="highlight">${dimension}</span> of <span class="subject">${b}</span> is set to <span class="highlight">${dimension}</span> of <span class="subject">${a}</span>`;
-}
-function createShiftTemplate(word, direction, shift) {
-    return `<span class="subject">${word}</span> is moved ${direction} by <span class="highlight">${shift}</span>`;
-}
-
-function repeatArrayUntil(arr, n) {
-    const result = [];
-    while (result.length < n) {
-        result.push(...arr); // Spread the array and append it to the result
-    }
-    return result.slice(0, n); // Trim the array to exactly 'n' elements
-}
-
-function interleaveArrays(arr1, arr2) {
-    const maxLength = Math.max(arr1.length, arr2.length); // Get the longer array's length
-    const result = [];
-
-    for (let i = 0; i < maxLength; i++) {
-        if (i < arr1.length) {
-            result.push(arr1[i]); // Add element from the first array if it exists
-        }
-        if (i < arr2.length) {
-            result.push(arr2[i]); // Add element from the second array if it exists
-        }
-    }
-
-    return result;
-}
-
-function pairwise(arr, callback) {
-    for (let i = 0; i < arr.length - 1; i++) {
-        callback(arr[i], arr[i + 1], i, arr);
-    }
 }
