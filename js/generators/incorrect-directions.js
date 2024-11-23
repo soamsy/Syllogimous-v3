@@ -41,9 +41,7 @@ class IncorrectDirections {
 
     chooseIncorrectCoord(usedCoords, correctCoord, diffCoord) {
         const incorrectCoords = this.createIncorrectConclusionCoords(usedCoords, correctCoord, diffCoord);
-        console.log(incorrectCoords.map(dirStringFromCoord))
         const picked = pickRandomItems(incorrectCoords, 1).picked[0];
-        console.log(dirStringFromCoord(picked));
         return picked;
     }
 }
