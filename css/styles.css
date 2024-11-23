@@ -420,8 +420,10 @@ button.delete:hover {
 }
 
 .formatted-premise::before,
+.formatted-operation::before,
 .formatted-conclusion::before,
 .hqli-premise::before,
+.hqli-operation::before,
 .hqli-conclusion::before {
     color: #aaa;
     display: block;
@@ -433,18 +435,44 @@ button.delete:hover {
 }
 
 .hqli-premise::before,
+.hqli-operation::before,
 .hqli-conclusion::before {
     opacity: 0.4;
 }
 
 .formatted-premise,
-.hqli-premise {
+.formatted-operation,
+.hqli-premise,
+.hqli-operation {
     margin-bottom: 0.4rem;
 }
 
 .formatted-premise:nth-child(1)::before,
 .hqli-premise:nth-child(1)::before {
     content: 'Premises';
+}
+
+.formatted-operation::before,
+.hqli-operation::before {
+    margin-top: 1rem;
+    content: 'Transformations';
+}
+
+.formatted-operation ~ .formatted-operation::before,
+.hqli-operation ~ .hqli-operation::before {
+    margin-top: 0;
+    content: '';
+}
+
+.formatted-operation:first-of-type::before,
+.hqli-operation:first-of-type::before {
+    color: cyan;
+}
+
+.highlight {
+    font-weight: 700;
+    padding: 0 3px;
+    background-color: #222;
 }
 
 .formatted-conclusion {
@@ -459,7 +487,8 @@ button.delete:hover {
 }
 
 .formatted-conclusion,
-.formatted-premise {
+.formatted-premise,
+.formatted-operation {
     padding: 0 1px;
     text-shadow: 
         0.04em 0 0.06em #11111175,

@@ -176,6 +176,7 @@ function displayInit() {
     displayLabelLevel.textContent = q.premises.length + " ps";
     displayText.innerHTML = [
         ...q.premises.map(p => `<div class="formatted-premise">${p}</div>`),
+        ...(q.operations ? q.operations.map(o => `<div class="formatted-operation">${o}</div>`) : []),
         '<div class="conclusion-padding"></div>',
         '<div class="formatted-conclusion">'+q.conclusion+'</div>'
     ].join('');
@@ -584,6 +585,8 @@ function createHQLI(question, i) {
         .map(p => `<div class="hqli-premise">${p}</div>`)
         .join("\n");
 
+    const htmlOperations = q.operations ? q.operations.map(o => `<div class="hqli-operation">${o}</div>`).join("\n") : '';
+
     let responseTimeHtml = '';
     if (q.startedAt && q.answeredAt)
         responseTimeHtml =
@@ -597,6 +600,7 @@ function createHQLI(question, i) {
         <div class="index"></div>
         <div class="hqli-premises">
             ${htmlPremises}
+            ${htmlOperations}
         </div>
         <div class="hqli-conclusion">${q.conclusion}</div>
         <div class="hqli-answer-user ${answerUserClassName}">${answerUserDisplay}</div>

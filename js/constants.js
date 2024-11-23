@@ -51,7 +51,8 @@ let savedata = {
     "overrideTemporalPremises": null,
     "overrideDirection3DPremises": null,
     "overrideDirection4DPremises": null,
-    "useJunkEmoji": false
+    "useJunkEmoji": false,
+    "spaceHardModeLevel": 0,
 };
 
 const keySettingMap = {
@@ -91,7 +92,8 @@ const keySettingMap = {
     "p-25": "gameAreaColor",
     "p-26": "garbageWordLength",
     "p-27": "useGarbageWords",
-    "p-28": "useJunkEmoji"
+    "p-28": "useJunkEmoji",
+    "p-29": "spaceHardModeLevel",
 };
 
 const meaningfulWords = {
@@ -3946,4 +3948,11 @@ const reverseTimeNames = {
     'was': 'will be',
     'is': 'is',
     'will be': 'was'
+}
+
+const dimensionNames = {
+    [0]: 'X',
+    [1]: 'Y',
+    [2]: 'Z',
+    [3]: 'T'
 }

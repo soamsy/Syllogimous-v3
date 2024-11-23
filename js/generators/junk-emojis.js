@@ -158,6 +158,10 @@ function renderJunkEmojis(question) {
         question.premises = question.premises.map(renderJunkEmojisText);
     }
 
+    if (question.operations) {
+        question.operations = question.operations.map(renderJunkEmojisText);
+    }
+
     if (question.conclusion) {
         question.conclusion = renderJunkEmojisText(question.conclusion);
     }

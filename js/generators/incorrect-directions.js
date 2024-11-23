@@ -23,10 +23,14 @@ class IncorrectDirections {
             }
 
             for (const shift of shifts) {
-                let newCombo = structuredClone(correctCoord);
+                let newCombo = correctCoord.slice();
                 newCombo[i] += shift;
                 if (validDirections[JSON.stringify(newCombo)]) {
                     combinations.push(newCombo);
+                    combinations.push(newCombo);
+                    if (Math.abs(shift) == 1) {
+                        combinations.push(newCombo);
+                    }
                 }
             }
         }
@@ -37,6 +41,9 @@ class IncorrectDirections {
 
     chooseIncorrectCoord(usedCoords, correctCoord, diffCoord) {
         const incorrectCoords = this.createIncorrectConclusionCoords(usedCoords, correctCoord, diffCoord);
-        return pickRandomItems(incorrectCoords, 1).picked[0];
+        console.log(incorrectCoords.map(dirStringFromCoord))
+        const picked = pickRandomItems(incorrectCoords, 1).picked[0];
+        console.log(dirStringFromCoord(picked));
+        return picked;
     }
 }
