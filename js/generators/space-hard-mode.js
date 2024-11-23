@@ -34,7 +34,7 @@ class SpaceHardMode {
             }
             break;
         }
-        return [newWordMap, newDiffCoord, newConclusionCoord, operations, usedDimensions];
+        return [newWordMap, operations, newDiffCoord, newConclusionCoord, usedDimensions];
     }
 
     applyHardMode(wordCoordMap, leftStart, rightStart) {

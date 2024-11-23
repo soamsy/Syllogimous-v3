@@ -217,7 +217,7 @@ class DirectionQuestion {
         this.spaceHardMode = new SpaceHardMode(directionGenerator);
     }
 
-    generate(length) {
+    createQuestion(length) {
         let startWord;
         let endWord;
 
@@ -238,7 +238,7 @@ class DirectionQuestion {
         let operations = [];
         let hardModeDimensions = [];
         if (this.generator.hardModeAllowed()) {
-            [wordCoordMap, diffCoord, conclusionCoord, operations, hardModeDimensions] = this.spaceHardMode.basicHardMode(wordCoordMap, startWord, endWord, conclusionCoord);
+            [wordCoordMap, operations, diffCoord, conclusionCoord, hardModeDimensions] = this.spaceHardMode.basicHardMode(wordCoordMap, startWord, endWord, conclusionCoord);
         }
 
         let isValid;
@@ -253,23 +253,33 @@ class DirectionQuestion {
         }
 
         shuffle(premises);
-        this.wordCoordMap = wordCoordMap;
-        this.isValid = isValid;
-        this.premises = premises;
-        this.operations = operations;
-        this.conclusion = conclusion;
+        return {
+            category: this.generator.getName(),
+            startedAt: new Date().getTime(),
+            wordCoordMap,
+            isValid,
+            premises,
+            operations,
+            conclusion,
+        }
     }
 
     createAnalogy(length) {
         let isValid;
         let isValidSame;
-        let [wordCoordMap, neighbors, premises, usedDirCoords] = [];
+        let [wordCoordMap, neighbors, premises, usedDirCoords, operations] = [];
         let [a, b, c, d] = [];
         const branchesAllowed = Math.random() > 0.2;
         const flip = coinFlip();
         while (flip !== isValidSame) {
             [wordCoordMap, neighbors, premises, usedDirCoords] = this.createWordMap(length, branchesAllowed);
             [a, b, c, d] = pickRandomItems(Object.keys(wordCoordMap), 4).picked;
+            if (this.generator.hardModeAllowed()) {
+                const [startWord, endWord] = pickRandomItems([a, b, c, d], 2).picked;
+                const [diffCoord, conclusionCoord] = getConclusionCoords(wordCoordMap, startWord, endWord);
+                let [_x, _y, _z] = [];
+                [wordCoordMap, operations, _x, _y, _z] = this.spaceHardMode.basicHardMode(wordCoordMap, startWord, endWord, conclusionCoord);
+            }
             isValidSame = arraysEqual(findDirection(wordCoordMap[a], wordCoordMap[b]), findDirection(wordCoordMap[c], wordCoordMap[d]));
         }
         let conclusion = analogyTo(a, b);
@@ -288,6 +298,7 @@ class DirectionQuestion {
             wordCoordMap,
             isValid,
             premises,
+            operations,
             conclusion,
         }
     }
@@ -334,19 +345,6 @@ class DirectionQuestion {
         }
         const baseWord = pickRandomItems(pool, 1).picked[0];
         return baseWord;
-    }
-
-    createQuestion(length) {
-        this.generate(length);
-        return {
-            category: this.generator.getName(),
-            startedAt: new Date().getTime(),
-            wordCoordMap: this.wordCoordMap,
-            isValid: this.isValid,
-            premises: this.premises,
-            operations: this.operations,
-            conclusion: this.conclusion,
-        }
     }
 }
 
