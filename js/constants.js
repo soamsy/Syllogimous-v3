@@ -52,7 +52,8 @@ let savedata = {
     "overrideDirection3DPremises": null,
     "overrideDirection4DPremises": null,
     "useJunkEmoji": false,
-    "spaceHardModeLevel": 0,
+    "space2DHardModeLevel": 0,
+    "space3DHardModeLevel": 0,
 };
 
 const keySettingMap = {
@@ -93,7 +94,8 @@ const keySettingMap = {
     "p-26": "garbageWordLength",
     "p-27": "useGarbageWords",
     "p-28": "useJunkEmoji",
-    "p-29": "spaceHardModeLevel",
+    "p-29": "space2DHardModeLevel",
+    "p-30": "space3DHardModeLevel",
 };
 
 const meaningfulWords = {

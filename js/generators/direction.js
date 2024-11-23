@@ -111,7 +111,7 @@ class Direction2D {
     }
 
     hardModeLevel() {
-        return savedata.spaceHardModeLevel;
+        return savedata.space2DHardModeLevel;
     }
 
 
@@ -166,7 +166,7 @@ class Direction3D {
     }
 
     hardModeLevel() {
-        return savedata.spaceHardModeLevel;
+        return savedata.space3DHardModeLevel;
     }
 
     pickDiagonalDirection() {
