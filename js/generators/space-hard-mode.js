@@ -9,7 +9,7 @@ class SpaceHardMode {
         let newConclusionCoord;
         let operations;
         let usedDimensions;
-        const demandClose = Math.random() > 0.3;
+        const demandClose = Math.random() > 0.4;
         const demandChange = Math.random() > 0.2;
         let closeTries = 10;
         let changeTries = 10;
