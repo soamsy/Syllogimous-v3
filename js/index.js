@@ -28,6 +28,7 @@ const historyList = document.getElementById("history-list");
 const totalDisplay = document.getElementById("total-display");
 const averageDisplay = document.getElementById("average-display");
 const averageCorrectDisplay = document.getElementById("average-correct-display");
+const percentCorrectDisplay = document.getElementById("percent-correct-display");
 
 let carouselIndex = 0;
 let carouselEnabled = false;
@@ -554,12 +555,16 @@ function updateAverage(reverseChronological) {
     const average =  totalTime / times.length;
     averageDisplay.innerHTML = average.toFixed(1) + 's';
 
-    let correctTimes = questions.filter(q => q.correctness == 'right').map(q => (q.answeredAt - q.startedAt) / 1000);
+    const correctQuestions = questions.filter(q => q.correctness == 'right');
+    const percentCorrect = 100 * correctQuestions.length / questions.length;
+    percentCorrectDisplay.innerHTML = percentCorrect.toFixed(1) + '%';
+    const correctTimes = correctQuestions.map(q => (q.answeredAt - q.startedAt) / 1000);
     if (correctTimes.length == 0) {
         averageCorrectDisplay.innerHTML = 'None yet';
         return;
     }
-    const averageCorrect = correctTimes.reduce((a,b) => a + b, 0) / correctTimes.length;
+    const totalTimeBeingCorrect = correctTimes.reduce((a,b) => a + b, 0);
+    const averageCorrect = totalTimeBeingCorrect / correctTimes.length;
     averageCorrectDisplay.innerHTML = averageCorrect.toFixed(1) + 's';
 }
 
