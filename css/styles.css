@@ -39,7 +39,23 @@
 }
 
 :root {
-    font-size: 125%;
+  --step--2: clamp(0.7813rem, 0.6829rem + 0.3575vw, 0.96rem);
+  --step--1: clamp(0.9375rem, 0.7931rem + 0.525vw, 1.2rem);
+  --step-0: clamp(1.125rem, 0.9188rem + 0.75vw, 1.5rem);
+  --step-1: clamp(1.35rem, 1.0613rem + 1.05vw, 1.875rem);
+  --step-2: clamp(1.62rem, 1.2219rem + 1.4475vw, 2.3438rem);
+  --step-3: clamp(1.944rem, 1.4019rem + 1.9714vw, 2.9297rem);
+  --step-4: clamp(2.3328rem, 1.6017rem + 2.6586vw, 3.6621rem);
+  --step-5: clamp(2.7994rem, 1.8213rem + 3.5566vw, 4.5776rem);
+
+  --text-outline: 0.04em 0 0.06em #11111175,
+        0 0.04em 0.06em #11111175,
+        -0.04em 0 0.06em #11111175,
+        0 -0.04em 0.06em #11111175,
+        -0.04em -0.04em 0.06em #11111175,
+        -0.04em 0.04em 0.06em #11111175,
+        0.04em -0.04em 0.06em #11111175,
+        0.04em 0.04em 0.06em #11111175;
 }
 
 body {
@@ -47,6 +63,7 @@ body {
     margin: 0;
     padding: 0;
     font-family: "MGS2", sans-serif;
+    font-size: var(--step-0);
     color: #fffff1;
     background-color: #111;
 }
@@ -109,11 +126,11 @@ button.delete:hover {
 
 /* start of Utils */
 .mb-1 {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 .mb-2 {
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
 }
 
 .ffmono {
@@ -158,7 +175,7 @@ button.delete:hover {
 
 .feedback span {
     font-family: "metal gear", sans-serif;
-    font-size: 2.5rem;
+    font-size: var(--step-5);
     left: 50%;
     letter-spacing: 0.75rem;
     padding: 0.75rem;
@@ -265,9 +282,9 @@ button.delete:hover {
 }
 
 .timer-wrap {
-    min-width: 440px;
+    width: 100%;
     margin: 0 auto;
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
 }
 
 .timer {
@@ -289,12 +306,13 @@ button.delete:hover {
     font-family: "Espionage", sans-serif;
     gap: 1.25rem;
     justify-content: space-between;
-    padding: .25rem .75rem;
+    padding: .25rem 1rem;
 }
 .inline-input__inner {
     background-color: #111a;
     font-family: "MGS2", sans-serif;
     padding: .25rem;
+    white-space: nowrap;
 }
 .inline-input__inner > input,
 .inline-input__inner > select,
@@ -302,6 +320,7 @@ button.delete:hover {
     background-color: #0000;
     border: none;
     color: #fff;
+    font-size: var(--step--1);
 }
 
 .inline-input__inner > select option {
@@ -338,6 +357,7 @@ button.delete:hover {
 
 .single-input {
     display: flex;
+    gap: 0.2rem;
     flex-direction: column;
 }
 
@@ -350,6 +370,7 @@ button.delete:hover {
     gap: 0.5rem;
     flex-direction: column;
     border-radius: 0 0 20px 20px;
+    max-width: 750px;
 }
 
 .carousel, .display-outer {
@@ -374,21 +395,27 @@ button.delete:hover {
 .confirmation-true,
 .confirmation-false {
     padding: 0.5rem 1rem;
-    width: 5rem;
+    min-width: 8rem;
 }
 
 .confirmation-true {
-    background-color: #0a0!important;
+    background-color: #090!important;
 }
 .confirmation-true:hover {
-    box-shadow: 0 3px 5px 0 #0a08!important;
+    box-shadow: 0 3px 5px 0 #0908!important;
 }
 
 .confirmation-false {
-    background-color: #a00!important;
+    background-color: #900!important;
 }
 .confirmation-false:hover {
-    box-shadow: 0 3px 5px 0 #a008!important;
+    box-shadow: 0 3px 5px 0 #9008!important;
+}
+
+.score {
+    padding: 0 1rem;
+    font-size: var(--step-1);
+    text-shadow: var(--text-outline);
 }
 
 .carousel {
@@ -410,23 +437,24 @@ button.delete:hover {
 }
 
 .display-inner {
-    padding: 1rem 1rem 1rem 1rem;
-    margin: 0 1rem;
+    padding: 1rem 1.5rem;
+    margin: 0 3rem;
 }
 
 .carousel_display_label-wrapper h2, .display-inner h2 {
     display: flex;
     font-family: "Espionage", sans-serif;
-    font-size: 1rem;
+    font-size: var(--step-0);
     letter-spacing: 0.15em;
     justify-content: space-between;
-    margin-top: -0.5rem;
-    padding: 0 0.5rem 0 calc(0.5rem + 4px);
+    margin-top: -0.6rem;
+    padding: 0 0.5rem 0 0.65rem;
     position: absolute;
     width: 100%;
     gap: 0.5rem;
     top: 0;
     left: 0;
+    text-shadow: var(--text-outline);
 }
 
 .carousel_display_label_progress, .display_label_level {
@@ -435,9 +463,9 @@ button.delete:hover {
 
 .display_text {
     max-height: calc(100vh - 240px);
-    min-width: 220px;
+    min-width: 300px;
     line-height: 1.5;
-    padding: 0.25rem 0.5rem 0 0;
+    padding: 0.5rem 1rem 0 0;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -450,16 +478,18 @@ button.delete:hover {
 .hqli-conclusion::before {
     color: #aaa;
     display: block;
-    font-size: 0.75rem;
+    font-size: var(--step--1);
     font-weight: bolder;
     line-height: 0.4rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.7rem;
     opacity: 0.6;
 }
 
 .hqli-premise::before,
 .hqli-operation::before,
 .hqli-conclusion::before {
+    font-size: var(--step--2);
+    margin-bottom: 0.4rem;
     opacity: 0.4;
 }
 
@@ -467,23 +497,37 @@ button.delete:hover {
 .formatted-operation,
 .hqli-premise,
 .hqli-operation {
+    margin-bottom: 0.7rem;
+}
+
+.hqli-premise,
+.hqli-operation {
     margin-bottom: 0.4rem;
 }
 
 .formatted-premise:nth-child(1)::before,
 .hqli-premise:nth-child(1)::before {
+    margin: 0.5rem 0 1rem 0;
     content: 'Premises';
+}
+
+.hqli-premise:nth-child(1)::before {
+    margin: 0.3rem 0 0.6rem 0;
 }
 
 .formatted-operation::before,
 .hqli-operation::before {
-    margin-top: 1rem;
+    margin: 2rem 0 1rem 0;
     content: 'Transformations';
+}
+
+.hqli-operation::before {
+    margin: 1rem 0 0.5rem 0;
 }
 
 .formatted-operation ~ .formatted-operation::before,
 .hqli-operation ~ .hqli-operation::before {
-    margin-top: 0;
+    margin: 0;
     content: '';
 }
 
@@ -504,24 +548,14 @@ button.delete:hover {
 
 .conclusion-padding {
     height: 2px;
-    margin: 0.6rem 0;
-    border: none;
-    border-radius: 1px;
+    margin: 1rem 0;
 }
 
 .formatted-conclusion,
 .formatted-premise,
 .formatted-operation {
     padding: 0 1px;
-    text-shadow: 
-        0.04em 0 0.06em #11111175,
-        0 0.04em 0.06em #11111175,
-        -0.04em 0 0.06em #11111175,
-        0 -0.04em 0.06em #11111175,
-        -0.04em -0.04em 0.06em #11111175,
-        -0.04em 0.04em 0.06em #11111175,
-        0.04em -0.04em 0.06em #11111175,
-        0.04em 0.04em 0.06em #11111175;
+    text-shadow: var(--text-outline);
 }
 
 .formatted-conclusion::before {
@@ -542,50 +576,50 @@ button.delete:hover {
 .bracket-lip-bottom-right {
     position: absolute;
     background-color: #eddb7e;
-    box-shadow: 0 0 4px #9e8847;
+    box-shadow: 0 0 0.33rem #9e8847;
 }
 
 .border-left,
 .border-right {
     height: 100%;
-    width: 4px;
+    width: 0.33rem;
     top: 0;
 }
 
 .border-left {
-    left: -8px;
+    left: -1rem;
 }
 
 .border-right {
-    right: -8px;
+    right: -1rem;
 }
 
 .bracket-lip-top-left {
     top: 0;
-    left: -4px;
-    width: 8px;
-    height: 4px;
+    left: -1rem;
+    width: 1rem;
+    height: 0.33rem;
 }
 
 .bracket-lip-bottom-left {
     bottom: 0;
-    left: -8px;
-    width: 12px;
-    height: 4px;
+    left: -1rem;
+    width: 1rem;
+    height: 0.33rem;
 }
 
 .bracket-lip-top-right {
     top: 0;
-    right: -8px;
-    width: 8px;
-    height: 4px;
+    right: -1rem;
+    width: 1rem;
+    height: 0.33rem;
 }
 
 .bracket-lip-bottom-right {
     bottom: 0;
-    right: -8px;
-    width: 12px;
-    height: 4px;
+    right: -1rem;
+    width: 1rem;
+    height: 0.33rem;
 }
 
 .subject {
@@ -594,7 +628,7 @@ button.delete:hover {
 }
 
 .analogy-statement {
-    font-size: 14px;
+    font-size: var(--step--1);
     margin: 2px 0;
 }
 
@@ -625,7 +659,7 @@ button.delete:hover {
 
 .negation-explainer {
     color: #eddb7e;
-    font-size: 0.825rem;
+    font-size: var(--step--1);
     font-style: italic;
 }
 
@@ -639,14 +673,12 @@ button.delete:hover {
     text-decoration: none;
 }
 
-label.open[for="offcanvas-settings"],
-label.open[for="offcanvas-history"],
-label.open[for="offcanvas-appearance"],
-label.open[for="offcanvas-credits"] {
+label.open {
+    display: block;
     background-color: #0009;
     color: #abf4ff;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: var(--step-0);
     font-weight: bold;
     padding: 1rem;
     position: absolute;
@@ -656,29 +688,22 @@ label.open[for="offcanvas-credits"] {
 label.open[for="offcanvas-settings"] {
     left: 0;
     top: 0;
-    transform-origin: bottom left;
-    transform: rotateZ(90deg) translateX(-3rem);
+    transform-origin: top left;
+    transform: rotateZ(90deg) translateY(-100%);
 }
 
 label.open[for="offcanvas-history"] {
     right: 0;
     top: 0;
     transform-origin: top right;
-    transform: rotateZ(-90deg) translateY(-3rem);
-}
-
-label.open[for="offcanvas-appearance"] {
-    left: 0;
-    bottom: 0;
-    transform-origin: bottom left;
-    transform: rotateZ(90deg) translateX(-100%);
+    transform: rotateZ(-90deg) translateY(-100%);
 }
 
 label.open[for="offcanvas-credits"] {
     right: 0;
     bottom: 0;
     transform-origin: bottom right;
-    transform: rotateZ(-90deg) translateX(100%);
+    transform: rotateZ(-90deg) translateX(calc(100% + 1rem));
 }
 
 label.open[for="offcanvas-settings"]:hover {
@@ -686,10 +711,6 @@ label.open[for="offcanvas-settings"]:hover {
 }
 
 label.open[for="offcanvas-history"]:hover {
-    text-shadow: 0px 0px 5px #affa;
-}
-
-label.open[for="offcanvas-appearance"]:hover {
     text-shadow: 0px 0px 5px #affa;
 }
 
@@ -705,10 +726,6 @@ label.open[for="offcanvas-credits"]:hover {
     transform: translateX(0);
 }
 
-#offcanvas-appearance:checked + .offcanvas {
-    transform: translateX(0);
-}
-
 #offcanvas-credits:checked + .offcanvas {
     transform: translateX(0);
 }
@@ -719,7 +736,7 @@ label.open[for="offcanvas-credits"]:hover {
     color: #fffff0;
     display: flex;
     height: 100%;
-    max-width: 420px;
+    max-width: 480px;
     position: absolute;
     top: 0;
     transition: all 0.3s ease-out;
@@ -730,7 +747,8 @@ label.open[for="offcanvas-credits"]:hover {
 .offcanvas-body {
     overflow: auto;
     padding: 1rem;
-    width: calc(100% - 2rem)
+    width: calc(100% - 2rem);
+    font-size: var(--step--1);
 }
 
 .offcanvas-side {
@@ -753,7 +771,7 @@ label.open[for="offcanvas-credits"]:hover {
 
 .offcanvas-close {
     cursor: pointer;
-    font-size: 1.5rem;
+    font-size: 2rem;
     line-height: 1;
     padding: 0.5rem;
     position: absolute;
@@ -770,7 +788,7 @@ label.open[for="offcanvas-credits"]:hover {
 
 .explainer {
     color: #666;
-    font-size: 0.825rem;
+    font-size: var(--step--1);
     font-style: italic;
     list-style: none;
     margin: 0.25rem 0;
@@ -788,7 +806,11 @@ label.open[for="offcanvas-credits"]:hover {
 .ctrl__inner {
     align-items: center;
     display: flex;
-    gap: 0.5rem;
+    gap: 0.75rem;
+}
+
+.big-input {
+    font-size: var(--step-0);
 }
 
 .switch {
@@ -797,12 +819,12 @@ label.open[for="offcanvas-credits"]:hover {
     background-color: #333;
     cursor: pointer;
     display: flex;
-    height: 1.5rem;
     justify-content: center;
     overflow: hidden;
     position: relative;
     transition: all 1s ease-out;
-    width: 1.5rem;
+    height: 2rem;
+    width: 2rem;
 }
 
 .switch::after {
@@ -906,7 +928,7 @@ input[type="checkbox"]:checked + .switch::after {
 
 .hqli-footer {
     color: #fff6;
-    font-size: 12px;
+    font-size: var(--step--2);
     margin-right: -1rem;
     text-align: right;
     display: flex;
@@ -1004,9 +1026,54 @@ table.distinction {
     margin: 0 auto;
 }
 
+.settings-label::before {
+    content: 'SETTINGS';
+}
+
+.history-label::before {
+    content: 'HISTORY';
+}
+
+.credits-label::before {
+    content: 'CREDITS';
+}
+
 @media (max-width: 768px) {
     .main-view {
         border: 0;
         box-shadow: none;
     }
+}
+
+@media (max-width: 500px) {
+    .offcanvas {
+        max-width: none;
+        width: calc(100vw);
+    }
+
+    .display-inner {
+        margin: 0;
+    }
+
+    .display-inner .border-left,
+    .display-inner .border-right,
+    .display-inner .bracket-lip-top-left,
+    .display-inner .bracket-lip-top-right,
+    .display-inner .bracket-lip-bottom-left,
+    .display-inner .bracket-lip-bottom-right {
+        display: none;
+    }
+
+    label.open {
+        padding: 0.4rem;
+    }
+
+    .game-area {
+        max-width: calc(100vw - 3rem);
+    }
+
+    .inline-input__outer {
+        gap: 0.2rem;
+    }
+
 }

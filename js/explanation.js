@@ -151,13 +151,22 @@ function createExplanation(question) {
     }
 }
 
-function createExplanationPopup(question) {
+function createExplanationPopup(question, e) {
+    const { clientX: mouseX, clientY: mouseY } = event;
     const popup = document.createElement("div");
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    let popupHeight;
+    if (viewportHeight - mouseY < 200) {
+        popupHeight = mouseY - 150;
+    } else {
+        popupHeight = mouseY + 100;
+    }
     popup.id = "explanation-popup";
     popup.className = "explanation-popup";
     popup.style.position = "fixed";
-    popup.style.top = "50%";
-    popup.style.left = "50%";
+    popup.style.left = `50%`;
+    popup.style.top = `${popupHeight}px`;
     popup.style.transform = "translate(-50%, -50%)";
     popup.style.zIndex = "1000";
     popup.style.padding = "20px";
@@ -165,6 +174,8 @@ function createExplanationPopup(question) {
     popup.style.borderRadius = "8px";
     popup.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
     popup.style.width = "fit-content";
+    popup.style.maxWidth = "100vw";
+    popup.style.overflow = "scroll";
     popup.style.textAlign = "center";
 
     const content = document.createElement("pre");

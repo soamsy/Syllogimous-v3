@@ -632,8 +632,8 @@ function createHQLI(question, i) {
     });
     const explanationButton = parent.querySelector(".explanation-button");
     if (explanationButton) {
-        explanationButton.addEventListener('mouseenter', () => {
-            createExplanationPopup(q);
+        explanationButton.addEventListener('mouseenter', (e) => {
+            createExplanationPopup(q, e);
         });
         explanationButton.addEventListener('mouseleave', () => {
             removeExplanationPopup();
@@ -647,7 +647,7 @@ timerInput.addEventListener("input", evt => {
     const el = evt.target;
     timerTime = el.value;
     timerCount = el.value;
-    el.style.width = (el.value.length + 3) + 'ch';
+    el.style.width = (el.value.length + 4) + 'ch';
     savedata.timer = el.value;
     if (timerToggle.checked) {
         stopCountDown();

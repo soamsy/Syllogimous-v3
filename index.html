@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<!-- ios support -->
 		<link rel="apple-touch-icon" href="icons/icon-72x72.png" />
 		<link rel="apple-touch-icon" href="icons/icon-96x96.png" />
@@ -19,56 +21,6 @@
 		<style id="live-styles"></style>
 	</head>
 	<body>
-
-		<!-- <div class="incoming-call is-open">
-			<div class="incoming-call__inner">
-				<button class="incoming-call__box" onclick="openCodec();">CALL</button>
-				<p>Push to Open</p>
-			</div>
-		</div>
-
-		<div class="codec">
-			<div class="codec__grid">
-				<div class="codec__sender">
-					<img src="img/sender.PNG">
-				</div>
-				<div class="codec__frequency">
-					<div class="codec__frequency-bar"></div>
-					<div class="codec__frequency-bar"></div>
-					<div class="codec__frequency-bar"></div>
-					<div class="codec__frequency-bar"></div>
-					<div class="codec__frequency-bar"></div>
-					<div class="codec__frequency-bar"></div>
-					<div class="codec__frequency-bar"></div>
-					<div class="codec__frequency-bar"></div>
-					<div class="codec__frequency-bar"></div>
-					<div class="codec__frequency-bar"></div>
-					<div class="codec__frequency-bar"></div>
-					<div class="codec__frequency-bar"></div>
-					<div class="codec__frequency-bar"></div>
-					<div class="codec__frequency-bar"></div>
-					<div class="codec__frequency-bar"></div>
-					<div class="codec__frequency-bar"></div>
-					<div class="codec__frequency-bar"></div>
-					<div class="codec__frequency-bar"></div>
-					<div class="codec__frequency-num">141.12</div>
-					<div class="codec__frequency-toolbar">
-						<span>MEM</span>
-						<span>TUNE</span>
-					</div>
-				</div>
-				<div class="codec__receiver">
-					<img src="img/receiver.PNG">
-				</div>
-				<div class="codec__message">
-					<span>Kept waiting, huh?</span>
-					<div class="codec__actions">
-						<button onclick="closeCodec();">Close</button>
-					</div>
-				</div>
-			</div>
-		</div> -->
-
 		<div class="feedback feedback--wrong">
 			<span>WRONG</span>
 			<div class="line"></div>
@@ -94,7 +46,7 @@
 					<div style="direction: ltr;">
 						<div class="mb-2"></div>
 						<div class="mb-2">
-							<div class="inline-input__outer">
+							<div class="inline-input__outer big-input">
 								Global Premises
 								<span class="inline-input__inner">
 									<input id="p-5" type="number" min="2" max="100" value="2" style="width: 5ch">qty
@@ -439,6 +391,23 @@
 							</ul>
 						</div>
 						<div class="mb-2">
+							<div class="inline-input__outer">
+								Image
+								<span class="inline-input__inner">
+								  <input type="file" id="p-24" accept="image/*">
+								</span>
+							</div>
+							<button onclick="clearBackgroundImage()" style="float:right;">Clear Image</button>
+						</div>
+						<div class="mb-2">
+							<div class="inline-input__outer">
+								Color
+								<span class="inline-input__inner">
+								  <input type="text" id="p-25" placeholder="Enter color (e.g. #ff0000)" value="#161F30CC"></input>
+								</span>
+							</div>
+						</div>
+						<div class="mb-2">
 							<button onclick="resetApp()">Reset App</button>
 							<ul class="explainer">
 								<li>Resets score, history and settings</li>
@@ -457,43 +426,13 @@
 				<div class="offcanvas-side">
 					<label class="offcanvas-close" for="offcanvas-history">✕</label>
 				</div>
-				<div class="offcanvas-body ffmono hql-frame" style="max-width: 420px;">
+				<div class="offcanvas-body ffmono hql-frame">
 					<div>Total answer time: <span id="total-display"></span></div>
 					<div>Avg answer time: <span id="average-display"></span></div>
 					<div>Avg correct answer time: <span id="average-correct-display"></span></div>
 					<div>% of answers correct: <span id="percent-correct-display"></span></div>
 					<div id="history-list" class="hql"></div>
 					<button onclick="clearHistory()">Clear History</button>
-				</div>
-			</div>
-			<input id="offcanvas-appearance"
-				   type="checkbox"
-				   hidden>
-			<div class="offcanvas offcanvas--left">
-				<div class="offcanvas-side">
-					<label class="offcanvas-close" for="offcanvas-appearance">✕</label>
-				</div>
-				<div class="offcanvas-body ffmono" style="max-width: 420px;">
-					<div style="direction: ltr;">
-						<div class="mb-2"></div>
-						<div class="mb-2">
-							<div class="inline-input__outer">
-								Image
-								<span class="inline-input__inner">
-								  <input type="file" id="p-24" accept="image/*">
-								</span>
-							</div>
-							<button onclick="clearBackgroundImage()" style="float:right;">Clear Image</button>
-						</div>
-						<div class="mb-2">
-							<div class="inline-input__outer">
-								Color
-								<span class="inline-input__inner">
-								  <input type="text" id="p-25" placeholder="Enter color (e.g. #ff0000)" value="#161F30CC"></input>
-								</span>
-							</div>
-						</div>
-					</div>
 				</div>
 			</div>
 			<input id="offcanvas-credits"
@@ -503,7 +442,7 @@
 				<div class="offcanvas-side">
 					<label class="offcanvas-close" for="offcanvas-credits">✕</label>
 				</div>
-				<div class="offcanvas-body ffmono" style="max-width: 420px;">
+				<div class="offcanvas-body ffmono">
 					<div style="direction: ltr;">
 						<div class="inline-input__outer">
 							Credits
@@ -517,10 +456,9 @@
 					</div>
 				</div>
 			</div>
-			<label class="open metal-gear" for="offcanvas-settings">SETTINGS</label>
-			<label class="open metal-gear" for="offcanvas-history">HISTORY</label>
-			<label class="open metal-gear" for="offcanvas-appearance">APPEARANCE</label>
-			<label class="open metal-gear" for="offcanvas-credits">CREDITS</label>
+			<label class="open metal-gear" for="offcanvas-settings"><span class="sidebar-button settings-label"></span></label>
+			<label class="open metal-gear" for="offcanvas-history"><span class="sidebar-button history-label"></span></label>
+			<label class="open metal-gear" for="offcanvas-credits"><span class="sidebar-button credits-label"></span></label>
 
 			<div class="background-image"></div>
 
@@ -533,7 +471,7 @@
 						<div class="inline-input__outer" style="position: absolute; top: 0; transform: translate(12px, 12px);">
 							Timer
 							<span class="inline-input__inner">
-								<input id="timer-input" type="number" min="1" value="30" style="width: 5ch">sec
+								<input id="timer-input" type="number" min="1" value="30" style="width: 6ch">sec
 							</span>
 							<input id="timer-toggle" type="checkbox">
 						</div>
@@ -593,7 +531,7 @@
 						<div class="bracket-lip-top-right"></div>
 						<div class="border-right"></div>
 						<div class="bracket-lip-bottom-right"></div>
-						<h3><span class="correctly-answered">0</span> / <span class="next-level">0</span></h3>
+						<h3 class="score"><span class="correctly-answered">0</span> / <span class="next-level">0</span></h3>
 					</div>
 				</div>
 			</div>
