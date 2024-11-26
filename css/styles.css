@@ -75,6 +75,12 @@ ul li:not(:last-child) {
     margin-bottom: 0.5em;
 }
 
+a {
+  color: #1e90ff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
 button {
     padding: 0.25em 0.75em;
     font-family: inherit;
@@ -635,7 +641,8 @@ button.delete:hover {
 
 label.open[for="offcanvas-settings"],
 label.open[for="offcanvas-history"],
-label.open[for="offcanvas-user"] {
+label.open[for="offcanvas-appearance"],
+label.open[for="offcanvas-credits"] {
     background-color: #0009;
     color: #abf4ff;
     cursor: pointer;
@@ -660,11 +667,18 @@ label.open[for="offcanvas-history"] {
     transform: rotateZ(-90deg) translateY(-3rem);
 }
 
-label.open[for="offcanvas-user"] {
+label.open[for="offcanvas-appearance"] {
     left: 0;
     bottom: 0;
     transform-origin: bottom left;
-    transform: rotateZ(-90deg) translateY(3rem);
+    transform: rotateZ(90deg) translateX(-100%);
+}
+
+label.open[for="offcanvas-credits"] {
+    right: 0;
+    bottom: 0;
+    transform-origin: bottom right;
+    transform: rotateZ(-90deg) translateX(100%);
 }
 
 label.open[for="offcanvas-settings"]:hover {
@@ -675,7 +689,11 @@ label.open[for="offcanvas-history"]:hover {
     text-shadow: 0px 0px 5px #affa;
 }
 
-label.open[for="offcanvas-user"]:hover {
+label.open[for="offcanvas-appearance"]:hover {
+    text-shadow: 0px 0px 5px #affa;
+}
+
+label.open[for="offcanvas-credits"]:hover {
     text-shadow: 0px 0px 5px #affa;
 }
 
@@ -687,7 +705,11 @@ label.open[for="offcanvas-user"]:hover {
     transform: translateX(0);
 }
 
-#offcanvas-user:checked + .offcanvas {
+#offcanvas-appearance:checked + .offcanvas {
+    transform: translateX(0);
+}
+
+#offcanvas-credits:checked + .offcanvas {
     transform: translateX(0);
 }
 

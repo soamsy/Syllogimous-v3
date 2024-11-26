@@ -439,34 +439,11 @@
 							</ul>
 						</div>
 						<div class="mb-2">
-							<div class="inline-input__outer">
-								Image
-								<span class="inline-input__inner">
-								  <input type="file" id="p-24" accept="image/*">
-								</span>
-							</div>
-							<button onclick="clearBackgroundImage()" style="float:right;">Clear Image</button>
-						</div>
-						<div class="mb-2">
-							<div class="inline-input__outer">
-								Color
-								<span class="inline-input__inner">
-								  <input type="text" id="p-25" placeholder="Enter color (e.g. #ff0000)" value="#161F30CC"></input>
-								</span>
-							</div>
-						</div>
-						<div class="mb-2">
 							<button onclick="resetApp()">Reset App</button>
 							<ul class="explainer">
 								<li>Resets score, history and settings</li>
 							</ul>
 						</div>
-						<div class="inline-input__outer">
-							Credits
-						</div>
-						<ul class="explainer">
-							<li><a href="https://www.linkedin.com/in/f3d3r1c07r0774/">Fredo</a> - Original creator of Syllogimous. This app is a modified version of their work.</li>
-						</ul>
 					</div>
 				</div>
 				<div class="offcanvas-side">
@@ -489,8 +466,61 @@
 					<button onclick="clearHistory()">Clear History</button>
 				</div>
 			</div>
+			<input id="offcanvas-appearance"
+				   type="checkbox"
+				   hidden>
+			<div class="offcanvas offcanvas--left">
+				<div class="offcanvas-side">
+					<label class="offcanvas-close" for="offcanvas-appearance">✕</label>
+				</div>
+				<div class="offcanvas-body ffmono" style="max-width: 420px;">
+					<div style="direction: ltr;">
+						<div class="mb-2"></div>
+						<div class="mb-2">
+							<div class="inline-input__outer">
+								Image
+								<span class="inline-input__inner">
+								  <input type="file" id="p-24" accept="image/*">
+								</span>
+							</div>
+							<button onclick="clearBackgroundImage()" style="float:right;">Clear Image</button>
+						</div>
+						<div class="mb-2">
+							<div class="inline-input__outer">
+								Color
+								<span class="inline-input__inner">
+								  <input type="text" id="p-25" placeholder="Enter color (e.g. #ff0000)" value="#161F30CC"></input>
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<input id="offcanvas-credits"
+				   type="checkbox"
+				   hidden>
+			<div class="offcanvas offcanvas--right">
+				<div class="offcanvas-side">
+					<label class="offcanvas-close" for="offcanvas-credits">✕</label>
+				</div>
+				<div class="offcanvas-body ffmono" style="max-width: 420px;">
+					<div style="direction: ltr;">
+						<div class="inline-input__outer">
+							Credits
+						</div>
+						<ul class="explainer">
+							<li><a href="https://braintrain.dev/">braintrain.dev</a> - Online community for brain training.</li>
+						</ul>
+						<ul class="explainer mb-2">
+							<li><a href="https://www.linkedin.com/in/f3d3r1c07r0774/">Fredo</a> - Original creator of Syllogimous. This app is a modified version of their work.</li>
+						</ul>
+					</div>
+				</div>
+			</div>
 			<label class="open metal-gear" for="offcanvas-settings">SETTINGS</label>
 			<label class="open metal-gear" for="offcanvas-history">HISTORY</label>
+			<label class="open metal-gear" for="offcanvas-appearance">APPEARANCE</label>
+			<label class="open metal-gear" for="offcanvas-credits">CREDITS</label>
 
 			<div class="background-image"></div>
 
