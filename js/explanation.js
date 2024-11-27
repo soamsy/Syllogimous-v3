@@ -154,20 +154,11 @@ function createExplanation(question) {
 function createExplanationPopup(question, e) {
     const { clientX: mouseX, clientY: mouseY } = event;
     const popup = document.createElement("div");
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-    let popupHeight;
-    if (viewportHeight - mouseY < 200) {
-        popupHeight = mouseY - 150;
-    } else {
-        popupHeight = mouseY + 100;
-    }
     popup.id = "explanation-popup";
     popup.className = "explanation-popup";
     popup.style.position = "fixed";
     popup.style.left = `50%`;
-    popup.style.top = `${popupHeight}px`;
-    popup.style.transform = "translate(-50%, -50%)";
+    popup.style.transform = "translate(-50%, 0%)";
     popup.style.zIndex = "1000";
     popup.style.padding = "20px";
     popup.style.backgroundColor = "#222";
@@ -183,6 +174,20 @@ function createExplanationPopup(question, e) {
     popup.appendChild(content);
 
     document.body.appendChild(popup);
+
+    const popupRect = popup.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    if (viewportHeight - mouseY < 280 && viewportHeight / mouseY < 2.0) {
+        const popupTop = Math.max(mouseY - 40 - popupRect.height, 10);
+        popup.style.top = `${popupTop}px`;
+        popup.style.maxHeight = `${mouseY - 40}px`;
+    } else {
+        const popupTop = mouseY + 40;
+        popup.style.top = `${popupTop}px`;
+        popup.style.maxHeight = `${window.innerHeight - popupTop}px`;
+    }
+    
 }
 
 function removeExplanationPopup() {
