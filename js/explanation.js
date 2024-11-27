@@ -168,7 +168,7 @@ function createExplanationPopup(question, e) {
     popup.style.width = "fit-content";
     popup.style.maxWidth = "98vw";
     popup.style.maxHeight = "98vh";
-    popup.style.overflow = "scroll";
+    popup.style.overflow = "auto";
     popup.style.textAlign = "center";
     popup.style.pointerEvents = "none";
 
