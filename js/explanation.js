@@ -157,37 +157,26 @@ function createExplanationPopup(question, e) {
     popup.id = "explanation-popup";
     popup.className = "explanation-popup";
     popup.style.position = "fixed";
-    popup.style.left = `50%`;
-    popup.style.transform = "translate(-50%, 0%)";
+    popup.style.top = "50%";
+    popup.style.left = "50%";
+    popup.style.transform = "translate(-50%, -50%)";
     popup.style.zIndex = "1000";
     popup.style.padding = "20px";
     popup.style.backgroundColor = "#222";
     popup.style.borderRadius = "8px";
     popup.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
     popup.style.width = "fit-content";
-    popup.style.maxWidth = "100vw";
+    popup.style.maxWidth = "98vw";
+    popup.style.maxHeight = "98vh";
     popup.style.overflow = "scroll";
     popup.style.textAlign = "center";
+    popup.style.pointerEvents = "none";
 
     const content = document.createElement("pre");
     content.innerHTML = createExplanation(question);
     popup.appendChild(content);
 
     document.body.appendChild(popup);
-
-    const popupRect = popup.getBoundingClientRect();
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-    if (viewportHeight - mouseY < 280 && viewportHeight / mouseY < 2.0) {
-        const popupTop = Math.max(mouseY - 40 - popupRect.height, 10);
-        popup.style.top = `${popupTop}px`;
-        popup.style.maxHeight = `${mouseY - 40}px`;
-    } else {
-        const popupTop = mouseY + 40;
-        popup.style.top = `${popupTop}px`;
-        popup.style.maxHeight = `${window.innerHeight - popupTop}px`;
-    }
-    
 }
 
 function removeExplanationPopup() {
