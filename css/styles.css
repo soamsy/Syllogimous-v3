@@ -774,6 +774,8 @@ label.open[for="offcanvas-credits"]:hover {
     font-size: 2rem;
     line-height: 1;
     padding: 0.5rem;
+    padding-bottom: 300%;
+    background-color: #0004;
     position: absolute;
     top: 0;
 }
