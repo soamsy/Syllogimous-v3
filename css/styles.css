@@ -463,9 +463,9 @@ button.delete:hover {
 
 .display_text {
     max-height: calc(100vh - 240px);
-    min-width: 300px;
+    min-width: 270px;
     line-height: 1.5;
-    padding: 0.5rem 1rem 0 0;
+    padding: 0.5rem 0.5rem 0 0;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -1076,4 +1076,7 @@ table.distinction {
         gap: 0.2rem;
     }
 
+    .carousel_display_label-wrapper h2, .display-inner h2 {
+        gap: 0.2rem;
+    }
 }
