@@ -1065,7 +1065,7 @@ table.distinction {
     }
 
     label.open {
-        padding: 0.4rem;
+        padding: 0.7rem;
     }
 
     .game-area {
@@ -1078,5 +1078,11 @@ table.distinction {
 
     .carousel_display_label-wrapper h2, .display-inner h2 {
         gap: 0.2rem;
+    }
+}
+
+@media (max-width: 360px) {
+    label.open {
+        padding: 0.4rem;
     }
 }
