@@ -12,6 +12,8 @@ const feedbackRight = document.querySelector(".feedback--right");
 const correctlyAnsweredEl = document.querySelector(".correctly-answered");
 const nextLevelEl = document.querySelector(".next-level");
 
+const backgroundDiv = document.querySelector('.background-image');
+
 const timerInput = document.querySelector("#timer-input");
 const timerToggle = document.querySelector("#timer-toggle");
 const timerBar = document.querySelector(".timer__bar");
@@ -196,14 +198,22 @@ function clearBackgroundImage() {
 async function updateCustomStyles() {
     let styles = '';
     if (savedata.backgroundImage) {
-        const base64Image = await getImage(imageKey);
-        if (base64Image) {
-            styles += `
-            .background-image {
-                background-image: url(${base64Image});
-            }
-            `;
+        const base64String = await getImage(imageKey);
+        const [prefix, base64Data] = base64String.split(',');
+        const mimeType = prefix.match(/data:(.*?);base64/)[1];
+        const binary = atob(base64Data);
+        const len = binary.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) {
+            bytes[i] = binary.charCodeAt(i);
         }
+
+        const blob = new Blob([bytes], { type: mimeType });
+        const objectURL = URL.createObjectURL(blob);
+
+        backgroundDiv.style.backgroundImage = `url(${objectURL})`;
+    } else {
+        backgroundDiv.style.backgroundImage = ``;
     }
     if (liveStyles.innerHTML !== styles) {
         liveStyles.innerHTML = styles;
