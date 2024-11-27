@@ -13,6 +13,7 @@ const correctlyAnsweredEl = document.querySelector(".correctly-answered");
 const nextLevelEl = document.querySelector(".next-level");
 
 const backgroundDiv = document.querySelector('.background-image');
+let imageChanged = true;
 
 const timerInput = document.querySelector("#timer-input");
 const timerToggle = document.querySelector("#timer-toggle");
@@ -109,6 +110,7 @@ for (const key in keySettingMap) {
                     const base64String = event.target.result;
                     savedata[value] = imageKey;
                     imagePromise = imagePromise.then(() => storeImage(imageKey, base64String));
+                    imageChanged = true;
                     save();
                     init();
                 };
@@ -190,6 +192,7 @@ function clearBackgroundImage() {
     const fileInput = document.getElementById('p-24');
     fileInput.value = '';
     delete savedata.backgroundImage;
+    imageChanged = true;
     save();
     imagePromise = imagePromise.then(() => deleteImage(imageKey));
     imagePromise = imagePromise.then(() => updateCustomStyles());
@@ -197,23 +200,26 @@ function clearBackgroundImage() {
 
 async function updateCustomStyles() {
     let styles = '';
-    if (savedata.backgroundImage) {
-        const base64String = await getImage(imageKey);
-        const [prefix, base64Data] = base64String.split(',');
-        const mimeType = prefix.match(/data:(.*?);base64/)[1];
-        const binary = atob(base64Data);
-        const len = binary.length;
-        const bytes = new Uint8Array(len);
-        for (let i = 0; i < len; i++) {
-            bytes[i] = binary.charCodeAt(i);
+    if (imageChanged) {
+        if (savedata.backgroundImage) {
+            const base64String = await getImage(imageKey);
+            const [prefix, base64Data] = base64String.split(',');
+            const mimeType = prefix.match(/data:(.*?);base64/)[1];
+            const binary = atob(base64Data);
+            const len = binary.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binary.charCodeAt(i);
+            }
+
+            const blob = new Blob([bytes], { type: mimeType });
+            const objectURL = URL.createObjectURL(blob);
+
+            backgroundDiv.style.backgroundImage = `url(${objectURL})`;
+        } else {
+            backgroundDiv.style.backgroundImage = ``;
         }
-
-        const blob = new Blob([bytes], { type: mimeType });
-        const objectURL = URL.createObjectURL(blob);
-
-        backgroundDiv.style.backgroundImage = `url(${objectURL})`;
-    } else {
-        backgroundDiv.style.backgroundImage = ``;
+        imageChanged = false;
     }
     if (liveStyles.innerHTML !== styles) {
         liveStyles.innerHTML = styles;
