@@ -70,17 +70,6 @@ function pickWeightedRandomDirection(dirCoords, baseWord, neighbors, wordCoordMa
 class Direction2D {
     constructor(enableHardMode=true) {
         this.enableHardMode = enableHardMode;
-        this.diagonals = [];
-        for (let x = -1; x <= 1; x++) {
-            for (let y = -1; y <= 1; y++) {
-                if (x == 0 && y == 0) {
-                    continue;
-                }
-                if (Math.abs(x) + Math.abs(y) >= 2) {
-                    this.diagonals.push([x, y]);
-                }
-            }
-        }
     }
 
     pickDirection(baseWord, neighbors, wordCoordMap) {
@@ -114,29 +103,11 @@ class Direction2D {
     hardModeLevel() {
         return savedata.space2DHardModeLevel;
     }
-
-
-    pickDiagonalDirection() {
-        return pickRandomItems(this.diagonals, 1).picked[0];
-    }
 }
 
 class Direction3D {
     constructor(enableHardMode=true) {
         this.enableHardMode = enableHardMode;
-        this.diagonals = []
-        for (let x = -1; x <= 1; x++) {
-            for (let y = -1; y <= 1; y++) {
-                for (let z = -1; z <= 1; z++) {
-                    if (x === 0 && y === 0 && z === 0) {
-                        continue;
-                    }
-                    if (Math.abs(x) + Math.abs(y) >= 2) {
-                        this.diagonals.push([x, y, z]);
-                    }
-                }
-            }
-        }
     }
 
     pickDirection(baseWord, neighbors, wordCoordMap) {
@@ -169,10 +140,6 @@ class Direction3D {
 
     hardModeLevel() {
         return savedata.space3DHardModeLevel;
-    }
-
-    pickDiagonalDirection() {
-        return pickRandomItems(this.diagonals, 1).picked[0];
     }
 }
 
