@@ -218,7 +218,7 @@ class DirectionQuestion {
 
         let operations;
         let hardModeDimensions;
-        if (this.generator.hardModeAllowed()) {
+        if (this.generator.hardModeAllowed() && this.generator.hardModeLevel() > 0) {
             [wordCoordMap, operations, diffCoord, conclusionCoord, hardModeDimensions] = this.spaceHardMode.basicHardMode(wordCoordMap, startWord, endWord, conclusionCoord);
         }
 
@@ -257,7 +257,7 @@ class DirectionQuestion {
         while (flip !== isValidSame) {
             [wordCoordMap, neighbors, premises, usedDirCoords] = this.createWordMap(length, branchesAllowed);
             [a, b, c, d] = pickRandomItems(Object.keys(wordCoordMap), 4).picked;
-            if (this.generator.hardModeAllowed()) {
+            if (this.generator.hardModeAllowed() && this.generator.hardModeLevel() > 0) {
                 const [startWord, endWord] = pickRandomItems([a, b, c, d], 2).picked;
                 const [diffCoord, conclusionCoord] = getConclusionCoords(wordCoordMap, startWord, endWord);
                 let [_x, _y, _z] = [];
