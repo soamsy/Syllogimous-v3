@@ -187,7 +187,6 @@ function displayInit() {
         '<div class="formatted-conclusion">'+q.conclusion+'</div>'
     ].join('');
     imagePromise = imagePromise.then(() => updateCustomStyles());
-    renderTimerBar();
 }
 
 function clearBackgroundImage() {
@@ -443,8 +442,11 @@ function init() {
     }
 
     stopCountDown();
-    if (timerToggled) 
+    if (timerToggled) {
         startCountDown();
+    } else {
+        renderTimerBar();
+    }
 
     carouselInit();
     displayInit();
