@@ -14,7 +14,7 @@ function createOppositePremise(a, b) {
     return pickDistinctionPremise(a, b, 'opposite of', 'same as');
 }
 
-function applyMeta(premises) {
+function applyMeta(premises, relationFinder) {
     // Randomly choose a number of meta-relations
     const numOfMetaRelations = 1 + Math.floor(Math.random() * Math.floor(premises.length / 2));
     let _premises = pickRandomItems(premises, numOfMetaRelations * 2);
@@ -24,9 +24,7 @@ function applyMeta(premises) {
 
         const choosenPair = pickRandomItems(_premises.picked, 2);
         const negations = choosenPair.picked.map(p => /is-negated/.test(p));
-        const relations = choosenPair.picked.map(p =>
-            p.match(/is (?:<span class="is-negated">)?(.*) (?:as|of)/)[1]
-        );
+        const relations = choosenPair.picked.map(relationFinder);
 
         // Generate substitution string
         let substitution;
@@ -50,7 +48,7 @@ function applyMeta(premises) {
         
         // Replace relation with meta-relation via substitution string
         const metaPremise = choosenPair.picked[1]
-            .replace(/(is) (.*) (as|of)/, substitution);
+            .replace(/(is) (.*)(?=<span class="subject">)/, substitution);
 
         // Push premise and its corresponding meta-premise
         premises.push(choosenPair.picked[0], metaPremise);
@@ -92,7 +90,7 @@ class DistinctionQuestion {
         }
 
         if (savedata.enableMeta) {
-            premises = applyMeta(premises);
+            premises = applyMeta(premises, p => p.match(/is (?:<span class="is-negated">)?(.*) (?:as|of)/)[1]);
         }
 
         if (coinFlip()) {
