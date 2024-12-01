@@ -69,7 +69,7 @@ class SyllogismQuestion {
     constructor() {
     }
 
-    generate(length) {
+    createQuestion(length) {
         let bucket;
         let isValid;
         let rule;
@@ -109,25 +109,22 @@ class SyllogismQuestion {
         }
 
         shuffle(premises);
-        this.rule = rule;
-        this.bucket = bucket;
-        this.isValid = isValid;
-        this.premises = premises;
-        this.conclusion = conclusion;
-    }
 
-    createQuestion(length) {
-        this.generate(length);
-
+        const countdown = this.getCountdown();
         return {
             category: 'Syllogism',
             startedAt: new Date().getTime(),
-            rule: this.rule,
-            bucket: this.bucket,
-            isValid: this.isValid,
-            premises: this.premises,
-            conclusion: this.conclusion,
+            rule,
+            bucket,
+            isValid,
+            premises,
+            conclusion,
+            ...(countdown && { countdown }),
         };
+    }
+
+    getCountdown() {
+        return savedata.overrideSyllogismTime;
     }
 }
 
