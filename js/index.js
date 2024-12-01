@@ -86,7 +86,7 @@ for (const key in keySettingMap) {
                 num = null;
 
             if (num == null) {
-                if (key.endsWith("premises")) {
+                if (key.endsWith("premises") || key.endsWith("time")) {
                     savedata[value] = null;
                 } else {
                     // Fix infinite loop on mobile when changing # of premises
@@ -186,6 +186,7 @@ function displayInit() {
         '<div class="formatted-conclusion">'+q.conclusion+'</div>'
     ].join('');
     imagePromise = imagePromise.then(() => updateCustomStyles());
+    renderTimerBar();
 }
 
 function clearBackgroundImage() {
@@ -304,18 +305,29 @@ function switchButtons() {
 function startCountDown() {
     timerRunning = true;
     question.startedAt = new Date().getTime();
+    timerCount = findStartingTimerCount();
     animateTimerBar();
 }
 
 function stopCountDown() {
     timerRunning = false;
-    timerCount = timerTime;
+    timerCount = findStartingTimerCount();
     timerBar.style.width = '100%';
     clearTimeout(timerInstance);
 }
 
+function renderTimerBar() {
+    const [mode, startingTimerCount] = findStartingTimerState();
+    if (mode === 'override') {
+        timerBar.classList.add('override');
+    } else {
+        timerBar.classList.remove('override');
+    }
+    timerBar.style.width = (timerCount / startingTimerCount * 100) + '%';
+}
+
 function animateTimerBar() {
-    timerBar.style.width = (timerCount / timerTime * 100) + '%';
+    renderTimerBar();
     if (timerCount > 0) {
         timerCount--;
         timerInstance = setTimeout(animateTimerBar, 1000);
@@ -323,6 +335,22 @@ function animateTimerBar() {
     else {
         timeElapsed();
     }
+}
+
+function findStartingTimerCount() {
+    const [_, count] = findStartingTimerState();
+    return count;
+}
+
+function findStartingTimerState() {
+    if (question) {
+        if (question.countdown) {
+            return ['override', question.countdown];
+        } else if (question.timeOffset) {
+            return ['override', timerTime + question.timeOffset];
+        }
+    }
+    return ['default', timerTime];
 }
 
 function init() {
@@ -409,6 +437,7 @@ function init() {
         switchButtons();
     }
 
+    stopCountDown();
     if (timerToggled) 
         startCountDown();
 
@@ -662,7 +691,7 @@ function createHQLI(question, i) {
 timerInput.addEventListener("input", evt => {
     const el = evt.target;
     timerTime = el.value;
-    timerCount = el.value;
+    timerCount = findStartingTimeCount();
     el.style.width = (el.value.length + 4) + 'ch';
     savedata.timer = el.value;
     if (timerToggle.checked) {

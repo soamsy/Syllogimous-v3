@@ -103,6 +103,10 @@ class Direction2D {
     hardModeLevel() {
         return savedata.space2DHardModeLevel;
     }
+
+    getCountdown(offset=0) {
+        return savedata.overrideDirectionTime ? savedata.overrideDirectionTime + offset : null;
+    }
 }
 
 class Direction3D {
@@ -141,6 +145,10 @@ class Direction3D {
     hardModeLevel() {
         return savedata.space3DHardModeLevel;
     }
+
+    getCountdown(offset=0) {
+        return savedata.overrideDirection3DTime ? savedata.overrideDirection3DTime + offset : null;
+    }
 }
 
 class Direction4D {
@@ -175,6 +183,10 @@ class Direction4D {
 
     hardModeAllowed() {
         return false;
+    }
+
+    getCountdown(offset=0) {
+        return savedata.overrideDirection4DTime ? savedata.overrideDirection4DTime + offset : null;
     }
 }
 
@@ -222,6 +234,7 @@ class DirectionQuestion {
         }
 
         shuffle(premises);
+        const countdown = this.generator.getCountdown();
         return {
             category: this.generator.getName(),
             startedAt: new Date().getTime(),
@@ -230,10 +243,11 @@ class DirectionQuestion {
             premises,
             operations,
             conclusion,
+            ...(countdown && { countdown }),
         }
     }
 
-    createAnalogy(length) {
+    createAnalogy(length, timeOffset) {
         let isValid;
         let isValidSame;
         let [wordCoordMap, neighbors, premises, usedDirCoords, operations] = [];
@@ -261,6 +275,7 @@ class DirectionQuestion {
         }
         conclusion += analogyTo(c, d);
 
+        const countdown = this.generator.getCountdown(timeOffset);
         return {
             category: 'Analogy: ' + this.generator.getName(),
             startedAt: new Date().getTime(),
@@ -269,6 +284,7 @@ class DirectionQuestion {
             premises,
             operations,
             conclusion,
+            ...(countdown && { countdown }),
         }
     }
 

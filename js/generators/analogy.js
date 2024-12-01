@@ -31,6 +31,15 @@ function analogyTo(a, b) {
 }
 
 function createSameDifferent(length) {
+    const timeOffset = savedata.offsetAnalogyTime;
+    let question = createAnalogyQuestion(length, timeOffset);
+    if (!question.countdown) {
+        question.timeOffset = timeOffset;
+    }
+    return question;
+}
+
+function createAnalogyQuestion(length, timeOffset) {
     const premiseOffset = getPremisesFor('offsetAnalogyPremises', 0);
     const choiceIndices = [];
 
@@ -50,24 +59,24 @@ function createSameDifferent(length) {
     const choiceIndex = pickRandomItems(choiceIndices, 1).picked[0];
     if (choiceIndex === 0) {
         length = Math.max(3, getPremisesFor("overrideDistinctionPremises", length) + premiseOffset);
-        return new DistinctionQuestion().createAnalogy(length);
+        return new DistinctionQuestion().createAnalogy(length, timeOffset);
     }
     else if (choiceIndex === 1) {
         length = Math.max(3, getPremisesFor("overrideComparisonPremises", length) + premiseOffset);
-        return new LinearQuestion(new MoreLess()).createAnalogy(length);
+        return new LinearQuestion(new MoreLess()).createAnalogy(length, timeOffset);
     }
     else if (choiceIndex === 2) {
         length = Math.max(3, getPremisesFor("overrideTemporalPremises", length) + premiseOffset);
-        return new LinearQuestion(new BeforeAfter()).createAnalogy(length);
+        return new LinearQuestion(new BeforeAfter()).createAnalogy(length, timeOffset);
     }
     else if (choiceIndex === 3) {
         length = Math.max(3, getPremisesFor("overrideDirectionPremises", length) + premiseOffset);
-        return new DirectionQuestion(new Direction2D()).createAnalogy(length);
+        return new DirectionQuestion(new Direction2D()).createAnalogy(length, timeOffset);
     } else if (choiceIndex === 4) {
         length = Math.max(3, getPremisesFor("overrideDirection3DPremises", length) + premiseOffset);
-        return new DirectionQuestion(new Direction3D()).createAnalogy(length);
+        return new DirectionQuestion(new Direction3D()).createAnalogy(length, timeOffset);
     } else {
         length = Math.max(3, getPremisesFor("overrideDirection4DPremises", length) + premiseOffset);
-        return new DirectionQuestion(new Direction4D()).createAnalogy(length);
+        return new DirectionQuestion(new Direction4D()).createAnalogy(length, timeOffset);
     }
 }

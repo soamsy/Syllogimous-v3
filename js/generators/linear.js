@@ -25,6 +25,10 @@ class MoreLess {
     getName() {
         return 'Comparison';
     }
+
+    getCountdown(offset=0) {
+        return savedata.overrideComparisonTime ? savedata.overrideComparisonTime + offset : null;
+    }
 }
 
 class BeforeAfter {
@@ -38,6 +42,10 @@ class BeforeAfter {
 
     getName() {
         return 'Temporal';
+    }
+
+    getCountdown(offset=0) {
+        return savedata.overrideTemporalTime ? savedata.overrideTemporalTime + offset : null;
     }
 }
 
@@ -82,7 +90,7 @@ class LinearQuestion {
         this.bucket = bucket;
     }
 
-    createAnalogy(length) {
+    createAnalogy(length, timeOffset) {
         this.generate(length);
         const [a, b, c, d] = pickRandomItems(this.bucket, 4).picked;
 
@@ -102,6 +110,7 @@ class LinearQuestion {
         }
         conclusion += analogyTo(c, d);
 
+        const countdown = this.generator.getCountdown(timeOffset);
         return {
             category: 'Analogy: ' + this.generator.getName(),
             startedAt: new Date().getTime(),
@@ -109,11 +118,13 @@ class LinearQuestion {
             premises: this.premises,
             isValid,
             conclusion,
+            ...(countdown && { countdown }),
         }
     }
 
     createQuestion(length) {
         this.generate(length);
+        const countdown = this.generator.getCountdown();
         return {
             category: this.generator.getName(),
             startedAt: new Date().getTime(),
@@ -121,6 +132,7 @@ class LinearQuestion {
             premises: this.premises,
             isValid: this.isValid,
             conclusion: this.conclusion,
+            ...(countdown && { countdown }),
         }
     }
 }

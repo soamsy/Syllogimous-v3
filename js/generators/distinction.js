@@ -110,7 +110,7 @@ class DistinctionQuestion {
         const category = "Distinction";
     }
 
-    createAnalogy(length) {
+    createAnalogy(length, timeOffset) {
         this.generate(length);
         const [a, b, c, d] = pickRandomItems([...this.buckets[0], ...this.buckets[1]], 4).picked;
 
@@ -138,6 +138,7 @@ class DistinctionQuestion {
             isValid = !isValidSame;
         }
         conclusion += analogyTo(c, d);
+        const countdown = this.getCountdown(timeOffset);
 
         return {
             category: "Analogy: Distinction",
@@ -146,11 +147,13 @@ class DistinctionQuestion {
             premises: this.premises,
             isValid,
             conclusion,
+            ...(countdown && { countdown }),
         };
     }
 
     createQuestion(length) {
         this.generate(length);
+        const countdown = this.getCountdown();
         return {
             category: "Distinction",
             startedAt: new Date().getTime(),
@@ -158,9 +161,13 @@ class DistinctionQuestion {
             premises: this.premises,
             isValid: this.isValid,
             conclusion: this.conclusion,
+            ...(countdown && { countdown }),
         };
     }
     
+    getCountdown(offset=0) {
+        return savedata.overrideDistinctionTime ? savedata.overrideDistinctionTime + offset : null;
+    }
 }
 
 function createSameOpposite(length) {

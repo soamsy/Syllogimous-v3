@@ -19,6 +19,11 @@ function createBinaryQuestionPool() {
     return pool;
 }
 
+
+function getCountdown(offset=0) {
+    return savedata.overrideDirection4DTime ? savedata.overrideDirection4DTime + offset : null;
+}
+
 function createBinaryQuestion(length) {
     length = Math.max(4, length);
     const operands = [
@@ -79,13 +84,15 @@ function createBinaryQuestion(length) {
         );
     }
 
+    const countdown = getCountdown();
     return {
         category: `Binary: ${choice.category} ${operandNames[operandIndex]} ${choice2.category}`,
         startedAt: new Date().getTime(),
         subresults: [choice, choice2],
         isValid,
         premises,
-        conclusion
+        conclusion,
+        ...(countdown && { countdown }),
     };
 }
 
@@ -154,6 +161,7 @@ function createNestedBinaryQuestion(length) {
     const isValid = eval(generated.eval.replaceAll(/(\d+)/g, m => questions[m].isValid));
     const premises = questions.reduce((a, q) => [ ...a, ...q.premises ], [])
     const conclusion = generated.human.replaceAll(/(\d+)/g, m => questions[m].conclusion);
+    const countdown = getCountdown();
 
     return {
         category: `Nested Binary: ${category}`,
@@ -161,7 +169,8 @@ function createNestedBinaryQuestion(length) {
         subresults: questions,
         isValid,
         premises,
-        conclusion
+        conclusion,
+        ...(countdown && { countdown }),
     };
 }
 

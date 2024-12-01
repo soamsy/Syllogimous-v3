@@ -191,10 +191,14 @@
 								<li>A is the same as B</li>
 								<li>A is opposite to B</li>
 							</ul>
-							<div class="inline-premise-wrapper">
-								Custom Premises
-								<span class="inline-premise-spinner">
-									<input id="p-1-premises" type="number" placeholder="" min="2" max="100" value="" style="width: 5ch">ps
+							<div class="multi-input">
+								<span class="single-input">
+									Premises
+									<span class="inline-premise-spinner"><input id="p-1-premises" type="number" placeholder="" min="2" max="100" value="" style="width: 5ch">ps</span>
+								</span>
+								<span class="single-input">
+									Time
+									<span class="inline-premise-spinner"><input id="p-1-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">s</span>
 								</span>
 							</div>
 						</div>
@@ -210,10 +214,14 @@
 								<li>A is less than B</li>
 								<li>A is greater than B</li>
 							</ul>
-							<div class="inline-premise-wrapper">
-								Custom Premises
-								<span class="inline-premise-spinner">
-									<input id="p-2-premises" type="number" placeholder="" min="2" max="100" value="" style="width: 5ch">ps
+							<div class="multi-input">
+								<span class="single-input">
+									Premises
+									<span class="inline-premise-spinner"><input id="p-2-premises" type="number" placeholder="" min="2" max="100" value="" style="width: 5ch">ps</span>
+								</span>
+								<span class="single-input">
+									Time
+									<span class="inline-premise-spinner"><input id="p-2-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">s</span>
 								</span>
 							</div>
 						</div>
@@ -229,10 +237,14 @@
 								<li>A is before B</li>
 								<li>A is after B</li>
 							</ul>
-							<div class="inline-premise-wrapper">
-								Custom Premises
-								<span class="inline-premise-spinner">
-									<input id="p-10-premises" type="number" placeholder="" min="2" max="100" value="" style="width: 5ch">ps
+							<div class="multi-input">
+								<span class="single-input">
+									Premises
+									<span class="inline-premise-spinner"><input id="p-10-premises" type="number" placeholder="" min="2" max="100" value="" style="width: 5ch">ps</span>
+								</span>
+								<span class="single-input">
+									Time
+									<span class="inline-premise-spinner"><input id="p-10-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">s</span>
 								</span>
 							</div>
 						</div>
@@ -248,10 +260,14 @@
 								<li>All A is B</li>
 								<li>Some A is B</li>
 							</ul>
-							<div class="inline-premise-wrapper">
-								Custom Premises
-								<span class="inline-premise-spinner">
-									<input id="p-3-premises" type="number" placeholder="" min="2" max="100" value="" style="width: 5ch">ps
+							<div class="multi-input">
+								<span class="single-input">
+									Premises
+									<span class="inline-premise-spinner"><input id="p-3-premises" type="number" placeholder="" min="2" max="100" value="" style="width: 5ch">ps</span>
+								</span>
+								<span class="single-input">
+									Time
+									<span class="inline-premise-spinner"><input id="p-3-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">s</span>
 								</span>
 							</div>
 						</div>
@@ -266,14 +282,18 @@
 							<ul class="explainer">
 								<li>A is to B as B is to C</li>
 							</ul>
-							<div class="inline-premise-wrapper">
-								Premise Offset
-								<span class="inline-premise-spinner">
-									<input id="p-4-premises" type="number" placeholder="" min="-100" max="100" value="" style="width: 5ch">ps
+							<div class="multi-input">
+								<span class="single-input">
+									Premise Offset
+									<span class="inline-premise-spinner"><input id="p-4-premises" type="number" placeholder="" min="2" max="100" value="" style="width: 5ch">ps</span>
+								</span>
+								<span class="single-input">
+									Time Offset
+									<span class="inline-premise-spinner"><input id="p-4-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">s</span>
 								</span>
 							</div>
 							<ul class="explainer">
-								<li>Shifts the underlying question's premise count. Try -1</li>
+								<li>Shifts the underlying question's premise/timer count. Try -1</li>
 							</ul>
 						</div>
 						<div class="mb-2" style="margin-left: 2rem;">
@@ -303,6 +323,10 @@
 									<span class="inline-premise-spinner"><input id="p-6-premises" type="number" placeholder="" min="2" max="100" value="" style="width: 5ch">ps</span>
 								</span>
 								<span class="single-input">
+									Time
+									<span class="inline-premise-spinner"><input id="p-6-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">s</span>
+								</span>
+								<span class="single-input">
 									Transforms
 									<span class="inline-premise-spinner"><input id="p-29" type="number" placeholder="" min="0" max="10" value="" style="width: 5ch">lvl</span>
 								</span>
@@ -326,6 +350,10 @@
 									<span class="inline-premise-spinner"><input id="p-12-premises" type="number" placeholder="" min="2" max="100" value="" style="width: 5ch">ps</span>
 								</span>
 								<span class="single-input">
+									Time
+									<span class="inline-premise-spinner"><input id="p-12-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">s</span>
+								</span>
+								<span class="single-input">
 									Transforms
 									<span class="inline-premise-spinner"><input id="p-30" type="number" placeholder="" min="0" max="10" value="" style="width: 5ch">lvl</span>
 								</span>
@@ -343,10 +371,14 @@
 								<li>A is at Before, Below and South of Town of B</li>
 								<li>B is at After, Above and North-West of C</li>
 							</ul>
-							<div class="inline-premise-wrapper">
-								Custom Premises
-								<span class="inline-premise-spinner">
-									<input id="p-13-premises" type="number" placeholder="" min="2" max="100" value="" style="width: 5ch">ps
+							<div class="multi-input">
+								<span class="single-input">
+									Premises
+									<span class="inline-premise-spinner"><input id="p-13-premises" type="number" placeholder="" min="2" max="100" value="" style="width: 5ch">ps</span>
+								</span>
+								<span class="single-input">
+									Time
+									<span class="inline-premise-spinner"><input id="p-13-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">s</span>
 								</span>
 							</div>
 						</div>
@@ -363,10 +395,14 @@
 								<li>OR</li>
 								<li>C is at North-West of D</li>
 							</ul>
-							<div class="inline-premise-wrapper">
-								Custom Premise
-								<span class="inline-premise-spinner">
-									<input id="p-7-premises" type="number" placeholder="" value="" min="4" max="100" style="width: 5ch">ps
+							<div class="multi-input">
+								<span class="single-input">
+									Premises
+									<span class="inline-premise-spinner"><input id="p-7-premises" type="number" placeholder="" min="2" max="100" value="" style="width: 5ch">ps</span>
+								</span>
+								<span class="single-input">
+									Time
+									<span class="inline-premise-spinner"><input id="p-7-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">s</span>
 								</span>
 							</div>
 						</div>
