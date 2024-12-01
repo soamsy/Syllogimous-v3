@@ -303,18 +303,19 @@ button.delete:hover {
     background-color: #daa520;
 }
 
-.timer__bar.override::before {
-    font-family: "Espionage", serif;
-    content: 'custom time';
-    display: flex;
+.custom-time-info {
+    display: none;
+    font-family: monospace;
     position: absolute;
-    height: 10px;
-    top: -10px;
+    height: 100%;
     width: 100%;
     font-size: var(--step--2);
-    align-items: flex-end;
+    align-items: center;
     justify-content: flex-end;
-    border-radius: 4px 4px 0 0;
+}
+
+.custom-time-info.visible {
+    display: flex;
 }
 
 .inline-input__outer {

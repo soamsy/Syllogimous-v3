@@ -18,6 +18,7 @@ let imageChanged = true;
 const timerInput = document.querySelector("#timer-input");
 const timerToggle = document.querySelector("#timer-toggle");
 const timerBar = document.querySelector(".timer__bar");
+const customTimeInfo = document.querySelector(".custom-time-info");
 let timerToggled = false;
 let timerTime = 30;
 let timerCount = 30;
@@ -320,8 +321,12 @@ function renderTimerBar() {
     const [mode, startingTimerCount] = findStartingTimerState();
     if (mode === 'override') {
         timerBar.classList.add('override');
+        customTimeInfo.classList.add('visible');
+        customTimeInfo.innerHTML =  '' + startingTimerCount + 's';
     } else {
         timerBar.classList.remove('override');
+        customTimeInfo.classList.remove('visible');
+        customTimeInfo.innerHTML = '';
     }
     timerBar.style.width = (timerCount / startingTimerCount * 100) + '%';
 }
@@ -345,12 +350,12 @@ function findStartingTimerCount() {
 function findStartingTimerState() {
     if (question) {
         if (question.countdown) {
-            return ['override', question.countdown];
+            return ['override', Math.max(1, question.countdown)];
         } else if (question.timeOffset) {
-            return ['override', timerTime + question.timeOffset];
+            return ['override', Math.max(1, +timerTime + question.timeOffset)];
         }
     }
-    return ['default', timerTime];
+    return ['default', Math.max(1, +timerTime)];
 }
 
 function init() {
