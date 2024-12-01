@@ -696,7 +696,7 @@ function createHQLI(question, i) {
 timerInput.addEventListener("input", evt => {
     const el = evt.target;
     timerTime = el.value;
-    timerCount = findStartingTimeCount();
+    timerCount = findStartingTimerCount();
     el.style.width = (el.value.length + 4) + 'ch';
     savedata.timer = el.value;
     if (timerToggle.checked) {
