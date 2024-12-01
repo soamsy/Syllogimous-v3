@@ -132,7 +132,7 @@
 									<input hidden id="p-21" type="checkbox">
 									<label class="switch" for="p-21"></label>
 								</div>
-								<span>Use Emoji</span>
+								<span>Use Emoji 🎉</span>
 							</div>
 						</div>
 						<div class="mb-1">
@@ -141,9 +141,10 @@
 									<input hidden id="p-28" type="checkbox">
 									<label class="switch" for="p-28"></label>
 								</div>
-								<span>Use Voronoi Emoji</span>
+								<span>Use Voronoi Emoji <svg class="junk" width="50" height="50"><use xlink:href="#junk-3"></use></svg></span>
 							</div>
 						</div>
+						<hr class="divider"/>
 						<div class="mb-1">
 							<div class="ctrl__inner">
 								<div>
@@ -179,6 +180,7 @@
 								<li>A is (C to D) of B</li>
 							</ul>
 						</div>
+						<hr class="divider"/>
 						<div class="mb-1">
 							<div class="ctrl__inner">
 								<div>
@@ -198,7 +200,7 @@
 								</span>
 								<span class="single-input">
 									Time
-									<span class="inline-premise-spinner"><input id="p-1-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">s</span>
+									<span class="inline-premise-spinner"><input id="p-1-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">sec</span>
 								</span>
 							</div>
 						</div>
@@ -221,7 +223,7 @@
 								</span>
 								<span class="single-input">
 									Time
-									<span class="inline-premise-spinner"><input id="p-2-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">s</span>
+									<span class="inline-premise-spinner"><input id="p-2-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">sec</span>
 								</span>
 							</div>
 						</div>
@@ -244,7 +246,7 @@
 								</span>
 								<span class="single-input">
 									Time
-									<span class="inline-premise-spinner"><input id="p-10-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">s</span>
+									<span class="inline-premise-spinner"><input id="p-10-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">sec</span>
 								</span>
 							</div>
 						</div>
@@ -267,7 +269,7 @@
 								</span>
 								<span class="single-input">
 									Time
-									<span class="inline-premise-spinner"><input id="p-3-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">s</span>
+									<span class="inline-premise-spinner"><input id="p-3-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">sec</span>
 								</span>
 							</div>
 						</div>
@@ -282,6 +284,15 @@
 							<ul class="explainer">
 								<li>A is to B as B is to C</li>
 							</ul>
+							<div class="mb-1" style="margin-left: 2rem;">
+								<div class="ctrl__inner">
+									<div>
+										<input hidden id="p-14" type="checkbox">
+										<label class="switch" for="p-14"></label>
+									</div>
+									<span>Only Analogy</span>
+								</div>
+							</div>
 							<div class="multi-input">
 								<span class="single-input">
 									Premise Offset
@@ -289,21 +300,19 @@
 								</span>
 								<span class="single-input">
 									Time Offset
-									<span class="inline-premise-spinner"><input id="p-4-time" type="number" placeholder="" min="-600" max="600" value="" style="width: 5ch">s</span>
+									<span class="inline-premise-spinner"><input id="p-4-time" type="number" placeholder="" min="-600" max="600" value="" style="width: 5ch">sec</span>
 								</span>
+								<div class="tooltip-container" tabindex="0">
+									?
+									<div class="tooltip-text right">
+										Shifts the underlying question's<br>
+										premise/timer count. Try -1
+									</div>
+								</div>
 							</div>
 							<ul class="explainer">
-								<li>Shifts the underlying question's premise/timer count. Try -1</li>
+								<li></li>
 							</ul>
-						</div>
-						<div class="mb-2" style="margin-left: 2rem;">
-							<div class="ctrl__inner">
-								<div>
-									<input hidden id="p-14" type="checkbox">
-									<label class="switch" for="p-14"></label>
-								</div>
-								<span>Only Analogy</span>
-							</div>
 						</div>
 						<div class="mb-1">
 							<div class="ctrl__inner">
@@ -314,8 +323,7 @@
 								<span>Enable Space 2D</span>
 							</div>
 							<ul class="explainer">
-								<li>A is at South of B</li>
-								<li>B is at Ovest of C</li>
+								<li>A is at South-West of B</li>
 							</ul>
 							<div class="multi-input">
 								<span class="single-input">
@@ -324,7 +332,7 @@
 								</span>
 								<span class="single-input">
 									Time
-									<span class="inline-premise-spinner"><input id="p-6-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">s</span>
+									<span class="inline-premise-spinner"><input id="p-6-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">sec</span>
 								</span>
 								<span class="single-input">
 									Transforms
@@ -342,7 +350,6 @@
 							</div>
 							<ul class="explainer">
 								<li>A is at Above and North-West of B</li>
-								<li>B is at Below and South-East of C</li>
 							</ul>
 							<div class="multi-input">
 								<span class="single-input">
@@ -351,7 +358,7 @@
 								</span>
 								<span class="single-input">
 									Time
-									<span class="inline-premise-spinner"><input id="p-12-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">s</span>
+									<span class="inline-premise-spinner"><input id="p-12-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">sec</span>
 								</span>
 								<span class="single-input">
 									Transforms
@@ -368,8 +375,7 @@
 								<span>Enable Space-Time</span>
 							</div>
 							<ul class="explainer">
-								<li>A is at Before, Below and South of Town of B</li>
-								<li>B is at After, Above and North-West of C</li>
+								<li>A is at Before, Below and South of B</li>
 							</ul>
 							<div class="multi-input">
 								<span class="single-input">
@@ -378,7 +384,7 @@
 								</span>
 								<span class="single-input">
 									Time
-									<span class="inline-premise-spinner"><input id="p-13-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">s</span>
+									<span class="inline-premise-spinner"><input id="p-13-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">sec</span>
 								</span>
 							</div>
 						</div>
@@ -395,36 +401,39 @@
 								<li>OR</li>
 								<li>C is at North-West of D</li>
 							</ul>
+							<div class="mb-1" style="margin-left: 2rem;">
+								<div class="ctrl__inner">
+									<div>
+										<input hidden id="p-15" type="checkbox">
+										<label class="switch" for="p-15"></label>
+									</div>
+									<span>Only Binary</span>
+								</div>
+							</div>
 							<div class="multi-input">
 								<span class="single-input">
 									Premises
-									<span class="inline-premise-spinner"><input id="p-7-premises" type="number" placeholder="" min="2" max="100" value="" style="width: 5ch">ps</span>
+									<span class="inline-premise-spinner"><input id="p-7-premises" type="number" placeholder="" min="2" max="100" value="" style="width: 4ch">ps</span>
 								</span>
-								<span class="single-input">
+								<span class="single-input shrink">
 									Time
-									<span class="inline-premise-spinner"><input id="p-7-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">s</span>
+									<span class="inline-premise-spinner"><input id="p-7-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">sec</span>
+								</span>
+								<span class="single-input grow">
+									<div>
+										<span>Operators</span>
+										<div class="tooltip-container" tabindex="0">
+											?
+											<div class="tooltip-text right">
+												Number of binary<br>
+												operators to<br>
+												use in the conclusion
+											</div>
+										</div>
+									</div>
+									<span class="inline-premise-spinner"><input id="p-17" type="number" min="1" value="1" max="10" style="width: 5ch">lvl</span>
 								</span>
 							</div>
-						</div>
-						<div class="mb-1" style="margin-left: 2rem;">
-							<div class="ctrl__inner">
-								<div>
-									<input hidden id="p-15" type="checkbox">
-									<label class="switch" for="p-15"></label>
-								</div>
-								<span>Only Binary</span>
-							</div>
-						</div>
-						<div class="mb-2" style="margin-left: 2rem;">
-							<div class="inline-input__outer">
-								Operators
-								<span class="inline-input__inner">
-									<input id="p-17" type="number" min="1" value="1" max="10" style="width: 5ch">lvl
-								</span>
-							</div>
-							<ul class="explainer">
-								<li>Number of binary operators to use in the conclusion</li>
-							</ul>
 						</div>
 						<div class="mb-2">
 							<div class="inline-input__outer">
@@ -486,7 +495,7 @@
 						<ul class="explainer">
 							<li><a href="https://braintrain.dev/">braintrain.dev</a> - Online community for brain training.</li>
 						</ul>
-						<ul class="explainer mb-2">
+						<ul class="explainer">
 							<li><a href="https://www.linkedin.com/in/f3d3r1c07r0774/">Fredo</a> - Original creator of Syllogimous. This app is a modified version of their work.</li>
 						</ul>
 					</div>

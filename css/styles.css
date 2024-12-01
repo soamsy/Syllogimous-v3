@@ -89,7 +89,7 @@ ul {
 }
 
 ul li:not(:last-child) {
-    margin-bottom: 0.5em;
+    margin-bottom: 0.3em;
 }
 
 a {
@@ -336,10 +336,24 @@ button.delete:hover {
 .inline-input__inner > input,
 .inline-input__inner > select,
 .inline-premise-spinner > input {
+    text-align: right;
     background-color: #0000;
     border: none;
+    border-bottom: 1px solid #050505;
+    margin: 0 3px;
     color: #fff;
     font-size: var(--step--1);
+}
+
+/* Remove spinner buttons on WebKit browsers (Chrome, Safari, etc.) */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  margin-left: 5px; /* Adds distance from text */
+}
+
+/* Optional: Style spinner buttons for Firefox */
+input[type="number"]::-moz-inner-spin-button {
+  margin-left: 5px; /* Adds distance from text in Firefox */
 }
 
 .inline-input__inner > select option {
@@ -368,16 +382,37 @@ button.delete:hover {
     align-items: center;
     background-color: #000a;
     display: flex;
-    gap: 1rem;
+    gap: 0.2rem;
     justify-content: flex-start;
-    padding: .25rem .75rem;
+    padding: .25rem 0 .25rem .75rem;
     margin-left: 1rem;
+    margin-bottom: 2.5rem;
 }
 
 .single-input {
     display: flex;
     gap: 0.2rem;
+    background-color: #222a;
+    text-align: center;
+    width: fit-content;
+    padding: 0 4px;
     flex-direction: column;
+    white-space: nowrap;
+}
+
+.single-input.grow {
+    flex-grow: 1;
+}
+
+.single-input.shrink {
+    flex-shrink: 1;
+}
+
+.divider {
+    height: 1px; /* Line thickness */
+    background-color: #ddd; /* Light gray color */
+    margin: 20px 0; /* Space above and below the line */
+    border: none; /* No border styles */
 }
 
 .game-display {
@@ -812,7 +847,7 @@ label.open[for="offcanvas-credits"]:hover {
     font-size: var(--step--1);
     font-style: italic;
     list-style: none;
-    margin: 0.25rem 0;
+    margin: 0.5rem 0.2rem;
     padding-left: 1rem;
 }
 
@@ -1057,6 +1092,48 @@ table.distinction {
 
 .credits-label::before {
     content: 'CREDITS';
+}
+
+.tooltip-container {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background-color: #404E4D;
+    color: #fff;
+    font-size: var(--step--1);
+    font-weight: bold;
+    border-radius: 50%;
+    cursor: pointer;
+    text-align: center;
+    user-select: none;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    background-color: #222;
+    color: #fff;
+    text-align: left;
+    padding: 8px;
+    border-radius: 4px;
+    position: absolute;
+    z-index: 100;
+    bottom: 120%;
+    white-space: nowrap;
+    font-size: var(--step--2);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.tooltip-text.right {
+    right: 1px;
+}
+
+.tooltip-container:hover .tooltip-text,
+.tooltip-container:focus-within .tooltip-text,
+.tooltip-container.show .tooltip-text {
+    visibility: visible;
 }
 
 @media (max-width: 768px) {
