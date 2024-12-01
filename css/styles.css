@@ -300,7 +300,7 @@ button.delete:hover {
 }
 
 .timer__bar.override {
-    background-color: #daa520;
+    background-color: #21A179;
 }
 
 .custom-time-info {
@@ -312,6 +312,7 @@ button.delete:hover {
     font-size: var(--step--2);
     align-items: center;
     justify-content: flex-end;
+    text-shadow: 0 1px 1px #000;
 }
 
 .custom-time-info.visible {
