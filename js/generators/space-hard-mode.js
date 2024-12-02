@@ -13,7 +13,7 @@ class SpaceHardMode {
         const demandChange = Math.random() > 0.2;
         let closeTries = 10;
         let changeTries = 10;
-        while (true) {
+        for (let i = 0; i < 10000; i++) {
             newWordMap = structuredClone(wordCoordMap);
             [operations, usedDimensions] = this.applyHardMode(newWordMap, startWord, endWord);
             [newDiffCoord, newConclusionCoord] = getConclusionCoords(newWordMap, startWord, endWord);
