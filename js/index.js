@@ -459,7 +459,7 @@ function wowFeedbackRight(cb) {
         feedbackRight.classList.remove("active");
         cb();
         processingAnswer = false;
-    }, 1200);
+    }, 1000);
 }
 
 function wowFeedbackWrong(cb) {
@@ -469,7 +469,7 @@ function wowFeedbackWrong(cb) {
         feedbackWrong.classList.remove("active");
         cb();
         processingAnswer = false;
-    }, 1200);
+    }, 1000);
 }
 
 function wowFeedbackMissed(cb) {
@@ -479,7 +479,7 @@ function wowFeedbackMissed(cb) {
         feedbackMissed.classList.remove("active");
         cb();
         processingAnswer = false;
-    }, 1200);
+    }, 1000);
 }
 
 function removeAppStateAndSave() {
