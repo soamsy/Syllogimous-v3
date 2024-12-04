@@ -595,6 +595,8 @@ input[type="number"]::-moz-inner-spin-button {
     font-weight: 700;
     padding: 0 3px;
     background-color: #222;
+    letter-spacing: normal;
+    border-radius: 2px;
 }
 
 .formatted-conclusion {
