@@ -190,6 +190,27 @@ class Direction4D {
     }
 }
 
+function pickBaseWord(neighbors, branchesAllowed) {
+    const options = Object.keys(neighbors);
+    const neighborLimit = (!branchesAllowed || options.length <= 3) ? 1 : 2;
+    let pool = [];
+    for (const word of options) {
+        if (neighbors[word] && neighbors[word].length > neighborLimit) {
+            continue;
+        }
+
+        pool.push(word);
+        pool.push(word);
+        pool.push(word);
+        if (neighbors[word] && neighbors[word].length == 1) {
+            pool.push(word);
+            pool.push(word);
+        }
+    }
+    const baseWord = pickRandomItems(pool, 1).picked[0];
+    return baseWord;
+}
+
 class DirectionQuestion {
     constructor(directionGenerator) {
         this.generator = directionGenerator;
@@ -209,7 +230,7 @@ class DirectionQuestion {
         const branchesAllowed = Math.random() > 0.33;
         while (true) {
             [wordCoordMap, neighbors, premises, usedDirCoords] = this.createWordMap(length, branchesAllowed);
-            [startWord, endWord] = this.pairChooser.pickTwoDistantWords(wordCoordMap, neighbors);
+            [startWord, endWord] = this.pairChooser.pickTwoDistantWords(neighbors);
             [diffCoord, conclusionCoord] = getConclusionCoords(wordCoordMap, startWord, endWord);
             if (conclusionCoord.slice(0, 3).some(c => c !== 0)) {
                 break;
@@ -291,12 +312,12 @@ class DirectionQuestion {
     createWordMap(length, branchesAllowed) {
         const words = createStimuli(length + 1);
         let wordCoordMap = {[words[0]]: this.generator.initialCoord() };
-        let neighbors = {};
+        let neighbors = {[words[0]]: []};
         let premises = [];
         let usedDirCoords = [];
 
         for (let i = 0; i < words.length - 1; i++) {
-            const baseWord = this._pickBaseWord(wordCoordMap, neighbors, branchesAllowed);
+            const baseWord = pickBaseWord(neighbors, branchesAllowed);
             const dirCoord = this.generator.pickDirection(baseWord, neighbors, wordCoordMap);
             const nextWord = words[i+1];
             wordCoordMap[nextWord] = addCoords(wordCoordMap[baseWord], dirCoord);
@@ -309,27 +330,6 @@ class DirectionQuestion {
         }
 
         return [wordCoordMap, neighbors, premises, usedDirCoords];
-    }
-
-    _pickBaseWord(wordCoordMap, neighbors, branchesAllowed) {
-        const options = Object.keys(wordCoordMap);
-        const neighborLimit = (!branchesAllowed || options.length <= 3) ? 1 : 2;
-        let pool = [];
-        for (const word of options) {
-            if (neighbors[word] && neighbors[word].length > neighborLimit) {
-                continue;
-            }
-
-            pool.push(word);
-            pool.push(word);
-            pool.push(word);
-            if (neighbors[word] && neighbors[word].length == 1) {
-                pool.push(word);
-                pool.push(word);
-            }
-        }
-        const baseWord = pickRandomItems(pool, 1).picked[0];
-        return baseWord;
     }
 }
 

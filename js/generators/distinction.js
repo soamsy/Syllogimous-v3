@@ -68,44 +68,42 @@ class DistinctionQuestion {
         let premises = [];
 
         let first = words[0];
-        let prev = first;
-        let curr;
-
-        let buckets = [[prev], []];
-        let prevBucket = 0;
+        let mapping = { [first]: 0 };
+        let neighbors = { [first]: [] };
 
         for (let i = 1; i < words.length; i++) {
-            curr = words[i];
+            const source = pickBaseWord(neighbors, Math.random() < 0.6);
+            const target = words[i];
 
             if (coinFlip()) {
-                premises.push(createSamePremise(prev, curr));
-                buckets[prevBucket].push(curr);
+                premises.push(createSamePremise(source, target));
+                mapping[target] = mapping[source];
             } else {
-                premises.push(createOppositePremise(prev, curr));
-                prevBucket = (prevBucket + 1) % 2;
-                buckets[prevBucket].push(curr);
+                premises.push(createOppositePremise(source, target));
+                mapping[target] = (mapping[source] + 1) % 2;
             }
 
-            prev = curr;
+            neighbors[source] = neighbors?.[source] ?? [];
+            neighbors[target] = neighbors?.[target] ?? [];
+            neighbors[target].push(source);
+            neighbors[source].push(target);
         }
+
+        let buckets = [
+            Object.keys(mapping).filter(w => mapping[w] === 0),
+            Object.keys(mapping).filter(w => mapping[w] === 1)
+        ]
 
         if (savedata.enableMeta) {
             premises = applyMeta(premises, p => p.match(/is (?:<span class="is-negated">)?(.*) (?:as|of)/)[1]);
-        }
-
-        if (coinFlip()) {
-            this.conclusion = createSamePremise(first, curr);
-            this.isValid = buckets[0].includes(curr);
-        } else {
-            this.conclusion = createOppositePremise(first, curr);
-            this.isValid = buckets[1].includes(curr);
         }
 
         shuffle(premises);
 
         this.premises = premises;
         this.buckets = buckets;
-        const category = "Distinction";
+        this.neighbors = neighbors;
+        this.mapping = mapping;
     }
 
     createAnalogy(length, timeOffset) {
@@ -151,6 +149,16 @@ class DistinctionQuestion {
 
     createQuestion(length) {
         this.generate(length);
+
+        let [startWord, endWord] = new DirectionPairChooser().pickTwoDistantWords(this.neighbors);
+        if (coinFlip()) {
+            this.conclusion = createSamePremise(startWord, endWord);
+            this.isValid = this.mapping[startWord] === this.mapping[endWord];
+        } else {
+            this.conclusion = createOppositePremise(startWord, endWord);
+            this.isValid = this.mapping[startWord] !== this.mapping[endWord];
+        }
+
         const countdown = this.getCountdown();
         return {
             category: "Distinction",

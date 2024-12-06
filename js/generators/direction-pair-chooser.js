@@ -1,6 +1,6 @@
 class DirectionPairChooser {
-    pickTwoDistantWords(wordCoordMap, neighbors) {
-        let options = Object.keys(wordCoordMap);
+    pickTwoDistantWords(neighbors) {
+        const options = Object.keys(neighbors);
         let pool = [];
         const single_edges = options.filter(word => neighbors[word].length == 1);
         const single_edge_neighbors = options.filter(word => single_edges.some(edge => neighbors[edge].indexOf(word) !== -1))
