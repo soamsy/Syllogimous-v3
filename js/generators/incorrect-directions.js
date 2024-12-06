@@ -67,6 +67,7 @@ class IncorrectDirections {
                 combinations.push(newCombo);
                 if (Math.abs(shift) == 1) {
                     combinations.push(newCombo);
+                    combinations.push(newCombo);
                 }
             }
         }
@@ -75,7 +76,7 @@ class IncorrectDirections {
         backupPool.push(opposite);
         backupPool.push(opposite);
         backupPool.push(opposite);
-        if (combinations.length !== 0 && Math.random() < 0.885) {
+        if (combinations.length !== 0 && Math.random() < 0.90) {
             return combinations;
         } else {
             return backupPool;
