@@ -22,11 +22,12 @@ class IncorrectDirections {
 
     createIncorrectConclusionCoords(usedCoords, correctCoord, diffCoord, hardModeDimensions) {
         let opposite = correctCoord.map(dir => -dir)
+        let isUsingHardMode = hardModeDimensions && hardModeDimensions.length > 0;
         if (usedCoords.length <= 2) {
             return [opposite]; // Few premises == anything that isn't the opposite tends to be easy.
         } else if (usedCoords.length <= 3 && Math.random() < 0.5) {
             return [opposite];
-        } else if (usedCoords.length <= 4 && Math.random() < 0.23) {
+        } else if (usedCoords.length <= 4 && !isUsingHardMode && Math.random() < 0.23) {
             return [opposite];
         }
         const dirCoords = removeDuplicateArrays(usedCoords);
@@ -42,7 +43,7 @@ class IncorrectDirections {
         const highest = diffCoord.map(x => Math.abs(x)).reduce((a, b) => Math.max(a, b));
         const allShiftedEqually = diffCoord.every(x => Math.abs(x) === highest);
         const shifts = allShiftedEqually ? [-1, 1] : [-2, -1, 1, 2];
-        if (hardModeDimensions && hardModeDimensions.length > 0) {
+        if (isUsingHardMode) {
             bannedDimensionShifts.add.apply(bannedDimensionShifts, dimensionPool.filter(d => !hardModeDimensions.some(h => h === d)));
         } else if (!allShiftedEqually) {
             bannedDimensionShifts.add.apply(bannedDimensionShifts, dimensionPool.filter(d => Math.abs(diffCoord[d]) === highest));
