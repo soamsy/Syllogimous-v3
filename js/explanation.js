@@ -51,12 +51,8 @@ function createFiller(grid) {
     return ' '.repeat(neededLength);
 }
 
-function createExplanation2D(grid, filler) {
-    if (!filler) {
-        filler = createFiller(grid);
-    }
-
-    let s = '<table>\n';
+function fillTable(grid, filler) {
+    let s = '';
     for (let i = grid.length - 1; i >= 0; i--) {
         const row = grid[i];
         s += '<tr>';
@@ -65,20 +61,34 @@ function createExplanation2D(grid, filler) {
         }
         s += '</tr>\n';
     }
-    s += '</table>';
     return s;
+}
+
+function createExplanation2D(grid, filler, separatorFn) {
+    if (!filler) {
+        filler = createFiller(grid);
+    }
+
+    if (!separatorFn) {
+        separatorFn = (s) => '<table>' + s + '</table>';
+    }
+
+    return separatorFn(fillTable(grid, filler));
 }
 
 function createExplanation3D(grid, filler) {
     if (!filler) {
         filler = createFiller(grid);
     }
-    let s = '';
+    let s = '<table>';
     for (let i = grid.length - 1; i >= 0; i--) {
         let floor = i + 1;
-        s += '<span>F' + floor + '</span>\n';
-        s += createExplanation2D(grid[i], filler);
+        s += createExplanation2D(grid[i], filler, (s) => {
+            const topClass = i === grid.length - 1 ? 'top' : '';
+            return `<tr><th colspan="${grid[0]?.[0]?.length ?? 1}" class="floor-heading ${topClass}">F${floor}</th></tr>` + s;
+        });
     }
+    s += '</table>';
     return s;
 }
 

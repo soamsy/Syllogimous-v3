@@ -1012,6 +1012,15 @@ tr, td {
   text-align: center;
 }
 
+.floor-heading {
+    border-left: 1px solid #0000;
+    border-right: 1px solid #0000;
+}
+
+.floor-heading.top {
+    border-top: 1px solid #0000;
+}
+
 .binary-explainer-separator {
     height: 2px; 
     margin: 10px 0;
