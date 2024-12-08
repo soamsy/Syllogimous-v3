@@ -61,6 +61,7 @@ let savedata = {
     "space2DHardModeLevel": 0,
     "space3DHardModeLevel": 0,
     "scrambleLimit": null,
+    "enableConnectionBranching": true,
 };
 
 const keySettingMap = {
@@ -113,6 +114,7 @@ const keySettingMap = {
     "p-29": "space2DHardModeLevel",
     "p-30": "space3DHardModeLevel",
     "p-31-optional": "scrambleLimit",
+    "p-32": "enableConnectionBranching",
 };
 
 const meaningfulWords = {

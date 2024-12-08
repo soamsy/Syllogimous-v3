@@ -191,6 +191,9 @@ class Direction4D {
 }
 
 function pickBaseWord(neighbors, branchesAllowed) {
+    if (savedata.enableConnectionBranching === false) {
+        branchesAllowed = false;
+    }
     const options = Object.keys(neighbors);
     const neighborLimit = (!branchesAllowed || options.length <= 3) ? 1 : 2;
     let pool = [];
