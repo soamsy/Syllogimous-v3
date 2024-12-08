@@ -71,7 +71,7 @@ function createBinaryQuestion(length) {
         ];
     
         premises = [...choice.premises, ...choice2.premises];
-        shuffle(premises);
+        premises = scramble(premises);
     
         conclusion = operandTemplates[operandIndex]
             .replace("$a", choice.conclusion)

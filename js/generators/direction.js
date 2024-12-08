@@ -254,7 +254,7 @@ class DirectionQuestion {
             conclusion = this.generator.createDirectionStatement(startWord, endWord, incorrectCoord);
         }
 
-        shuffle(premises);
+        premises = scramble(premises);
         const countdown = this.generator.getCountdown();
         return {
             category: this.generator.getName(),
@@ -313,7 +313,7 @@ class DirectionQuestion {
         const words = createStimuli(length + 1);
         let wordCoordMap = {[words[0]]: this.generator.initialCoord() };
         let neighbors = {[words[0]]: []};
-        let premises = [];
+        let premiseMap = {};
         let usedDirCoords = [];
 
         for (let i = 0; i < words.length - 1; i++) {
@@ -321,13 +321,15 @@ class DirectionQuestion {
             const dirCoord = this.generator.pickDirection(baseWord, neighbors, wordCoordMap);
             const nextWord = words[i+1];
             wordCoordMap[nextWord] = addCoords(wordCoordMap[baseWord], dirCoord);
-            premises.push(this.generator.createDirectionStatement(baseWord, nextWord, dirCoord));
+            premiseMap[premiseKey(baseWord, nextWord)] = this.generator.createDirectionStatement(baseWord, nextWord, dirCoord);
             usedDirCoords.push(dirCoord);
             neighbors[baseWord] = neighbors[baseWord] ?? [];
             neighbors[baseWord].push(nextWord);
             neighbors[nextWord] = neighbors[nextWord] ?? [];
             neighbors[nextWord].push(baseWord);
         }
+
+        const premises = orderPremises(premiseMap, neighbors);
 
         return [wordCoordMap, neighbors, premises, usedDirCoords];
     }

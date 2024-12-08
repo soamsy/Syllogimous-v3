@@ -87,7 +87,7 @@ for (const key in keySettingMap) {
                 num = null;
 
             if (num == null) {
-                if (key.endsWith("premises") || key.endsWith("time")) {
+                if (key.endsWith("premises") || key.endsWith("time") || key.endsWith("optional")) {
                     savedata[value] = null;
                 } else {
                     // Fix infinite loop on mobile when changing # of premises
@@ -181,7 +181,7 @@ function displayInit() {
     displayLabelType.textContent = q.category.split(":")[0];
     displayLabelLevel.textContent = q.premises.length + " ps";
     displayText.innerHTML = [
-        ...q.premises.map(p => `<div class="formatted-premise">${p}</div>`),
+        ...q.premises.map(p => `<div class="formatted-premise ${savedata.scrambleLimit === 0 ? 'easy' : ''}">${p}</div>`),
         ...(q.operations ? q.operations.map(o => `<div class="formatted-operation">${o}</div>`) : []),
         '<div class="conclusion-padding"></div>',
         '<div class="formatted-conclusion">'+q.conclusion+'</div>'

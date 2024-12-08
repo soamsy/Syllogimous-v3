@@ -65,22 +65,22 @@ class DistinctionQuestion {
     
         const words = createStimuli(length);
 
-        let premises = [];
-
+        let premiseMap = {};
         let first = words[0];
-        let mapping = { [first]: 0 };
+        let bucketMap = { [first]: 0 };
         let neighbors = { [first]: [] };
 
         for (let i = 1; i < words.length; i++) {
             const source = pickBaseWord(neighbors, Math.random() < 0.6);
             const target = words[i];
 
+            const key = premiseKey(source, target);
             if (coinFlip()) {
-                premises.push(createSamePremise(source, target));
-                mapping[target] = mapping[source];
+                premiseMap[key] = createSamePremise(source, target);
+                bucketMap[target] = bucketMap[source];
             } else {
-                premises.push(createOppositePremise(source, target));
-                mapping[target] = (mapping[source] + 1) % 2;
+                premiseMap[key] = createOppositePremise(source, target);
+                bucketMap[target] = (bucketMap[source] + 1) % 2;
             }
 
             neighbors[source] = neighbors?.[source] ?? [];
@@ -89,21 +89,23 @@ class DistinctionQuestion {
             neighbors[source].push(target);
         }
 
+        let premises = orderPremises(premiseMap, neighbors);
+
         let buckets = [
-            Object.keys(mapping).filter(w => mapping[w] === 0),
-            Object.keys(mapping).filter(w => mapping[w] === 1)
+            Object.keys(bucketMap).filter(w => bucketMap[w] === 0),
+            Object.keys(bucketMap).filter(w => bucketMap[w] === 1)
         ]
 
         if (savedata.enableMeta) {
             premises = applyMeta(premises, p => p.match(/is (?:<span class="is-negated">)?(.*) (?:as|of)/)[1]);
         }
 
-        shuffle(premises);
+        premises = scramble(premises);
 
         this.premises = premises;
         this.buckets = buckets;
         this.neighbors = neighbors;
-        this.mapping = mapping;
+        this.bucketMap = bucketMap;
     }
 
     createAnalogy(length, timeOffset) {
@@ -153,10 +155,10 @@ class DistinctionQuestion {
         let [startWord, endWord] = new DirectionPairChooser().pickTwoDistantWords(this.neighbors);
         if (coinFlip()) {
             this.conclusion = createSamePremise(startWord, endWord);
-            this.isValid = this.mapping[startWord] === this.mapping[endWord];
+            this.isValid = this.bucketMap[startWord] === this.bucketMap[endWord];
         } else {
             this.conclusion = createOppositePremise(startWord, endWord);
-            this.isValid = this.mapping[startWord] !== this.mapping[endWord];
+            this.isValid = this.bucketMap[startWord] !== this.bucketMap[endWord];
         }
 
         const countdown = this.getCountdown();

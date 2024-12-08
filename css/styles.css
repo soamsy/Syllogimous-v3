@@ -566,6 +566,12 @@ input[type="number"]::-moz-inner-spin-button {
     content: 'Premises';
 }
 
+.formatted-premise.easy:nth-child(1)::before,
+.hqli-premise.easy:nth-child(1)::before {
+    margin: 0.5rem 0 1rem 0;
+    content: 'Premises (Easy)';
+}
+
 .hqli-premise:nth-child(1)::before {
     margin: 0.3rem 0 0.6rem 0;
 }
@@ -1111,6 +1117,7 @@ table.distinction {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    font-family: monospace;
     width: 20px;
     height: 20px;
     background-color: #404E4D;

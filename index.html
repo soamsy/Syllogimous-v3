@@ -146,6 +146,26 @@
 						</div>
 						<hr class="divider"/>
 						<div class="mb-1">
+							<div class="inline-input__outer">
+								Scramble Limit
+								<span class="inline-premise-spinner">
+									<input id="p-31-optional" type="number" placeholder="" min="0" max="50" value="" style="width: 4ch">ps
+								</span>
+								<div class="tooltip-container" tabindex="0">
+									?
+									<div class="tooltip-text right">
+										Number of premises that are<br>
+										randomly reordered away from their<br>
+										original neighboring premises.<br>
+										<br>
+										Leave blank to always scramble<br>
+										all premises (default). Enter 0<br>
+										to never scramble (easy mode).
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="mb-1">
 							<div class="ctrl__inner">
 								<div>
 									<input hidden id="p-11" type="checkbox">
@@ -1104,6 +1124,7 @@
 		<script src="js/generators/analogy.js"></script>
 		<script src="js/generators/banned.js"></script>
 		<script src="js/generators/stimuli.js"></script>
+		<script src="js/generators/premise-reorder.js"></script>
 		<script src="js/explanation.js"></script>
 		<script src="js/db.js"></script>
 		<script src="js/index.js"></script>

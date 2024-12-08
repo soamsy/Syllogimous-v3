@@ -73,17 +73,18 @@ class SyllogismQuestion {
         let bucket;
         let isValid;
         let rule;
-        let premises;
+        let premises = [];
         let conclusion;
         do {
             bucket = createStimuli(length + 1);
-            premises = [];
+            premises = []
 
             conclusion;
             isValid = coinFlip();
+            let a, b;
             if (isValid) {
                 rule = validRules[Math.floor(Math.random() * validRules.length)];
-                [premises[0], premises[1], conclusion] = getSyllogism(
+                [a, b, conclusion] = getSyllogism(
                     bucket[0],
                     bucket[1],
                     bucket[2],
@@ -91,13 +92,15 @@ class SyllogismQuestion {
                 );
             } else {
                 rule = getRandomInvalidRule();
-                [premises[0], premises[1], conclusion] = getSyllogism(
+                [a, b, conclusion] = getSyllogism(
                     bucket[0],
                     bucket[1],
                     bucket[2],
                     getRandomInvalidRule()
                 );
             }
+            premises.push(a);
+            premises.push(b);
         } while(isPremiseSimilarToConlusion(premises, conclusion));
 
         for (let i = 3; i < bucket.length; i++) {
@@ -108,7 +111,7 @@ class SyllogismQuestion {
             premises.push(getSyllogism("#####", p, m, getRandomInvalidRule())[0]);
         }
 
-        shuffle(premises);
+        premises = scramble(premises);
 
         const countdown = this.getCountdown();
         return {

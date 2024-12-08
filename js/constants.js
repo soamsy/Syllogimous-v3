@@ -60,6 +60,7 @@ let savedata = {
     "useJunkEmoji": false,
     "space2DHardModeLevel": 0,
     "space3DHardModeLevel": 0,
+    "scrambleLimit": null,
 };
 
 const keySettingMap = {
@@ -111,6 +112,7 @@ const keySettingMap = {
     "p-28": "useJunkEmoji",
     "p-29": "space2DHardModeLevel",
     "p-30": "space3DHardModeLevel",
+    "p-31-optional": "scrambleLimit",
 };
 
 const meaningfulWords = {

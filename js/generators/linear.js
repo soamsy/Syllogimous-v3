@@ -89,7 +89,7 @@ class LinearQuestion {
             premises = applyMeta(premises, p => p.match(/is (?:<span class="is-negated">)*(.*?)(?:<\/span>)* /)[1]);
         }
 
-        shuffle(premises);
+        premises = scramble(premises);
         this.premises = premises;
         this.bucket = bucket;
     }
