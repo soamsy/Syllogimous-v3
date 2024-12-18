@@ -59,7 +59,9 @@ class SpaceHardMode {
         let count = 0;
         while (wordSequence.length > 0 && count < 100) {
             let chainSize = Math.min(wordSequence.length, pickRandomItems([1, 1, 2, 2, 3], 1).picked[0]);
-            if (chainSize == wordSequence.length && leftChains.length == 0 && rightChains.length == 0 && Math.random() > 0.6)
+            let willUseAllTransforms = chainSize == wordSequence.length && leftChains.length == 0 && rightChains.length == 0;
+            let shouldNotChain = pool.length == 1 || (willUseAllTransforms && Math.random() < 0.4)
+            if (shouldNotChain)
                 chainSize = 1;
             let words = wordSequence.splice(0, chainSize);
             if (coinFlip()) {
