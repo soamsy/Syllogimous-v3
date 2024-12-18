@@ -15,11 +15,17 @@ function findTwoWordIndexes(words) {
 
 class MoreLess {
     createLinearPremise(a, b) {
-        return pickLinearPremise(a, b, 'less than', 'more than');
+        return pickRandomItems([
+            pickLinearPremise(a, b, 'less than', 'more than'),
+            pickLinearPremise(b, a, 'more than', 'less than'),
+        ], 1).picked[0];
     }
 
     createReverseLinearPremise(a, b) {
-        return pickLinearPremise(a, b, 'more than', 'less than')
+        return pickRandomItems([
+            pickLinearPremise(a, b, 'more than', 'less than'),
+            pickLinearPremise(b, a, 'less than', 'more than'),
+        ], 1).picked[0];
     }
 
     getName() {
@@ -33,11 +39,17 @@ class MoreLess {
 
 class BeforeAfter {
     createLinearPremise(a, b) {
-        return pickLinearPremise(a, b, 'before', 'after');
+        return pickRandomItems([
+            pickLinearPremise(a, b, 'before', 'after'),
+            pickLinearPremise(b, a, 'after', 'before'),
+        ], 1).picked[0];
     }
 
     createReverseLinearPremise(a, b) {
-        return pickLinearPremise(a, b, 'after', 'before');
+        return pickRandomItems([
+            pickLinearPremise(a, b, 'after', 'before'),
+            pickLinearPremise(b, a, 'before', 'after'),
+        ], 1).picked[0];
     }
 
     getName() {
