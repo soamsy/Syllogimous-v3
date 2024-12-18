@@ -600,7 +600,7 @@ function updateAverage(reverseChronological) {
         return;
     }
     const totalTime = times.reduce((a,b) => a + b, 0);
-    const minutes = totalTime / 60;
+    const minutes = Math.floor(totalTime / 60);
     const seconds = totalTime % 60;
     totalDisplay.innerHTML = minutes.toFixed(0) + 'm ' + seconds.toFixed(0) + 's';
     
