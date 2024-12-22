@@ -25,7 +25,7 @@ class IncorrectDirections {
         let isUsingHardMode = hardModeDimensions && hardModeDimensions.length > 0;
         if (usedCoords.length <= 2) {
             return [opposite]; // Few premises == anything that isn't the opposite tends to be easy.
-        } else if (usedCoords.length <= 3 && Math.random() < 0.5) {
+        } else if (usedCoords.length <= 3 && !isUsingHardMode && Math.random() < 0.5) {
             return [opposite];
         } else if (usedCoords.length <= 4 && !isUsingHardMode && Math.random() < 0.23) {
             return [opposite];
