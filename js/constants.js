@@ -63,6 +63,9 @@ let savedata = {
     "space4DHardModeLevel": 0,
     "scrambleLimit": null,
     "enableConnectionBranching": true,
+    "enableTransformSet": true,
+    "enableTransformMirror": true,
+    "enableTransformScale": true,
 };
 
 const keySettingMap = {
@@ -117,6 +120,9 @@ const keySettingMap = {
     "p-31-optional": "scrambleLimit",
     "p-32": "enableConnectionBranching",
     "p-33": "space4DHardModeLevel",
+    "p-34": "enableTransformSet",
+    "p-35": "enableTransformMirror",
+    "p-36": "enableTransformScale",
 };
 
 const meaningfulWords = {

@@ -133,9 +133,29 @@ class SpaceHardMode {
             return newPoint;
         }
 
+        const customizeCommands = (pool) => {
+            let newPool = pool.filter(command => {
+                if (command === setPoint && savedata.enableTransformSet) {
+                    return true;
+                } else if (command === mirrorPoint && savedata.enableTransformMirror) {
+                    return true;
+                } else if (command === scalePoint && savedata.enableTransformScale) {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+
+            if (newPool.length === 0) {
+                return [mirrorPoint];
+            }
+
+            return newPool;
+        }
+
         let operations = [];
-        let commandPool = [mirrorPoint, mirrorPoint, mirrorPoint, scalePoint, scalePoint];
-        let starterCommandPool = [setPoint, mirrorPoint, scalePoint];
+        let starterCommandPool = customizeCommands([setPoint, mirrorPoint, scalePoint]);
+        let commandPool = customizeCommands([mirrorPoint, mirrorPoint, mirrorPoint, scalePoint, scalePoint]);
         let usedCommands = [];
 
         let count = 0;
@@ -144,8 +164,10 @@ class SpaceHardMode {
             for (let i = 1; i < chain.length; i++) {
                 const a = chain[i-1];
                 const b = chain[i];
-                if (usedCommands.length > 1) {
-                    cpool = cpool.filter(c => c !== usedCommands[usedCommands.length - 1]);
+                const lastUsed = usedCommands?.[usedCommands.length - 1];
+                const filteredPool = cpool.filter(c => c !== lastUsed);
+                if (filteredPool.length !== 0) {
+                    cpool = filteredPool;
                 }
 
                 const command = pickRandomItems(cpool, 1).picked[0];

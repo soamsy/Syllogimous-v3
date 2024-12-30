@@ -125,6 +125,10 @@ button.delete:hover {
 }
 
 /* start of Utils */
+.mb-05 {
+    margin-bottom: 1rem;
+}
+
 .mb-1 {
     margin-bottom: 1.5rem;
 }
