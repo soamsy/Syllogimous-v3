@@ -66,6 +66,7 @@ let savedata = {
     "enableTransformSet": true,
     "enableTransformMirror": true,
     "enableTransformScale": true,
+    "enableTransformRotate": false,
 };
 
 const keySettingMap = {
@@ -123,6 +124,7 @@ const keySettingMap = {
     "p-34": "enableTransformSet",
     "p-35": "enableTransformMirror",
     "p-36": "enableTransformScale",
+    "p-37": "enableTransformRotate",
 };
 
 const meaningfulWords = {

@@ -609,6 +609,14 @@ input[type="number"]::-moz-inner-spin-button {
     border-radius: 2px;
 }
 
+.pos-degree {
+    color: #00E5FF;
+}
+
+.neg-degree {
+    color: #FF6700;
+}
+
 .formatted-conclusion {
     margin-top: 0;
 }

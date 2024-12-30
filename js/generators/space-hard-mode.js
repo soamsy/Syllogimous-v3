@@ -133,6 +133,32 @@ class SpaceHardMode {
             return newPoint;
         }
 
+        const rotatePoint = (a, b, index) => {
+            const p1 = wordCoordMap[a];
+            const p2 = wordCoordMap[b];
+            const dimensionPool = p1.map((p, i) => i);
+            const plane = pickRandomItems(dimensionPool, 2).picked;
+            plane.sort();
+            const [m, n] = plane;
+            const planeName = dimensionNames[m] + dimensionNames[n];
+            const planeOp = (dimensionPool.length === 2) ? 'rotated' : (`<span class="highlight">${planeName}</span>-rotated`);
+            let newPoint = p2.slice();
+            let diffM = p2[m] - p1[m];
+            let diffN = p2[n] - p1[n];
+            newPoint[m] -= diffM;
+            newPoint[n] -= diffN;
+            if (coinFlip()) {
+                newPoint[m] += diffN
+                newPoint[n] += -diffM
+                operations.push(createRotationTemplate(a, b, planeOp, `<span class="pos-degree">90°</span>`));
+            } else {
+                newPoint[m] += -diffN
+                newPoint[n] += diffM
+                operations.push(createRotationTemplate(a, b, planeOp, `<span class="neg-degree">-90°</span>`));
+            }
+            return newPoint;
+        }
+
         const customizeCommands = (pool) => {
             let newPool = pool.filter(command => {
                 if (command === setPoint && savedata.enableTransformSet) {
@@ -140,6 +166,8 @@ class SpaceHardMode {
                 } else if (command === mirrorPoint && savedata.enableTransformMirror) {
                     return true;
                 } else if (command === scalePoint && savedata.enableTransformScale) {
+                    return true;
+                } else if (command === rotatePoint && savedata.enableTransformRotate) {
                     return true;
                 } else {
                     return false;
@@ -154,8 +182,8 @@ class SpaceHardMode {
         }
 
         let operations = [];
-        let starterCommandPool = customizeCommands([setPoint, mirrorPoint, scalePoint]);
-        let commandPool = customizeCommands([mirrorPoint, mirrorPoint, mirrorPoint, scalePoint, scalePoint]);
+        let starterCommandPool = customizeCommands([setPoint, mirrorPoint, scalePoint, rotatePoint]);
+        let commandPool = customizeCommands([mirrorPoint, mirrorPoint, mirrorPoint, scalePoint, scalePoint, rotatePoint, rotatePoint]);
         let usedCommands = [];
 
         let count = 0;
@@ -193,4 +221,6 @@ function createSetTemplate(a, b, dimension) {
 function createShiftTemplate(word, direction, shift) {
     return `<span class="subject">${word}</span> is moved ${direction} by <span class="highlight">${shift}</span>`;
 }
-
+function createRotationTemplate(a, b, planeOp, degree) {
+    return `<span class="subject">${b}</span> is ${planeOp} ${degree} around ${a}`
+}
