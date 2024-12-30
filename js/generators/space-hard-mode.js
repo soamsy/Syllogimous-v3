@@ -139,7 +139,11 @@ class SpaceHardMode {
             const dimensionPool = p1.map((p, i) => i);
             const plane = pickRandomItems(dimensionPool, 2).picked;
             plane.sort();
-            const [m, n] = plane;
+            let [m, n] = plane;
+            if (m === 0 && n === 2) {
+                // ZX matches the right-hand rule for rotation, XZ (the reverse) does not
+                [m, n] = [n, m];
+            }
             const planeName = dimensionNames[m] + dimensionNames[n];
             const planeOp = (dimensionPool.length === 2) ? 'rotated' : (`<span class="highlight">${planeName}</span>-rotated`);
             let newPoint = p2.slice();
