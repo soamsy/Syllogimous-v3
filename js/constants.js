@@ -60,6 +60,7 @@ let savedata = {
     "useJunkEmoji": false,
     "space2DHardModeLevel": 0,
     "space3DHardModeLevel": 0,
+    "space4DHardModeLevel": 0,
     "scrambleLimit": null,
     "enableConnectionBranching": true,
 };
@@ -115,6 +116,7 @@ const keySettingMap = {
     "p-30": "space3DHardModeLevel",
     "p-31-optional": "scrambleLimit",
     "p-32": "enableConnectionBranching",
+    "p-33": "space4DHardModeLevel",
 };
 
 const meaningfulWords = {

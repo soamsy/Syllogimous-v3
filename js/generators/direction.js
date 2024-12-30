@@ -152,6 +152,10 @@ class Direction3D {
 }
 
 class Direction4D {
+    constructor(enableHardMode=true) {
+        this.enableHardMode = enableHardMode;
+    }
+
     pickDirection(baseWord, neighbors, wordCoordMap) {
         let dirCoord
         do {
@@ -182,8 +186,13 @@ class Direction4D {
     }
 
     hardModeAllowed() {
-        return false;
+        return this.enableHardMode;
     }
+
+    hardModeLevel() {
+        return savedata.space4DHardModeLevel;
+    }
+
 
     getCountdown(offset=0) {
         return savedata.overrideDirection4DTime ? savedata.overrideDirection4DTime + offset : null;
