@@ -32,8 +32,8 @@ class JunkEmojis {
 
         const hueGroups = [];
         const hues = [0,10,20,30,40,45,50,55,60,65,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,295,300,305,310,320,330,340,350];
-        const saturations = [30, 40, 50, 65, 75, 80, 85, 90, 95, 100];
-        const lightnesses = [20, 35, 50, 65, 80];
+        const saturations = [5, 30, 40, 50, 65, 75, 80, 85, 90, 95, 100];
+        const lightnesses = [10, 22, 35, 50, 65, 80, 95];
 
         for (const hue of hues) {
             const group = [];
@@ -52,13 +52,31 @@ class JunkEmojis {
         return JunkEmojis.zipShuffle(hueGroups);
     }
 
-    static generateRandomPoints(minX, maxX, minY, maxY, numPoints) {
+    static generateRandomPoints(minX, maxX, minY, maxY, numPoints, minDistance) {
         const points = [];
         const width = maxX - minX;
         const height = maxY - minY;
-        for (let i = 0; i < numPoints; i++) {
-            points.push([minX + Math.random() * width, minY + Math.random() * height]);
+
+        const isFarEnough = (x, y) => {
+            for (const [px, py] of points) {
+                const dx = px - x;
+                const dy = py - y;
+                if (Math.sqrt(dx * dx + dy * dy) < minDistance) {
+                    return false;
+                }
+            }
+            return true;
+        };
+
+        while (points.length < numPoints) {
+            const x = minX + Math.random() * width;
+            const y = minY + Math.random() * height;
+
+            if (isFarEnough(x, y)) {
+                points.push([x, y]);
+            }
         }
+
         return points;
     }
 
@@ -78,7 +96,7 @@ class JunkEmojis {
     generateJunkEmoji(id=-1) {
         const width = EMOJI_LENGTH, height = EMOJI_LENGTH;
         const numPoints = pickRandomItems([2, 3, 3, 4, 4, 5, 6], 1).picked[0];
-        const points = JunkEmojis.generateRandomPoints(3, width-3, 3, height-3, numPoints);
+        const points = JunkEmojis.generateRandomPoints(3, width-3, 3, height-3, numPoints, 5);
         const voronoi = d3.Delaunay.from(points).voronoi([0, 0, width, height]);
         let svgContent = `<symbol id="junk-${id}" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 ${width} ${height}">`;
 
