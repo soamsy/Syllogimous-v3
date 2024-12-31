@@ -136,7 +136,7 @@ class SpaceHardMode {
         const rotatePoint = (a, b, index) => {
             const p1 = wordCoordMap[a];
             const p2 = wordCoordMap[b];
-            const dimensionPool = p1.map((p, i) => i);
+            const dimensionPool = p1.map((p, i) => i).slice(0, 3) // Do not include time dimension;
             const plane = pickRandomItems(dimensionPool, 2).picked;
             plane.sort();
             let [m, n] = plane;
