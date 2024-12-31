@@ -4,6 +4,7 @@ const localKey = "sllgms-v3";
 const imageKey = 'sllgms-v3-background';
 
 let savedata = {
+    "version": 1,
     "premises": 2,
     "timer": 30,
     "score": 0,
