@@ -4,12 +4,6 @@ const localKey = "sllgms-v3";
 const imageKey = 'sllgms-v3-background';
 
 let savedata = {
-    "user": {
-        "alreadyPrompted": false,
-        "telemetry": false,
-        "sex": null,
-        "age": null
-    },
     "premises": 2,
     "timer": 30,
     "score": 0,
