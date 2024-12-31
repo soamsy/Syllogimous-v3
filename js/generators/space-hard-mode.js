@@ -154,11 +154,11 @@ class SpaceHardMode {
             if (coinFlip()) {
                 newPoint[m] += diffN
                 newPoint[n] += -diffM
-                operations.push(createRotationTemplate(a, b, planeOp, `<span class="pos-degree">90°</span>`));
+                operations.push(createRotationTemplate(a, b, planeOp, `<span class="pos-degree">90°↻</span>`));
             } else {
                 newPoint[m] += -diffN
                 newPoint[n] += diffM
-                operations.push(createRotationTemplate(a, b, planeOp, `<span class="neg-degree">-90°</span>`));
+                operations.push(createRotationTemplate(a, b, planeOp, `<span class="neg-degree">-90°↺</span>`));
             }
             return newPoint;
         }
