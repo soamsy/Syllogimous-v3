@@ -144,6 +144,18 @@
 								<span>Use Voronoi Emoji <svg class="junk" width="50" height="50"><use xlink:href="#junk-0"></use></svg></span>
 							</div>
 						</div>
+						<div class="mb-1">
+							<div class="ctrl__inner">
+								<div>
+									<input hidden id="p-38" type="checkbox">
+									<label class="switch" for="p-38"></label>
+								</div>
+								<span>Use Visual Noise</span>
+								<span class="inline-premise-spinner">
+									<input id="p-39" type="number" placeholder="" value="5" min="1" max="25" style="width: 5ch">split
+								</span>
+							</div>
+						</div>
 						<hr class="divider"/>
 						<div class="mb-1">
 							<div class="inline-input__outer">
@@ -1670,6 +1682,7 @@
 		<script src="js/constants.js"></script>
 		<script src="js/generators/utils.js"></script>
 		<script src="js/generators/junk-emojis.js"></script>
+		<script src="js/generators/visual-noise.js"></script>
 		<script src="js/generators/space-hard-mode.js"></script>
 		<script src="js/generators/direction-pair-chooser.js"></script>
 		<script src="js/generators/incorrect-directions.js"></script>

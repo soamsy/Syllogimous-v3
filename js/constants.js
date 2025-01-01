@@ -53,6 +53,8 @@ let savedata = {
     "overrideDirectionTime": null,
     "overrideBinaryTime": null,
     "useJunkEmoji": false,
+    "useVisualNoise": false,
+    "visualNoiseSplits": 5,
     "space2DHardModeLevel": 0,
     "space3DHardModeLevel": 0,
     "space4DHardModeLevel": 0,
@@ -120,6 +122,8 @@ const keySettingMap = {
     "p-35": "enableTransformMirror",
     "p-36": "enableTransformScale",
     "p-37": "enableTransformRotate",
+    "p-38": "useVisualNoise",
+    "p-39": "visualNoiseSplits",
 };
 
 const meaningfulWords = {

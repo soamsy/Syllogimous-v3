@@ -139,12 +139,18 @@ class JunkEmojis {
 // }, 1500);
 
 function renderJunkEmojisText(text) {
-    return text.replaceAll(/\[junk\](\d+)\[\/junk\]/gi, (match, id) => {
+    text = text.replaceAll(/\[junk\](\d+)\[\/junk\]/gi, (match, id) => {
         let s = `<svg class="junk" width="${EMOJI_LENGTH}" height="${EMOJI_LENGTH}">`;
         s += `<use xlink:href="#junk-${id}"></use>`;
         s += '</svg>';
         return s;
     });
+
+    text = text.replaceAll(/\[vnoise\](\d+),(\d+)\[\/vnoise\]/gi, (match, seed, splits) => {
+        return new VisualNoise().generateVisualNoise(parseInt(seed), parseInt(splits));
+    });
+
+    return text;
 }
 
 function renderJunkEmojis(question) {

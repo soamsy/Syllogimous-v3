@@ -16,6 +16,7 @@ function maxStimuliAllowed() {
     }   
     if (savedata.useEmoji) quota = Math.min(quota, emoji.length);
     if (savedata.useJunkEmoji) quota = Math.min(quota, JUNK_EMOJI_COUNT);
+    if (savedata.useVisualNoise) quota = Math.min(quota, 1000);
     
     return quota - 1;
 }
@@ -56,6 +57,12 @@ function createJunkEmoji() {
     return [id, `[junk]${id}[/junk]`];
 }
 
+function createVisualNoiseTag() {
+    const id = Math.floor(Math.random() * 999999);
+    const splits = savedata.visualNoiseSplits;
+    return [id, `[vnoise]${id},${splits}[/vnoise]`];
+}
+
 function createStimuli(numberOfStimuli) {
     const quota = maxStimuliAllowed();
     
@@ -68,6 +75,7 @@ function createStimuli(numberOfStimuli) {
         garbage: new Set(),
         emoji: new Set(),
         junkEmoji: new Set(),
+        visualNoise: new Set(),
     };
 
     const stimulusTypes = new Set();
@@ -77,6 +85,7 @@ function createStimuli(numberOfStimuli) {
     if (savedata.useMeaningfulWords) stimulusTypes.add('meaningfulWords');
     if (savedata.useEmoji) stimulusTypes.add('emoji');
     if (savedata.useJunkEmoji) { stimulusTypes.add('junkEmoji'); }
+    if (savedata.useVisualNoise) { stimulusTypes.add('visualNoise'); }
     if (!stimulusTypes.size) stimulusTypes.add(savedata.defaultStimulusType);
 
     const stimuliCreated = [];
@@ -149,6 +158,15 @@ function createStimuli(numberOfStimuli) {
             stimuliCreated.push(junkEmoji);
             uniqueWords.junkEmoji.add(junkId);
             if (uniqueWords.junkEmoji.size >= quota) stimulusTypes.delete(randomStimulusType);
+        } else if (randomStimulusType == 'visualNoise') {
+            let visualNoiseId;
+            let visualNoise;
+            do {
+                [visualNoiseId, visualNoise] = createVisualNoiseTag();
+            } while (uniqueWords.visualNoise.has(visualNoiseId))
+            stimuliCreated.push(visualNoise);
+            uniqueWords.visualNoise.add(visualNoiseId);
+            if (uniqueWords.visualNoise.size >= quota) stimulusTypes.delete(randomStimulusType);
         } else break;
     }
 
