@@ -95,7 +95,7 @@ class JunkEmojis {
 
     generateJunkEmoji(id=-1) {
         const width = EMOJI_LENGTH, height = EMOJI_LENGTH;
-        const numPoints = pickRandomItems([2, 3, 3, 4, 4, 5, 6], 1).picked[0];
+        const numPoints = pickRandomItems([2, 3, 3, 4, 4, 5], 1).picked[0];
         const points = JunkEmojis.generateRandomPoints(3, width-3, 3, height-3, numPoints, 5);
         const voronoi = d3.Delaunay.from(points).voronoi([0, 0, width, height]);
         let svgContent = `<symbol id="junk-${id}" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 ${width} ${height}">`;
