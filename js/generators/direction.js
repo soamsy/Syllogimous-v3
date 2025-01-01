@@ -83,8 +83,8 @@ class Direction2D {
 
     _pickDirectionStatement(a, b, direction, reverseDirection) {
         return pickRandomItems([
-            pickNegatable([createDirectionTemplate(a, b, direction, false, 'is at '), createDirectionTemplate(a, b, reverseDirection, true, 'is at ')]),
-            pickNegatable([createDirectionTemplate(b, a, reverseDirection, false, 'is at '), createDirectionTemplate(b, a, direction, true, 'is at ')])
+            pickNegatable([createDirectionTemplate(a, b, direction, false, 'is '), createDirectionTemplate(a, b, reverseDirection, true, 'is ')]),
+            pickNegatable([createDirectionTemplate(b, a, reverseDirection, false, 'is '), createDirectionTemplate(b, a, direction, true, 'is ')])
         ], 1).picked[0];
     }
 
