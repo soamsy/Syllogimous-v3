@@ -40,8 +40,8 @@ class SpaceHardMode {
     applyHardMode(wordCoordMap, leftStart, rightStart) {
         const [leftChains, rightChains] = this.createChains(wordCoordMap, leftStart, rightStart);
         const dimensionsUsed = [...leftChains.map(([words, dimension]) => dimension), ...rightChains.map(([words, dimension]) => dimension)];
-        const leftOperations = this.applyChain(wordCoordMap, leftChains, leftStart);
-        const rightOperations = this.applyChain(wordCoordMap, rightChains, rightStart);
+        const leftOperations = this.applyChain(wordCoordMap, dimensionsUsed, leftChains, leftStart);
+        const rightOperations = this.applyChain(wordCoordMap, dimensionsUsed, rightChains, rightStart);
         return [[...leftOperations, ...rightOperations], dimensionsUsed];
     }
 
@@ -98,7 +98,7 @@ class SpaceHardMode {
         return [chainWords, sorted[0][1]];
     }
 
-    applyChain(wordCoordMap, chains, refWord) {
+    applyChain(wordCoordMap, dimensionsUsed, chains, refWord) {
         if (chains.length === 0) {
             return [];
         }
@@ -140,6 +140,7 @@ class SpaceHardMode {
             const plane = pickRandomItems(dimensionPool, 2).picked;
             plane.sort();
             let [m, n] = plane;
+            dimensionsUsed.push.apply(dimensionsUsed, plane.filter(d => dimensionsUsed.indexOf(d) == -1));
             if (m === 0 && n === 2) {
                 // ZX matches the right-hand rule for rotation, XZ (the reverse) does not
                 [m, n] = [n, m];
