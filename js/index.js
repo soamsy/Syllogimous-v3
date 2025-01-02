@@ -708,11 +708,41 @@ timerInput.addEventListener("input", evt => {
     save();
 });
 
+function handleCountDown() {
+    timerToggled = timerToggle.checked;
+    if (timerToggled)
+        startCountDown();
+    else
+        stopCountDown();
+}
+
 timerToggle.addEventListener("click", evt => {
-    timerToggled = evt.target.checked;
-    if (timerToggled) startCountDown();
-    else stopCountDown();
+    handleCountDown();
 });
+
+function handleKeyPress(event) {
+    const tagName = event.target.tagName.toLowerCase();
+    const isEditable = event.target.isContentEditable;
+    if (tagName === "button" || tagName === "input" || tagName === "textarea" || isEditable) {
+        return;
+    }
+    switch (event.code) {
+        case "KeyJ":
+            checkIfTrue();
+            break;
+        case "KeyK":
+            checkIfFalse();
+            break;
+        case "Space":
+            timerToggle.checked = !timerToggle.checked;
+            handleCountDown();
+            break;
+        default:
+            break;
+    }
+}
+
+document.addEventListener("keydown", handleKeyPress);
 
 load();
 switchButtons();
