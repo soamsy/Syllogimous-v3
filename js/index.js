@@ -29,6 +29,8 @@ let processingAnswer = false;
 let quota
 
 const historyList = document.getElementById("history-list");
+const historyButton = document.querySelector(`label.open[for="offcanvas-history"]`);
+const historyCheckbox = document.getElementById("offcanvas-history");
 const totalDisplay = document.getElementById("total-display");
 const averageDisplay = document.getElementById("average-display");
 const averageCorrectDisplay = document.getElementById("average-correct-display");
@@ -720,6 +722,7 @@ timerToggle.addEventListener("click", evt => {
     handleCountDown();
 });
 
+let dehoverQueue = [];
 function handleKeyPress(event) {
     const tagName = event.target.tagName.toLowerCase();
     const isEditable = event.target.isContentEditable;
@@ -727,6 +730,23 @@ function handleKeyPress(event) {
         return;
     }
     switch (event.code) {
+        case "KeyH":
+            historyButton.click();
+            if (historyCheckbox.checked) {
+                const firstEntry = historyList.firstElementChild;
+                if (firstEntry) {
+                    const explanationButton = firstEntry.querySelector(`button.explanation-button`);
+                    explanationButton.dispatchEvent(new Event("mouseenter"));
+                    dehoverQueue.push(() => {
+                        explanationButton.dispatchEvent(new Event("mouseleave"));
+                    });
+                }
+            } else {
+                dehoverQueue.forEach(callback => {
+                    callback();
+                });
+            }
+            break;
         case "KeyJ":
             checkIfTrue();
             break;
