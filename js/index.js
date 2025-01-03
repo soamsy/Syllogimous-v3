@@ -31,6 +31,7 @@ let quota
 const historyList = document.getElementById("history-list");
 const historyButton = document.querySelector(`label.open[for="offcanvas-history"]`);
 const historyCheckbox = document.getElementById("offcanvas-history");
+const settingsButton = document.querySelector(`label.open[for="offcanvas-settings"]`);
 const totalDisplay = document.getElementById("total-display");
 const averageDisplay = document.getElementById("average-display");
 const averageCorrectDisplay = document.getElementById("average-correct-display");
@@ -747,10 +748,17 @@ function handleKeyPress(event) {
                 });
             }
             break;
+        case "KeyS":
+            settingsButton.click();
+            break;
         case "KeyJ":
+        case "Digit1":
+        case "ArrowLeft":
             checkIfTrue();
             break;
         case "KeyK":
+        case "Digit2":
+        case "ArrowRight":
             checkIfFalse();
             break;
         case "Space":

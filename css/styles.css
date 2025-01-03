@@ -924,6 +924,26 @@ input[type="checkbox"]:checked + .switch::after {
     transition-timing-function: ease-in;
 }
 
+.shortcuts {
+    display: table;
+    border-spacing: 36px 1px;
+    margin: 0 -24px;
+    border-collapse: separate;
+}
+
+.keyboard-shortcut {
+    display: table-row;
+}
+
+.keyboard-shortcut > span {
+    display: table-cell;
+}
+
+.keyboard-shortcut > p:nth-child(2) {
+    margin: 0 auto;
+    text-align: center;
+}
+
 .hql-frame {
     display: flex;
     flex-direction: column;
