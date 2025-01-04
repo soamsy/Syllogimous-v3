@@ -48,7 +48,7 @@ function createFiller(grid) {
     const lengths = grid.flat(Infinity).map(x => x.length > 50 ? 1 : x.length);
     const biggest = lengths.reduce((a, b) => Math.max(a, b));
     const neededLength = biggest + 2;
-    return ' '.repeat(neededLength);
+    return '\u00A0'.repeat(neededLength);
 }
 
 function fillTable(grid, filler) {
@@ -78,13 +78,15 @@ function createExplanation3D(grid, filler) {
     if (!filler) {
         filler = createFiller(grid);
     }
+    const gridWidth = grid[0][0].length;
     let s = `<div class="three-d-scene">`
     for (let i = grid.length - 1; i >= 0; i--) {
         s += createExplanation2D(grid[i], filler, (s) => {
-            return `<div class="table three-d-plane plane-${grid.length - i}" style="grid-template-columns: repeat(${grid[0][0].length}, minmax(0, 1fr))">${s}</div>`
+            return `<div class="table three-d-plane plane-${grid.length - i}" style="grid-template-columns: repeat(${gridWidth}, minmax(min-content, 1fr))">${s}</div>`
         });
     }
     s += '</div>'
+    s += `<style>.three-d-plane .td { max-width: ${Math.floor((100 / gridWidth) - 4)}vw; }</style>`
     return s;
 }
 
@@ -172,7 +174,7 @@ function createExplanationPopup(question, e) {
     popup.style.width = "fit-content";
     popup.style.maxWidth = "98vw";
     popup.style.maxHeight = "98vh";
-    popup.style.overflow = "auto";
+    popup.style.overflow = "hidden";
     popup.style.textAlign = "center";
     popup.style.pointerEvents = "none";
 

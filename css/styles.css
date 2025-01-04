@@ -1056,8 +1056,8 @@ input[type="checkbox"]:checked + .switch::after {
 
 .three-d-scene {
     perspective: 1000px;
+    padding: 0 0 10px 20px;
     transform-style: preserve-3d;
-    padding: 10px 30px 10px 50px;
 }
 
 .three-d-plane {
