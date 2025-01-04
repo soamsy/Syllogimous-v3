@@ -55,11 +55,9 @@ function fillTable(grid, filler) {
     let s = '';
     for (let i = grid.length - 1; i >= 0; i--) {
         const row = grid[i];
-        s += '<tr>';
         for (const val of row) {
-            s += '<td>' + (val ? centerText(val, filler.length) : filler) + '</td>';
+            s += '<div class="td">' + (val ? centerText(val, filler.length) : filler) + '</div>';
         }
-        s += '</tr>\n';
     }
     return s;
 }
@@ -70,7 +68,7 @@ function createExplanation2D(grid, filler, separatorFn) {
     }
 
     if (!separatorFn) {
-        separatorFn = (s) => '<table>' + s + '</table>';
+        separatorFn = (s) => `<div class="table" style="grid-template-columns: repeat(${grid.length}, auto)">${s}</div>`;
     }
 
     return separatorFn(fillTable(grid, filler));
@@ -80,26 +78,23 @@ function createExplanation3D(grid, filler) {
     if (!filler) {
         filler = createFiller(grid);
     }
-    let s = '<table>';
+    let s = `<div class="three-d-scene">`
     for (let i = grid.length - 1; i >= 0; i--) {
-        let floor = i + 1;
         s += createExplanation2D(grid[i], filler, (s) => {
-            const topClass = i === grid.length - 1 ? 'top' : '';
-            return `<tr><th colspan="${grid[0]?.[0]?.length ?? 1}" class="floor-heading ${topClass}">F${floor}</th></tr>` + s;
+            return `<div class="table three-d-plane plane-${grid.length - i}" style="grid-template-columns: repeat(${grid[0][0].length}, minmax(0, 1fr))">${s}</div>`
         });
     }
-    s += '</table>';
+    s += '</div>'
     return s;
 }
 
 function createExplanation4D(grid) {
     const filler = createFiller(grid);
-    let s = '<div style="display: flex; gap: 0.5rem;">';
+    let s = '<div class="four-d-scene" style="display: flex; gap: 0.5rem;">';
     for (let i = 0; i < grid.length; i++) {
         let time = i + 1;
         s += '<div>';
         s += '<div>Time ' + time + '</div>'
-        s += '<div>---------</div>'
         s += createExplanation3D(grid[i], filler);
         s += '</div>';
     }
@@ -164,7 +159,6 @@ function createExplanation(question) {
 function createExplanationPopup(question, e) {
     const { clientX: mouseX, clientY: mouseY } = event;
     const popup = document.createElement("div");
-    popup.id = "explanation-popup";
     popup.className = "explanation-popup";
     popup.style.position = "fixed";
     popup.style.top = "50%";
@@ -190,9 +184,14 @@ function createExplanationPopup(question, e) {
 }
 
 function removeExplanationPopup() {
-    let elems = document.getElementsByClassName("explanation-popup");
-    for (const el of elems) {
-        el.remove();
+    for (let i = 0; i < 5; i++) {
+        let elems = document.getElementsByClassName("explanation-popup");
+        if (elems.length === 0) {
+            break;
+        }
+        for (const el of elems) {
+            el.remove();
+        }
     }
 }
 

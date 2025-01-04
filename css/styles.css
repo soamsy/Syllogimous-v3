@@ -1040,14 +1040,49 @@ input[type="checkbox"]:checked + .switch::after {
     right: 0;
 }
 
-table {
-    border-collapse: collapse;
+.table {
+    display: grid;
+    grid-auto-rows: minmax(40px, 1fr);
 }
 
-tr, td {
-  padding: 4px 2px;
-  border: 1px solid #ddd;
-  text-align: center;
+.td {
+    padding: 3px;
+    border: 1px solid #ccc;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.three-d-scene {
+    perspective: 1000px;
+    transform-style: preserve-3d;
+    padding: 10px 30px 10px 50px;
+}
+
+.three-d-plane {
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.3);
+    background: radial-gradient(circle at center, #555555E0, #222222E0);
+}
+
+.plane-1 { transform: rotateY(10deg) rotateX(10deg) translateZ(0px);}
+.plane-2 { transform: rotateY(12deg) rotateX(10deg) translateZ(-60px);}
+.plane-3 { transform: rotateY(14deg) rotateX(10deg) translateZ(-120px);}
+.plane-4 { transform: rotateY(16deg) rotateX(10deg) translateZ(-180px);}
+.plane-5 { transform: rotateY(18deg) rotateX(10deg) translateZ(-240px);}
+.plane-6 { transform: rotateY(20deg) rotateX(10deg) translateZ(-300px);}
+.plane-7 { transform: rotateY(22deg) rotateX(10deg) translateZ(-360px);}
+.plane-8 { transform: rotateY(24deg) rotateX(10deg) translateZ(-420px);}
+.plane-9 { transform: rotateY(26deg) rotateX(10deg) translateZ(-480px);}
+.plane-10 { transform: rotateY(26deg) rotateX(10deg) translateZ(-540px);}
+.plane-11 { transform: rotateY(26deg) rotateX(10deg) translateZ(-600px);}
+
+.four-d-scene {
+    padding: 30px;
+}
+
+.four-d-scene .three-d-scene {
+    padding: 0;
 }
 
 .floor-heading {
