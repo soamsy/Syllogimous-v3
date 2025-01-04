@@ -1176,7 +1176,7 @@ table.distinction {
 }
 
 .credits-label::before {
-    content: 'CREDITS';
+    content: 'INFO';
 }
 
 .tooltip-container {
