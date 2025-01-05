@@ -68,7 +68,7 @@ function createExplanation2D(grid, filler, separatorFn) {
     }
 
     if (!separatorFn) {
-        separatorFn = (s) => `<div class="table" style="grid-template-columns: repeat(${grid.length}, auto)">${s}</div>`;
+        separatorFn = (s) => `<div class="table" style="grid-template-columns: repeat(${grid[0].length}, auto)">${s}</div>`;
     }
 
     return separatorFn(fillTable(grid, filler));
