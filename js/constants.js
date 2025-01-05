@@ -64,6 +64,7 @@ let savedata = {
     "enableTransformMirror": true,
     "enableTransformScale": true,
     "enableTransformRotate": false,
+    "enableTransformInterleave": false,
 };
 
 const keySettingMap = {
@@ -124,6 +125,7 @@ const keySettingMap = {
     "p-37": "enableTransformRotate",
     "p-38": "useVisualNoise",
     "p-39": "visualNoiseSplits",
+    "p-40": "enableTransformInterleave",
 };
 
 const meaningfulWords = {

@@ -34,33 +34,42 @@ function scramble(premises) {
         return shuffle(premises);
     }
 
-    let { picked: shuffled, remaining: unshuffled } = pickRandomItems(premises, savedata.scrambleLimit);
+    return scrambleWithLimit(premises, savedata.scrambleLimit);
+}
+
+function scrambleWithLimit(premises, limit) {
+    let { picked: shuffled, remaining: unshuffled } = pickRandomItems(premises, limit);
     shuffled = shuffle(shuffled);
 
     let result = [];
     for (let i = 0; i < 100; i++) {
-        result = [];
-        let i = 0, j = 0;
-        while (i < shuffled.length || j < unshuffled.length) {
-            if (i < shuffled.length && j < unshuffled.length) {
-                let shuffledRemaining = shuffled.length - i;
-                let unshuffledRemaining = unshuffled.length - j;
-                let chance = shuffledRemaining / (shuffledRemaining + unshuffledRemaining);
-                if (Math.random() < chance) {
-                    result.push(shuffled[i++]);
-                } else {
-                    result.push(unshuffled[j++]);
-                }
-            } else if (i < shuffled.length) {
-                result.push(shuffled[i++]);
-            } else {
-                result.push(unshuffled[j++]);
-            }
-        }
-
+        result = mergeRandomly(shuffled, unshuffled);
         if (!arraysEqual(result, premises)) {
             break;
         }
     }
+    return result;
+}
+
+function mergeRandomly(left, right) {
+    result = [];
+    let i = 0, j = 0;
+    while (i < left.length || j < right.length) {
+        if (i < left.length && j < right.length) {
+            let leftRemaining = left.length - i;
+            let rightRemaining = right.length - j;
+            let chance = leftRemaining / (leftRemaining + rightRemaining);
+            if (Math.random() < chance) {
+                result.push(left[i++]);
+            } else {
+                result.push(right[j++]);
+            }
+        } else if (i < left.length) {
+            result.push(left[i++]);
+        } else {
+            result.push(right[j++]);
+        }
+    }
+
     return result;
 }

@@ -70,6 +70,28 @@ function interleaveArrays(arr1, arr2) {
     return result;
 }
 
+function perfectMerge(left, right) {
+    const result = [];
+    const interval = Math.ceil(left.length / (right.length + 1));
+
+    let m = 0;
+    let n = 0;
+
+    while (m < left.length || n < right.length) {
+        for (let i = 0; i < interval && m < left.length; i++) {
+            result.push(left[m]);
+            m++;
+        }
+
+        if (n < right.length) {
+            result.push(right[n]);
+            n++;
+        }
+    }
+
+    return result;
+}
+
 function pairwise(arr, callback) {
     for (let i = 0; i < arr.length - 1; i++) {
         callback(arr[i], arr[i + 1], i, arr);

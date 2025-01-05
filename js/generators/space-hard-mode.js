@@ -1,6 +1,7 @@
 class SpaceHardMode {
-    constructor(generator) {
-        this.generator = generator;
+    constructor(numTransforms) {
+        this.numTransforms = numTransforms;
+        this.sameo = 0;
     }
     
     basicHardMode(wordCoordMap, startWord, endWord, originalConclusionCoord) {
@@ -34,14 +35,47 @@ class SpaceHardMode {
             }
             break;
         }
-        return [newWordMap, operations, newDiffCoord, newConclusionCoord, usedDimensions];
+        return [newWordMap, operations, usedDimensions];
+    }
+
+    oneTransform(wordCoordMap, movingWord, dimension, backupDimension) {
+        const demandChange = true;
+        let changeTries = 8;
+        let backupTries = 8;
+        let useBackup = false;
+
+        let operation;
+        let newWordMap;
+        let pool = Object.keys(wordCoordMap).filter(w => w !== movingWord);
+        let originalCoord = wordCoordMap[movingWord];
+        for (let i = 0; i < 100; i++) {
+            newWordMap = structuredClone(wordCoordMap);
+            let axisWord = pickRandomItems(pool, 1).picked[0];
+            [operation,] = this.applyChain(newWordMap, [], [[[axisWord, movingWord], useBackup ? backupDimension : dimension]]);
+            let newCoord = newWordMap[movingWord];
+            if (demandChange && changeTries > 0 && arraysEqual(originalCoord, newCoord)) {
+                changeTries--;
+                if (changeTries === 0) {
+                    useBackup = true;
+                }
+                continue;
+            }
+
+            if (demandChange && useBackup && backupTries > 0 && arraysEqual(originalCoord, newCoord)) {
+                backupTries--;
+                continue;
+            }
+            break;
+        }
+
+        return [newWordMap, operation];
     }
 
     applyHardMode(wordCoordMap, leftStart, rightStart) {
         const [leftChains, rightChains] = this.createChains(wordCoordMap, leftStart, rightStart);
         const dimensionsUsed = [...leftChains.map(([words, dimension]) => dimension), ...rightChains.map(([words, dimension]) => dimension)];
-        const leftOperations = this.applyChain(wordCoordMap, dimensionsUsed, leftChains, leftStart);
-        const rightOperations = this.applyChain(wordCoordMap, dimensionsUsed, rightChains, rightStart);
+        const leftOperations = this.applyChain(wordCoordMap, dimensionsUsed, leftChains);
+        const rightOperations = this.applyChain(wordCoordMap, dimensionsUsed, rightChains);
         return [[...leftOperations, ...rightOperations], dimensionsUsed];
     }
 
@@ -55,7 +89,7 @@ class SpaceHardMode {
         const pool = Object.keys(wordCoordMap).filter(word => !bannedFromPool.has(word));
         const dimensionPool = wordCoordMap[leftStart].map((c, i) => i);
 
-        let wordSequence = repeatArrayUntil(shuffle(pool.slice()), this.generator.hardModeLevel());
+        let wordSequence = repeatArrayUntil(shuffle(pool.slice()), this.numTransforms);
         let count = 0;
         while (wordSequence.length > 0 && count < 100) {
             let chainSize = Math.min(wordSequence.length, pickRandomItems([1, 1, 2, 2, 3], 1).picked[0]);
@@ -95,10 +129,14 @@ class SpaceHardMode {
         const available = allShifts.map((v, i) => [v, i]).filter(([v, i]) => pool.has(i));
         shuffle(available);
         const sorted = available.sort((a, b) => b[0] - a[0]);
-        return [chainWords, sorted[0][1]];
+        if (Math.random() < 0.95) {
+            return [chainWords, sorted[0][1]];
+        } else {
+            return [chainWords, pickRandomItems(sorted, 1).picked[0][1]];
+        }
     }
 
-    applyChain(wordCoordMap, dimensionsUsed, chains, refWord) {
+    applyChain(wordCoordMap, dimensionsUsed, chains) {
         if (chains.length === 0) {
             return [];
         }

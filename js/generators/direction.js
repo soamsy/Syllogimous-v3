@@ -228,7 +228,6 @@ class DirectionQuestion {
         this.generator = directionGenerator;
         this.pairChooser = new DirectionPairChooser();
         this.incorrectDirections = new IncorrectDirections();
-        this.spaceHardMode = new SpaceHardMode(directionGenerator);
     }
 
     createQuestion(length) {
@@ -239,9 +238,14 @@ class DirectionQuestion {
         let conclusionCoord;
         let diffCoord;
         let [wordCoordMap, neighbors, premises, usedDirCoords] = [];
+        let [numInterleaved, numTransforms] = this.getNumTransformsSplit(length);
         const branchesAllowed = Math.random() > 0.33;
         while (true) {
-            [wordCoordMap, neighbors, premises, usedDirCoords] = this.createWordMap(length, branchesAllowed);
+            if (numInterleaved > 0) {
+                [wordCoordMap, neighbors, premises, usedDirCoords] = this.createWordMapInterleaved(length);
+            } else {
+                [wordCoordMap, neighbors, premises, usedDirCoords] = this.createWordMap(length, branchesAllowed);
+            }
             [startWord, endWord] = this.pairChooser.pickTwoDistantWords(neighbors);
             [diffCoord, conclusionCoord] = getConclusionCoords(wordCoordMap, startWord, endWord);
             if (conclusionCoord.slice(0, 3).some(c => c !== 0)) {
@@ -251,8 +255,13 @@ class DirectionQuestion {
 
         let operations;
         let hardModeDimensions;
-        if (this.generator.hardModeAllowed() && this.generator.hardModeLevel() > 0) {
-            [wordCoordMap, operations, diffCoord, conclusionCoord, hardModeDimensions] = this.spaceHardMode.basicHardMode(wordCoordMap, startWord, endWord, conclusionCoord);
+        if (numTransforms > 0) {
+            [wordCoordMap, operations, hardModeDimensions] = new SpaceHardMode(numTransforms).basicHardMode(wordCoordMap, startWord, endWord, conclusionCoord);
+            [diffCoord, conclusionCoord] = getConclusionCoords(wordCoordMap, startWord, endWord);
+            if (numInterleaved > 0) {
+                premises.push(...operations);
+                operations = [];
+            }
         }
 
         let isValid;
@@ -266,7 +275,9 @@ class DirectionQuestion {
             conclusion = this.generator.createDirectionStatement(startWord, endWord, incorrectCoord);
         }
 
-        premises = scramble(premises);
+        if (numInterleaved === 0) {
+            premises = scramble(premises);
+        }
         const countdown = this.generator.getCountdown();
         return {
             category: this.generator.getName(),
@@ -285,16 +296,25 @@ class DirectionQuestion {
         let isValidSame;
         let [wordCoordMap, neighbors, premises, usedDirCoords, operations] = [];
         let [a, b, c, d] = [];
+        let [numInterleaved, numTransforms] = this.getNumTransformsSplit(length);
         const branchesAllowed = Math.random() > 0.2;
         const flip = coinFlip();
         while (flip !== isValidSame) {
-            [wordCoordMap, neighbors, premises, usedDirCoords] = this.createWordMap(length, branchesAllowed);
+            if (numInterleaved > 0) {
+                [wordCoordMap, neighbors, premises, usedDirCoords] = this.createWordMapInterleaved(length);
+            } else {
+                [wordCoordMap, neighbors, premises, usedDirCoords] = this.createWordMap(length, branchesAllowed);
+            }
             [a, b, c, d] = pickRandomItems(Object.keys(wordCoordMap), 4).picked;
-            if (this.generator.hardModeAllowed() && this.generator.hardModeLevel() > 0) {
+            if (numTransforms > 0) {
                 const [startWord, endWord] = pickRandomItems([a, b, c, d], 2).picked;
                 const [diffCoord, conclusionCoord] = getConclusionCoords(wordCoordMap, startWord, endWord);
-                let [_x, _y, _z] = [];
-                [wordCoordMap, operations, _x, _y, _z] = this.spaceHardMode.basicHardMode(wordCoordMap, startWord, endWord, conclusionCoord);
+                let _x;
+                [wordCoordMap, operations, _x] = new SpaceHardMode(numTransforms).basicHardMode(wordCoordMap, startWord, endWord, conclusionCoord);
+                if (numInterleaved > 0) {
+                    premises.push(...operations);
+                    operations = [];
+                }
             }
             isValidSame = arraysEqual(findDirection(wordCoordMap[a], wordCoordMap[b]), findDirection(wordCoordMap[c], wordCoordMap[d]));
         }
@@ -319,6 +339,105 @@ class DirectionQuestion {
             conclusion,
             ...(countdown && { countdown }),
         }
+    }
+
+    getNumTransformsSplit(numPremises) {
+        const totalTransforms = this.generator.hardModeLevel();
+        if (!this.generator.hardModeAllowed() || totalTransforms === 0) {
+            return [0, 0];
+        }
+
+        if (!savedata.enableTransformInterleave) {
+            return [0, totalTransforms];
+        }
+        let interleaveCount = Math.max(0, Math.min(totalTransforms - 1, numPremises - 1));
+        return [interleaveCount, totalTransforms - interleaveCount];
+    }
+
+    createWordMapCommands(length) {
+        const words = createStimuli(length + 1);
+        let commands = words.map(w => ['move', w]);
+        let [interleaveCount, _] = this.getNumTransformsSplit(length);
+        if (interleaveCount === 0) {
+            return [words, commands];
+        }
+
+        let transformCommands = []
+        for (let i = 0; i < interleaveCount; i++) {
+            transformCommands.push(['transform']);
+        }
+        let middleCommands = commands.slice(1, commands.length - 1);
+        let merged = perfectMerge(middleCommands, transformCommands);
+        merged.unshift(commands[0]);
+        merged.push(commands[commands.length - 1]);
+
+        return [words, merged];
+    }
+
+    createWordMapInterleaved(length) {
+        let [words, commands] = this.createWordMapCommands(length);
+        const initialCoord = this.generator.initialCoord();
+        let wordCoordMap = {[words[0]]: initialCoord };
+        let neighbors = {[words[0]]: []};
+        let premiseChunks = [[]];
+        let operations = [];
+        let usedDirCoords = [];
+
+        let lastWord = words[0];
+        let dimensionPool = repeatArrayUntil(shuffle(initialCoord.map((d, i) => i)), commands.length * 2);
+        let dimensionIndex = 0;
+        for (let i = 1; i < commands.length; i++) {
+            let command = commands[i];
+            let action = command[0];
+            if (action === 'transform') {
+                if (premiseChunks[premiseChunks.length - 1].length !== 0) {
+                    premiseChunks.push([]);
+                }
+                let [newWordMap, operation] = new SpaceHardMode(0).oneTransform(wordCoordMap, lastWord, dimensionPool[dimensionIndex], dimensionPool[dimensionIndex+1]);
+                dimensionIndex++;
+                wordCoordMap = newWordMap;
+                operations.push(operation);
+            } else {
+                const baseWord = lastWord;
+                const nextWord = command[1];
+                const dirCoord = this.generator.pickDirection(baseWord, neighbors, wordCoordMap);
+                wordCoordMap[nextWord] = addCoords(wordCoordMap[baseWord], dirCoord);
+                const premise = this.generator.createDirectionStatement(baseWord, nextWord, dirCoord);
+                premiseChunks[premiseChunks.length - 1].push(premise);
+                usedDirCoords.push(dirCoord);
+                neighbors[baseWord] = neighbors[baseWord] ?? [];
+                neighbors[baseWord].push(nextWord);
+                neighbors[nextWord] = neighbors[nextWord] ?? [];
+                neighbors[nextWord].push(baseWord);
+                lastWord = nextWord;
+            }
+        }
+
+        if (premiseChunks[premiseChunks.length - 1].length === 0) {
+            premiseChunks.pop();
+        }
+
+        let scrambleLimit = savedata.scrambleLimit;
+        premiseChunks = premiseChunks.map(chunk => {
+            if (scrambleLimit === null) {
+                return shuffle(chunk);
+            } else {
+                let chosenLimit = Math.min(scrambleLimit, chunk.length);
+                scrambleLimit -= chosenLimit;
+                return scrambleWithLimit(chunk, chosenLimit);
+            }
+        });
+
+        let merged = interleaveArrays(premiseChunks, operations);
+        let premises = merged.flatMap(p => {
+            if (Array.isArray(p)) {
+                return p;
+            } else {
+                return [p];
+            }
+        });
+
+        return [wordCoordMap, neighbors, premises, usedDirCoords];
     }
 
     createWordMap(length, branchesAllowed) {
