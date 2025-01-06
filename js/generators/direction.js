@@ -261,6 +261,7 @@ class DirectionQuestion {
             if (numInterleaved > 0) {
                 premises.push(...operations);
                 operations = [];
+                hardModeDimensions = null;
             }
         }
 
