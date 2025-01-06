@@ -38,7 +38,7 @@ class SpaceHardMode {
     }
 
     oneTransform(wordCoordMap, movingWord, dimension, backupDimension) {
-        const demandChange = true;
+        const demandChange = Math.random() < 0.92;
         let changeTries = 8;
         let backupTries = 8;
         let useBackup = false;
