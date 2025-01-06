@@ -41,14 +41,7 @@ function scrambleWithLimit(premises, limit) {
     let { picked: shuffled, remaining: unshuffled } = pickRandomItems(premises, limit);
     shuffled = shuffle(shuffled);
 
-    let result = [];
-    for (let i = 0; i < 100; i++) {
-        result = mergeRandomly(shuffled, unshuffled);
-        if (!arraysEqual(result, premises)) {
-            break;
-        }
-    }
-    return result;
+    return mergeRandomly(shuffled, unshuffled);
 }
 
 function mergeRandomly(left, right) {
