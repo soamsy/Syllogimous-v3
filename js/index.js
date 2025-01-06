@@ -456,7 +456,6 @@ function init() {
 }
 
 function wowFeedbackRight(cb) {
-    feedbackRight.style.transitionDuration = "0.5s";
     feedbackRight.classList.add("active");
     setTimeout(() => {
         feedbackRight.classList.remove("active");
@@ -466,7 +465,6 @@ function wowFeedbackRight(cb) {
 }
 
 function wowFeedbackWrong(cb) {
-    feedbackWrong.style.transitionDuration = "0.5s";
     feedbackWrong.classList.add("active");
     setTimeout(() => {
         feedbackWrong.classList.remove("active");
@@ -476,7 +474,6 @@ function wowFeedbackWrong(cb) {
 }
 
 function wowFeedbackMissed(cb) {
-    feedbackMissed.style.transitionDuration = "0.5s";
     feedbackMissed.classList.add("active");
     setTimeout(() => {
         feedbackMissed.classList.remove("active");
