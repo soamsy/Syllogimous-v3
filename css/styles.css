@@ -156,6 +156,9 @@ button.delete:hover {
     transition: all 0s ease;
     width: 100%;
     z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .feedback--wrong {
@@ -181,12 +184,9 @@ button.delete:hover {
 .feedback span {
     font-family: "metal gear", sans-serif;
     font-size: var(--step-5);
-    left: 50%;
     letter-spacing: 0.75rem;
     padding: 0.75rem;
-    position: absolute;
-    top: 50%;
-    transform: translateX(-50%) translateY(calc(-100% - 1rem));
+    margin-bottom: 9rem;
 }
 
 .feedback--wrong span {
