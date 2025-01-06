@@ -1,7 +1,6 @@
 class SpaceHardMode {
     constructor(numTransforms) {
         this.numTransforms = numTransforms;
-        this.sameo = 0;
     }
     
     basicHardMode(wordCoordMap, startWord, endWord, originalConclusionCoord) {
