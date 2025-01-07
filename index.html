@@ -455,11 +455,38 @@
 								<label class="switch" for="p-35"></label>
 							</div>
 							<span>Mirror</span>
+							<div class="tooltip-container" tabindex="0">
+								?
+								<div class="tooltip-text shift-right">
+								Flips a word across another word,<br>
+								but only along one dimension (X/Y/Z).<br>
+								<br>
+								A is Y-mirrored across B<br>
+								<br>
+								Means to shift A up/down until<br>
+								it's fully mirrored across the<br>
+								X-axis of B.<br>
+								</div>
+							</div>
 							<div>
 								<input hidden id="p-36" type="checkbox" checked>
 								<label class="switch" for="p-36"></label>
 							</div>
 							<span>Scale</span>
+							<div class="tooltip-container" tabindex="0">
+								?
+								<div class="tooltip-text shift-left">
+									Shifts a word 2x away<br>
+									from another word, but only<br>
+									along one dimension (X/Y/Z).<br>
+									<br>
+									A is X-scaled 2x from B<br>
+									<br>
+									Means to shift A left/right<br>
+									until it doubles its X distance<br>
+									from B.<br>
+								</div>
+							</div>
 						</div>
 						<div class="ctrl__inner mb-05">
 							<div>
@@ -467,11 +494,37 @@
 								<label class="switch" for="p-34"></label>
 							</div>
 							<span>Set X/Y/Z</span>
+							<div class="tooltip-container" tabindex="0">
+								?
+								<div class="tooltip-text">
+									Moves a word so it lines up<br>
+									with the X/Y/Z of the another<br>
+									word.<br>
+								</div>
+							</div>
 							<div>
 								<input hidden id="p-37" type="checkbox">
 								<label class="switch" for="p-37"></label>
 							</div>
 							<span>Rotate</span>
+							<div class="tooltip-container" tabindex="0">
+								?
+								<div class="tooltip-text right">
+									Rotates a word clockwise or<br>
+									counterclockwise around another<br>
+									word.<br>
+									<br>
+									In 3D mode, the word will<br>
+									need to rotate around the axis<br>
+									of the pivot word. For example,<br>
+									<br>
+									A is XY-rotated 90°↻ around B<br>
+									<br>
+									means that you find the Z-axis<br>
+									of B, and rotate A around that.<br>
+									(A will stay within the XY-plane)<br>
+								</div>
+							</div>
 						</div>
 						<div class="ctrl__inner">
 							<div>
@@ -479,6 +532,24 @@
 								<label class="switch" for="p-40"></label>
 							</div>
 							<span>Interleave Mode</span>
+							<div class="tooltip-container" tabindex="0">
+								?
+								<div class="tooltip-text shift-left">
+								Transformations will be inserted<br>
+								in between premises, rather than<br>
+								only at the end. Requires 2+<br>
+								transforms to apply.<br>
+								<br>
+								Note: high no. of interleaved<br>
+								transforms pad your premises<br>
+								with more spatial movement<br>
+								without adding extra locations<br>
+								you have to memorize. This<br>
+								may be ideal for increasing<br>
+								fluid demands without WM load<br>
+								ballooning. Try maxing it out.<br>
+							</div>
+						</div>
 						</div>
 						<hr class="divider"/>
 						<div class="mb-1">

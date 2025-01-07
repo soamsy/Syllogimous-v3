@@ -1228,6 +1228,14 @@ table.distinction {
     right: 1px;
 }
 
+.tooltip-text.shift-left {
+    margin-right: 100px;
+}
+
+.tooltip-text.shift-right {
+    margin-left: 100px;
+}
+
 .tooltip-container:hover .tooltip-text,
 .tooltip-container:focus-within .tooltip-text,
 .tooltip-container.show .tooltip-text {
