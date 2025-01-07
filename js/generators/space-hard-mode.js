@@ -264,5 +264,5 @@ function createShiftTemplate(word, direction, shift) {
     return `<span class="subject">${word}</span> is moved ${direction} by <span class="highlight">${shift}</span>`;
 }
 function createRotationTemplate(a, b, planeOp, degree) {
-    return `<span class="subject">${b}</span> is ${planeOp} ${degree} around ${a}`
+    return `<span class="subject">${b}</span> is ${planeOp} ${degree} around <span class="subject">${a}</span>`
 }
