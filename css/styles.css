@@ -143,22 +143,41 @@ button.delete:hover {
 /* end of Utils */
 
 .feedback {
-    background-image: url(../img/nnnoise.svg);
-    border: 8px solid;
-    border-left: none;
-    border-right: none;
-    height: 0vh;
+    top: 0;
     left: 0;
-    pointer-events: none;
-    position: fixed;
-    opacity: 0;
-    top: 50%;
-    transition: all 0s ease;
     width: 100%;
+    height: 100%;
     z-index: 2000;
+    position: fixed;
+    transition: all 0.5s ease;
     display: flex;
     align-items: center;
     justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.feedback.active {
+    opacity: 0.88;
+    pointer-events: all;
+}
+
+.feedback .noise-bg {
+    border: 8px solid;
+    border-left: none;
+    border-right: none;
+    background-image: url(../img/nnnoise.svg);
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    top: 0;
+    left: 0;
+    transition: all 0.5s ease;
+    transform: scaleY(0);
+}
+
+.feedback.active .noise-bg {
+    transform: scaleY(1);
 }
 
 .feedback--wrong {
@@ -173,20 +192,14 @@ button.delete:hover {
     color: #0f0a;
 }
 
-.feedback.active {
-    transition-duration: 0.5s;
-    height: 100vh;
-    opacity: 0.88;
-    top: 0%;
-    pointer-events: all;
-}
-
 .feedback span {
     font-family: "metal gear", sans-serif;
     font-size: var(--step-5);
     letter-spacing: 0.75rem;
     padding: 0.75rem;
-    margin-bottom: 9rem;
+    margin-bottom: 10rem;
+    position: fixed;
+    z-index: 10;
 }
 
 .feedback--wrong span {
@@ -203,9 +216,10 @@ button.delete:hover {
 
 .feedback .line {
     height: 4px;
-    position: absolute;
+    position: fixed;
     top: 50%;
     width: 100%;
+    z-index: 10;
 }
 
 .feedback--wrong .line {
