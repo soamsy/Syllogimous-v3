@@ -367,10 +367,9 @@ class DirectionQuestion {
         for (let i = 0; i < interleaveCount; i++) {
             transformCommands.push(['transform']);
         }
-        let middleCommands = commands.slice(1, commands.length - 1);
-        let merged = perfectMerge(middleCommands, transformCommands);
+        let tailCommands = commands.slice(1, commands.length);
+        let merged = frontHeavyIntervalMerge(tailCommands, transformCommands);
         merged.unshift(commands[0]);
-        merged.push(commands[commands.length - 1]);
 
         return [words, merged];
     }

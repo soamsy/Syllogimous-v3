@@ -70,22 +70,31 @@ function interleaveArrays(arr1, arr2) {
     return result;
 }
 
-function perfectMerge(left, right) {
+function frontHeavyIntervalMerge(left, right) {
     const result = [];
-    const interval = Math.ceil(left.length / (right.length + 1));
+    const totalIntervals = right.length + 1;
+    const lowInterval = Math.floor(left.length / totalIntervals);
+    const highInterval = Math.ceil(left.length / totalIntervals);
+    const numHigh = left.length % totalIntervals;
 
     let m = 0;
     let n = 0;
 
-    while (m < left.length || n < right.length) {
-        for (let i = 0; i < interval && m < left.length; i++) {
-            result.push(left[m]);
-            m++;
+    for (let i = 0; i < numHigh; i++) {
+        for (let j = 0; j < highInterval; j++) {
+            result.push(left[m++]);
         }
-
         if (n < right.length) {
-            result.push(right[n]);
-            n++;
+            result.push(right[n++]);
+        }
+    }
+
+    for (let i = numHigh; i < totalIntervals; i++) {
+        for (let j = 0; j < lowInterval; j++) {
+            result.push(left[m++]);
+        }
+        if (n < right.length) {
+            result.push(right[n++]);
         }
     }
 
