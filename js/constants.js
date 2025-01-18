@@ -1,13 +1,21 @@
 // Constants and variables
-const localKey = "sllgms-v3";
-
+const oldSettingsKey = "sllgms-v3";
 const imageKey = 'sllgms-v3-background';
+const profilesKey = 'sllgms-v3-profiles';
+const selectedProfileKey = 'sllgms-v3-selected-profile';
+const appStateKey = 'sllgms-v3-app-state';
+
+let appState = {
+    "score": 0,
+    "questions": [],
+    "backgroundImage": null,
+    "gameAreaColor": "#161F30CC",
+};
 
 let savedata = {
     "version": 1,
     "premises": 2,
     "timer": 30,
-    "score": 0,
     "enableDistinction": true,
     "enableComparison": true,
     "enableSyllogism": true,
@@ -25,18 +33,13 @@ let savedata = {
     "enableMeta": false,
     "maxNestedBinaryDepth": 1,
     "removeNegationExplainer": false,
-    "questions": [],
     "nonsenseWordLength": 3,
     "useNonsenseWords": true,
     "garbageWordLength": 3,
     "useGarbageWords": false,
     "useEmoji": false,
-    "defaultStimulusType": "nonsenseWords",
     "meaningfulWordNouns": true,
     "meaningfulWordAdjectives": false,
-    "defaultPartOfSpeech": "nouns",
-    "backgroundImage": null,
-    "gameAreaColor": "#161F30CC",
     "overrideDistinctionPremises": null,
     "overrideComparisonPremises": null,
     "overrideSyllogismPremises": null,
@@ -66,6 +69,8 @@ let savedata = {
     "enableTransformRotate": false,
     "enableTransformInterleave": false,
 };
+
+const defaultSavedata = structuredClone(savedata);
 
 const keySettingMap = {
     "p-1": "enableDistinction",
@@ -109,8 +114,6 @@ const keySettingMap = {
     "p-21": "useEmoji",
     "p-22": "meaningfulWordNouns",
     "p-23": "meaningfulWordAdjectives",
-    "p-24": "backgroundImage",
-    "p-25": "gameAreaColor",
     "p-26": "garbageWordLength",
     "p-27": "useGarbageWords",
     "p-28": "useJunkEmoji",

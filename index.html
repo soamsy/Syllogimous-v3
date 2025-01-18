@@ -47,7 +47,21 @@
 			<div class="offcanvas offcanvas--left">
 				<div class="offcanvas-body ffmono">
 					<div style="direction: ltr;">
-						<div class="mb-2"></div>
+						<div class="mb-1"></div>
+						<div class="mb-1">
+							<span class="mb-05">Current Profile</span>
+							<div class="profile-container">
+							  <div class="profile-dropdown">
+							    <input type="text" class="profile-input" id="profile-input" placeholder="">
+							    <span class="profile-arrow" id="profile-arrow">▼</span>
+							    <div class="profile-list" id="profile-list">
+							    </div>
+								</div>
+								<div class="profile-plus" id="profile-plus">+</div>
+								<div class="profile-share" id="profile-share"><span class="icon">⮳</span><span class="text">Share</span></div>
+								<div class="profile-copied" id="profile-copied">URL copied to clipboard</div>
+							</div>
+						</div>
 						<div class="mb-2">
 							<div class="inline-input__outer big-input">
 								Global Premises
@@ -598,7 +612,7 @@
 							<div class="inline-input__outer">
 								Image
 								<span class="inline-input__inner">
-								  <input type="file" id="p-24" accept="image/*">
+								  <input type="file" id="image-upload" onchange="handleImageChange(event)" accept="image/*">
 								</span>
 							</div>
 							<button onclick="clearBackgroundImage()" style="float:right;">Clear Image</button>
@@ -607,7 +621,7 @@
 							<div class="inline-input__outer">
 								Color
 								<span class="inline-input__inner">
-								  <input type="text" id="p-25" placeholder="Enter color (e.g. #ff0000)" value="#161F30CC"></input>
+								  <input type="text" id="color-input" placeholder="Enter color (e.g. #ff0000)" value="#161F30CC" oninput="handleColorChange(event)"></input>
 								</span>
 							</div>
 						</div>
@@ -1783,6 +1797,7 @@
 		<script src="js/generators/premise-reorder.js"></script>
 		<script src="js/explanation.js"></script>
 		<script src="js/db.js"></script>
+		<script src="js/profile.js"></script>
 		<script src="js/index.js"></script>
 	</body>
 </html>

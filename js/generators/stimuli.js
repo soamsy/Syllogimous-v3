@@ -86,7 +86,7 @@ function createStimuli(numberOfStimuli) {
     if (savedata.useEmoji) stimulusTypes.add('emoji');
     if (savedata.useJunkEmoji) { stimulusTypes.add('junkEmoji'); }
     if (savedata.useVisualNoise) { stimulusTypes.add('visualNoise'); }
-    if (!stimulusTypes.size) stimulusTypes.add(savedata.defaultStimulusType);
+    if (!stimulusTypes.size) stimulusTypes.add('nonsenseWords');
 
     const stimuliCreated = [];
 
@@ -94,7 +94,7 @@ function createStimuli(numberOfStimuli) {
     
     if (savedata.meaningfulWordNouns) partsOfSpeech.add('nouns');
     if (savedata.meaningfulWordAdjectives) partsOfSpeech.add('adjectives');
-    if (!partsOfSpeech.size) partsOfSpeech.add(savedata.defaultPartOfSpeech);
+    if (!partsOfSpeech.size) partsOfSpeech.add('nouns');
 
     for (; numberOfStimuli > 0 && stimulusTypes.size; numberOfStimuli -= 1) {
         const randomStimulusType = Array.from(stimulusTypes)[Math.floor(Math.random() * stimulusTypes.size)];

@@ -1304,3 +1304,141 @@ table.distinction {
         padding: 0.4rem;
     }
 }
+
+.profile-container {
+    display: flex;
+    position: relative;
+    gap: 2px;
+    align-items: center;
+    justify-content: space-between;
+    height: 70px;
+}
+
+.profile-dropdown {
+    position: relative;
+    font-size: var(--step-0);
+    font-family: monospace;
+    width: 250px;
+}
+
+.profile-input {
+    width: 100%;
+    padding: 8px;
+    font-size: var(--step--1);
+    font-family: inherit;
+    letter-spacing: inherit;
+    box-sizing: border-box;
+    color: #FFF;
+    background-color: #222;
+    border: 1px solid #333;
+    height: 50px;
+}
+
+.profile-arrow {
+    position: absolute;
+    right: 1px;
+    top: 0;
+    width: 20%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-arrow, .profile-plus, .profile-share {
+    font-size: var(--step-2);
+    cursor: pointer;
+    user-select: none;
+    background-color: #111;
+    text-align: center;
+    border: 1px solid #333;
+    height: 50px;
+}
+
+.profile-plus, .profile-share {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-share .icon {
+    line-height: 0;
+}
+
+.profile-share .text {
+    font-size: var(--step--1);
+}
+
+.profile-copied {
+    pointer-events: none;
+    opacity: 0;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    padding: 4px;
+    border-radius: 2px;
+    background-color: #224222;
+    transition: all 0.2s ease-out;
+}
+
+.profile-copied.toast {
+    opacity: 0.92;
+}
+
+.profile-list {
+    display: none;
+    position: absolute;
+    width: 100%;
+    margin-top: 2px;
+    border: 1px solid #333;
+    background: #222;
+    max-height: 300px;
+    width: 380px;
+    overflow-y: auto;
+    z-index: 1000;
+    user-select: none;
+}
+
+.profile-list .profile-select {
+    border-top: 1px solid #444;
+    padding: 8px;
+    cursor: pointer;
+    display: flex;
+    position: relative;
+    align-items: center;
+    justify-content: space-between;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 380px;
+}
+
+.profile-list .profile-select.highlight {
+    background-color: #248;
+}
+
+.profile-list .profile-select:hover {
+    background-color: #444;
+}
+
+.profile-list .profile-select.highlight:hover {
+    background-color: #36A;
+}
+
+.profile-list .profile-delete {
+    display: flex;
+    position: absolute;
+    right: 9px;
+    justify-content: center;
+    align-items: center;
+    background-color: #523;
+    width: 40px;
+    padding: 8px;
+    margin: -9px;
+    border-left: 1px solid #444;
+    height: 100%;
+}
+
+.profile-list .profile-delete:hover {
+    background-color: #956;
+}

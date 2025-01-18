@@ -64,114 +64,94 @@ const keySettingMapInverse = Object.entries(keySettingMap)
 carouselBackButton.addEventListener("click", carouselBack);
 carouselNextButton.addEventListener("click", carouselNext);
 
-for (const key in keySettingMap) {
-    const value = keySettingMap[key];
-    const input = document.querySelector("#" + key);
+function registerEventHandlers() {
+    for (const key in keySettingMap) {
+        const value = keySettingMap[key];
+        const input = document.querySelector("#" + key);
 
-    // Checkbox handler
-    if (input.type === "checkbox") {
-        input.addEventListener("input", evt => {
-            savedata[value] = !!input.checked;
-            save();
-            init();
-        });
-    }
+        // Checkbox handler
+        if (input.type === "checkbox") {
+            input.addEventListener("input", evt => {
+                savedata[value] = !!input.checked;
+                save();
+                init();
+            });
+        }
 
-    // Number handler
-    if (input.type === "number") {
-        input.addEventListener("input", evt => {
+        // Number handler
+        if (input.type === "number") {
+            input.addEventListener("input", evt => {
 
-            let num = input?.value;
-            if (num === undefined || num === null || num === '')
-                num = null;
-            if (input.min && +num < +input.min)
-                num = null;
-            if (input.max && +num > +input.max)
-                num = null;
+                let num = input?.value;
+                if (num === undefined || num === null || num === '')
+                    num = null;
+                if (input.min && +num < +input.min)
+                    num = null;
+                if (input.max && +num > +input.max)
+                    num = null;
 
-            if (num == null) {
-                if (key.endsWith("premises") || key.endsWith("time") || key.endsWith("optional")) {
-                    savedata[value] = null;
+                if (num == null) {
+                    if (key.endsWith("premises") || key.endsWith("time") || key.endsWith("optional")) {
+                        savedata[value] = null;
+                    } else {
+                        // Fix infinite loop on mobile when changing # of premises
+                        return;
+                    }
                 } else {
-                    // Fix infinite loop on mobile when changing # of premises
-                    return;
+                    savedata[value] = +num;
                 }
-            } else {
-                savedata[value] = +num;
-            }
-            save();
-            init();
-        });
-    }
-
-    // Image handler
-    if (input.type === "file") {
-        input.addEventListener("change", function() {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const base64String = event.target.result;
-                    savedata[value] = imageKey;
-                    imagePromise = imagePromise.then(() => storeImage(imageKey, base64String));
-                    imageChanged = true;
-                    save();
-                    init();
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-    }
-
-    if (input.type === "text") {
-        input.addEventListener("input", function() {
-            const color = this.value;
-            savedata[value] = color;
-            save();
-            init();
-        });
+                save();
+                init();
+            });
+        }
     }
 }
 
-// Functions
 function save() {
-    localStorage.setItem(
-        localKey,
-        JSON.stringify(savedata)
-    );
+    PROFILE_STORE.saveProfiles();
+    setLocalStorageObj(appStateKey, appState);
+}
+
+function appStateStartup() {
+    const appStateObj = getLocalStorageObj(appStateKey);
+    if (appStateObj) {
+        Object.assign(appState, appStateObj);
+        setLocalStorageObj(appStateKey, appState);
+    }
 }
 
 function load() {
-    const LSEntry = localStorage.getItem(localKey);
+    appStateStartup();
+    PROFILE_STORE.startup();
 
-    let savedData;
-    if (LSEntry) {
-        savedData = JSON.parse(LSEntry);
-    }
-    if (!savedData) {
-        return save();
-    }
+    renderHQL();
+    populateSettings();
+}
 
-    Object.assign(savedata, savedData);
-
-    for (let key in savedData) {
+function populateSettings() {
+    for (let key in savedata) {
         if (!(key in keySettingMapInverse)) continue;
-        let value = savedData[key];
+        let value = savedata[key];
         let id = keySettingMapInverse[key];
         
         const input = document.querySelector("#" + id);
-        if (input.type === "checkbox")
-            input.checked = value;
-        else if (input.type === "number")
+        if (input.type === "checkbox") {
+            if (value === true || value === false) {
+                input.checked = value;
+            }
+        }
+        else if (input.type === "number") {
+            if (typeof value === "number") {
+                input.value = +value;
+            }
+        }
+        else if (input.type === "text") {
             input.value = value;
-        else if (input.type === "text")
-            input.value = value;
+        }
     }
 
-    timerInput.value = savedData.timer;
+    timerInput.value = savedata.timer;
     timerTime = timerInput.value;
-
-    renderHQL();
 }
 
 function carouselInit() {
@@ -193,19 +173,42 @@ function displayInit() {
 }
 
 function clearBackgroundImage() {
-    const fileInput = document.getElementById('p-24');
+    const fileInput = document.getElementById('image-upload');
     fileInput.value = '';
-    delete savedata.backgroundImage;
+    delete appState.backgroundImage;
     imageChanged = true;
     save();
     imagePromise = imagePromise.then(() => deleteImage(imageKey));
     imagePromise = imagePromise.then(() => updateCustomStyles());
 }
 
+function handleImageChange(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const base64String = event.target.result;
+            appState.backgroundImage = imageKey;
+            imagePromise = imagePromise.then(() => storeImage(imageKey, base64String));
+            imageChanged = true;
+            save();
+            init();
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function handleColorChange(event) {
+    const color = event.target.value;
+    appState.gameAreaColor = color;
+    save();
+    init();
+}
+
 async function updateCustomStyles() {
     let styles = '';
     if (imageChanged) {
-        if (savedata.backgroundImage) {
+        if (appState.backgroundImage) {
             const base64String = await getImage(imageKey);
             const [prefix, base64Data] = base64String.split(',');
             const mimeType = prefix.match(/data:(.*?);base64/)[1];
@@ -229,7 +232,7 @@ async function updateCustomStyles() {
         liveStyles.innerHTML = styles;
     }
 
-    const gameAreaColor = savedata.gameAreaColor;
+    const gameAreaColor = appState.gameAreaColor;
     const gameAreaImage = `${gameAreaColor}`
     if (gameArea.style.background !== gameAreaImage) {
         gameArea.style.background = '';
@@ -483,7 +486,7 @@ function wowFeedbackMissed(cb) {
 }
 
 function removeAppStateAndSave() {
-    savedata.questions.push(question);
+    appState.questions.push(question);
     save();
 }
 
@@ -494,11 +497,11 @@ function checkIfTrue() {
     processingAnswer = true;
     question.answerUser = true;
     if (question.isValid) {
-        savedata.score++;
+        appState.score++;
         question.correctness = 'right';
         wowFeedbackRight(init);
     } else {
-        savedata.score--;
+        appState.score--;
         question.correctness = 'wrong';
         wowFeedbackWrong(init);
     }
@@ -514,11 +517,11 @@ function checkIfFalse() {
     processingAnswer = true;
     question.answerUser = false;
     if (!question.isValid) {
-        savedata.score++;
+        appState.score++;
         question.correctness = 'right';
         wowFeedbackRight(init);
     } else {
-        savedata.score--;
+        appState.score--;
         question.correctness = 'wrong';
         wowFeedbackWrong(init);
     }
@@ -532,7 +535,7 @@ function timeElapsed() {
         return;
     }
     processingAnswer = true;
-    savedata.score--;
+    appState.score--;
     question.correctness = 'missed';
     question.answerUser = undefined;
     question.answeredAt = new Date().getTime();
@@ -545,8 +548,11 @@ function timeElapsed() {
 function resetApp() {
     const confirmed = confirm("Are you sure?");
     if (confirmed) {
-        localStorage.removeItem(localKey);
+        localStorage.removeItem(oldSettingsKey);
         localStorage.removeItem(imageKey);
+        localStorage.removeItem(profilesKey);
+        localStorage.removeItem(selectedProfileKey);
+        localStorage.removeItem(appStateKey);
         window.location.reload();
     }
 }
@@ -554,31 +560,31 @@ function resetApp() {
 function clearHistory() {
     const confirmed = confirm("Are you sure?");
     if (confirmed) {
-        savedata.questions = [];
-        savedata.score = 0;
+        appState.questions = [];
+        appState.score = 0;
         save();
         renderHQL();
     }
 }
 
 function deleteQuestion(i, isRight) {
-    savedata.score += (isRight ? -1 : 1);
-    savedata.questions.splice(i, 1);
+    appState.score += (isRight ? -1 : 1);
+    appState.questions.splice(i, 1);
     save();
     renderHQL();
 }
 
 function renderHQL(didAddSingleQuestion=false) {
     if (didAddSingleQuestion) {
-        const index = savedata.questions.length - 1;
-        const recentQuestion = savedata.questions[index];
+        const index = appState.questions.length - 1;
+        const recentQuestion = appState.questions[index];
         const firstChild = historyList.firstElementChild;
         historyList.insertBefore(createHQLI(recentQuestion, index), firstChild);
     } else {
         historyList.innerHTML = "";
 
-        const len = savedata.questions.length;
-        const reverseChronological = savedata.questions.slice().reverse();
+        const len = appState.questions.length;
+        const reverseChronological = appState.questions.slice().reverse();
 
         reverseChronological
             .map((q, i) => {
@@ -588,9 +594,9 @@ function renderHQL(didAddSingleQuestion=false) {
             .forEach(el => historyList.appendChild(el));
     }
 
-    updateAverage(savedata.questions);
-    correctlyAnsweredEl.innerText = savedata.score;
-    nextLevelEl.innerText = savedata.questions.length;
+    updateAverage(appState.questions);
+    correctlyAnsweredEl.innerText = appState.score;
+    nextLevelEl.innerText = appState.questions.length;
 }
 
 function updateAverage(reverseChronological) {
@@ -769,6 +775,7 @@ function handleKeyPress(event) {
 
 document.addEventListener("keydown", handleKeyPress);
 
+registerEventHandlers();
 load();
 switchButtons();
 init();
