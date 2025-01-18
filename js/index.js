@@ -64,6 +64,10 @@ const keySettingMapInverse = Object.entries(keySettingMap)
 carouselBackButton.addEventListener("click", carouselBack);
 carouselNextButton.addEventListener("click", carouselNext);
 
+function isKeyNullable(key) {
+    return key.endsWith("premises") || key.endsWith("time") || key.endsWith("optional");
+}
+
 function registerEventHandlers() {
     for (const key in keySettingMap) {
         const value = keySettingMap[key];
@@ -91,7 +95,7 @@ function registerEventHandlers() {
                     num = null;
 
                 if (num == null) {
-                    if (key.endsWith("premises") || key.endsWith("time") || key.endsWith("optional")) {
+                    if (isKeyNullable(key)) {
                         savedata[value] = null;
                     } else {
                         // Fix infinite loop on mobile when changing # of premises
@@ -141,7 +145,9 @@ function populateSettings() {
             }
         }
         else if (input.type === "number") {
-            if (typeof value === "number") {
+            if (!value && isKeyNullable(id)) {
+                input.value = '';
+            } else if (typeof value === "number") {
                 input.value = +value;
             }
         }
