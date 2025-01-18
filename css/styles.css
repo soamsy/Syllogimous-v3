@@ -1389,12 +1389,11 @@ table.distinction {
 .profile-list {
     display: none;
     position: absolute;
-    width: 100%;
     margin-top: 2px;
     border: 1px solid #333;
     background: #222;
     max-height: 300px;
-    width: 380px;
+    width: 360px;
     overflow-y: auto;
     z-index: 1000;
     user-select: none;
