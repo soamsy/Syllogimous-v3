@@ -1441,3 +1441,57 @@ table.distinction {
 .profile-list .profile-delete:hover {
     background-color: #956;
 }
+
+.error-popup {
+    display: none;
+    position: fixed;
+    bottom: 5%;
+    right: 5%;
+    background-color: #222;
+    font-size: var(--step-0);
+    width: fit-content;
+    height: fit-content;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.error-popup-content {
+    background-color: #333;
+    padding: 15px;
+    padding-bottom: 50px;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 350px;
+    overflow-wrap: break-word;
+}
+
+#error-stack {
+    width: 100%;
+    height: 150px;
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #555;
+    color: #eee;
+    background: #111;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: var(--step--2);
+    resize: none;
+}
+
+#error-close-popup {
+    font-family: "Espionage";
+    font-size: var(--step-1);
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    background-color: #633;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#error-close-popup:hover {
+    background-color: #744;
+}
