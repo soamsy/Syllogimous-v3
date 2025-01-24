@@ -182,11 +182,17 @@ class ProfileStore {
     }
 
     generateUrl() {
-        const curr = this.current();
-        const savedataString = JSON.stringify(curr.savedata);
+        const savedata = structuredClone(this.current().savedata);
+        for (const [setting, compressed] of Object.entries(compressedSettings)) {
+            if (savedata.hasOwnProperty(setting)) {
+                savedata[compressed] = savedata[setting];
+                delete savedata[setting];
+            }
+        }
+        const savedataString = JSON.stringify(savedata);
         const encodedSaveData = encodeURIComponent(savedataString);
         const encodedId = encodeURIComponent(this.generateShortId(10));
-        const encodedName = encodeURIComponent(curr.name);
+        const encodedName = encodeURIComponent(this.current().name);
         const url = `${window.location.origin}${window.location.pathname}?id=${encodedId}&name=${encodedName}&savedata=${encodedSaveData}`;
         return url;
     }
@@ -233,6 +239,13 @@ class ProfileStore {
         const savedataObj = JSON.parse(savedataString);
         if (!savedataObj) {
             return;
+        }
+
+        for (const [setting, compressed] of Object.entries(compressedSettings)) {
+            if (savedataObj.hasOwnProperty(compressed)) {
+                savedataObj[setting] = savedataObj[compressed];
+                delete savedataObj[compressed];
+            }
         }
 
         const unsafeKeys = Object.keys(savedataObj);
