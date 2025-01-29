@@ -116,6 +116,7 @@ class SyllogismQuestion {
         const countdown = this.getCountdown();
         return {
             category: 'Syllogism',
+            type: "syllogism",
             startedAt: new Date().getTime(),
             rule,
             bucket,

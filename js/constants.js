@@ -71,6 +71,8 @@ let savedata = {
     "enableTransformScale": true,
     "enableTransformRotate": false,
     "enableTransformInterleave": false,
+    "autoProgression": false,
+    "autoProgressionGoal": 10,
 };
 
 const defaultSavedata = structuredClone(savedata);
@@ -131,6 +133,8 @@ const compressedSettings = {
     "enableTransformScale": "tScale",
     "enableTransformRotate": "tRotate",
     "enableTransformInterleave": "tInterleave",
+    "autoProgression": "auto",
+    "autoProgressionGoal": "goal",
 };
 
 const keySettingMap = {
@@ -190,6 +194,8 @@ const keySettingMap = {
     "p-38": "useVisualNoise",
     "p-39": "visualNoiseSplits",
     "p-40": "enableTransformInterleave",
+    "p-41": "autoProgression",
+    "p-42": "autoProgressionGoal",
 };
 
 const meaningfulWords = {

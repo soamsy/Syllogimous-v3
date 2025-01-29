@@ -216,19 +216,21 @@ async function updateCustomStyles() {
     if (imageChanged) {
         if (appState.backgroundImage) {
             const base64String = await getImage(imageKey);
-            const [prefix, base64Data] = base64String.split(',');
-            const mimeType = prefix.match(/data:(.*?);base64/)[1];
-            const binary = atob(base64Data);
-            const len = binary.length;
-            const bytes = new Uint8Array(len);
-            for (let i = 0; i < len; i++) {
-                bytes[i] = binary.charCodeAt(i);
+            if (base64String) {
+                const [prefix, base64Data] = base64String.split(',');
+                const mimeType = prefix.match(/data:(.*?);base64/)[1];
+                const binary = atob(base64Data);
+                const len = binary.length;
+                const bytes = new Uint8Array(len);
+                for (let i = 0; i < len; i++) {
+                    bytes[i] = binary.charCodeAt(i);
+                }
+
+                const blob = new Blob([bytes], { type: mimeType });
+                const objectURL = URL.createObjectURL(blob);
+
+                backgroundDiv.style.backgroundImage = `url(${objectURL})`;
             }
-
-            const blob = new Blob([bytes], { type: mimeType });
-            const objectURL = URL.createObjectURL(blob);
-
-            backgroundDiv.style.backgroundImage = `url(${objectURL})`;
         } else {
             backgroundDiv.style.backgroundImage = ``;
         }
@@ -462,6 +464,7 @@ function init() {
 
     carouselInit();
     displayInit();
+    PROGRESS_STORE.renderCurrentProgress(question);
 }
 
 function wowFeedbackRight(cb) {
@@ -491,8 +494,21 @@ function wowFeedbackMissed(cb) {
     }, 1000);
 }
 
-function removeAppStateAndSave() {
+function wowFeedback() {
+    if (question.correctness === 'right') {
+        wowFeedbackRight(init);
+    } else if (question.correctness === 'wrong') {
+        wowFeedbackWrong(init);
+    } else {
+        wowFeedbackMissed(init);
+    }
+}
+
+function storeQuestionAndSave() {
     appState.questions.push(question);
+    if (timerToggle.checked) {
+        PROGRESS_STORE.storeCompletedQuestion(question)
+    }
     save();
 }
 
@@ -505,15 +521,14 @@ function checkIfTrue() {
     if (question.isValid) {
         appState.score++;
         question.correctness = 'right';
-        wowFeedbackRight(init);
     } else {
         appState.score--;
         question.correctness = 'wrong';
-        wowFeedbackWrong(init);
     }
     question.answeredAt = new Date().getTime();
-    removeAppStateAndSave();
+    storeQuestionAndSave();
     renderHQL(true);
+    wowFeedback();
 }
 
 function checkIfFalse() {
@@ -525,15 +540,14 @@ function checkIfFalse() {
     if (!question.isValid) {
         appState.score++;
         question.correctness = 'right';
-        wowFeedbackRight(init);
     } else {
         appState.score--;
         question.correctness = 'wrong';
-        wowFeedbackWrong(init);
     }
     question.answeredAt = new Date().getTime();
-    removeAppStateAndSave();
+    storeQuestionAndSave();
     renderHQL(true);
+    wowFeedback();
 }
 
 function timeElapsed() {
@@ -545,10 +559,9 @@ function timeElapsed() {
     question.correctness = 'missed';
     question.answerUser = undefined;
     question.answeredAt = new Date().getTime();
-    removeAppStateAndSave();
+    storeQuestionAndSave();
     renderHQL(true);
-
-    wowFeedbackMissed(init);
+    wowFeedback();
 }
 
 function resetApp() {
@@ -559,7 +572,10 @@ function resetApp() {
         localStorage.removeItem(profilesKey);
         localStorage.removeItem(selectedProfileKey);
         localStorage.removeItem(appStateKey);
-        window.location.reload();
+        document.getElementById("reset-app").innerText = 'Resetting...';
+        deleteDatabase("SyllDB").then(() => deleteDatabase("Images")).then(() => {
+            window.location.reload();
+        });
     }
 }
 

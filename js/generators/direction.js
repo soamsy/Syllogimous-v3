@@ -104,8 +104,8 @@ class Direction2D {
         return savedata.space2DHardModeLevel;
     }
 
-    getCountdown(offset=0) {
-        return savedata.overrideDirectionTime ? savedata.overrideDirectionTime + offset : null;
+    getCountdown() {
+        return savedata.overrideDirectionTime;
     }
 }
 
@@ -146,8 +146,8 @@ class Direction3D {
         return savedata.space3DHardModeLevel;
     }
 
-    getCountdown(offset=0) {
-        return savedata.overrideDirection3DTime ? savedata.overrideDirection3DTime + offset : null;
+    getCountdown() {
+        return savedata.overrideDirection3DTime;
     }
 }
 
@@ -194,8 +194,8 @@ class Direction4D {
     }
 
 
-    getCountdown(offset=0) {
-        return savedata.overrideDirection4DTime ? savedata.overrideDirection4DTime + offset : null;
+    getCountdown() {
+        return savedata.overrideDirection4DTime;
     }
 }
 
@@ -280,8 +280,19 @@ class DirectionQuestion {
             premises = scramble(premises);
         }
         const countdown = this.generator.getCountdown();
+        const totalTransforms = this.getNumTransformsSplit(length).reduce((a, b) => a + b, 0);
+        let modifiers = [];
+        if (totalTransforms > 0) {
+            modifiers.push(`op${totalTransforms}`);
+        }
+        if (numInterleaved > 0) {
+            modifiers.push(`interleave`);
+        }
         return {
             category: this.generator.getName(),
+            type: normalizeString(this.generator.getName()),
+            ...(totalTransforms > 0 && { plen: length }),
+            modifiers,
             startedAt: new Date().getTime(),
             wordCoordMap,
             isValid,
@@ -292,7 +303,7 @@ class DirectionQuestion {
         }
     }
 
-    createAnalogy(length, timeOffset) {
+    createAnalogy(length) {
         let isValid;
         let isValidSame;
         let [wordCoordMap, neighbors, premises, usedDirCoords, operations] = [];
@@ -329,9 +340,19 @@ class DirectionQuestion {
         }
         conclusion += analogyTo(c, d);
 
-        const countdown = this.generator.getCountdown(timeOffset);
+        const countdown = this.generator.getCountdown();
+        const totalTransforms = this.getNumTransformsSplit(length).reduce((a, b) => a + b, 0);
+        let modifiers = [];
+        if (totalTransforms > 0) {
+            modifiers.push(`op${totalTransforms}`);
+        }
+        if (numInterleaved > 0) {
+            modifiers.push(`interleave`);
+        }
         return {
             category: 'Analogy: ' + this.generator.getName(),
+            type: normalizeString(this.generator.getName()),
+            modifiers,
             startedAt: new Date().getTime(),
             wordCoordMap,
             isValid,

@@ -32,14 +32,6 @@ function analogyTo(a, b) {
 
 function createSameDifferent(length) {
     const timeOffset = savedata.offsetAnalogyTime;
-    let question = createAnalogyQuestion(length, timeOffset);
-    if (!question.countdown) {
-        question.timeOffset = timeOffset;
-    }
-    return question;
-}
-
-function createAnalogyQuestion(length, timeOffset) {
     const premiseOffset = getPremisesFor('offsetAnalogyPremises', 0);
     const choiceIndices = [];
 
@@ -57,26 +49,36 @@ function createAnalogyQuestion(length, timeOffset) {
         choiceIndices.push(5);
 
     const choiceIndex = pickRandomItems(choiceIndices, 1).picked[0];
+    let question;
+    let origLength;
     if (choiceIndex === 0) {
-        length = Math.max(3, getPremisesFor("overrideDistinctionPremises", length) + premiseOffset);
-        return new DistinctionQuestion().createAnalogy(length, timeOffset);
-    }
-    else if (choiceIndex === 1) {
-        length = Math.max(3, getPremisesFor("overrideComparisonPremises", length) + premiseOffset);
-        return new LinearQuestion(new MoreLess()).createAnalogy(length, timeOffset);
-    }
-    else if (choiceIndex === 2) {
-        length = Math.max(3, getPremisesFor("overrideTemporalPremises", length) + premiseOffset);
-        return new LinearQuestion(new BeforeAfter()).createAnalogy(length, timeOffset);
-    }
-    else if (choiceIndex === 3) {
-        length = Math.max(3, getPremisesFor("overrideDirectionPremises", length) + premiseOffset);
-        return new DirectionQuestion(new Direction2D()).createAnalogy(length, timeOffset);
+        origLength = getPremisesFor("overrideDistinctionPremises", length);
+        question = new DistinctionQuestion().createAnalogy(Math.max(origLength + premiseOffset, 3));
+    } else if (choiceIndex === 1) {
+        origLength = getPremisesFor("overrideComparisonPremises", length);
+        question = new LinearQuestion(new MoreLess()).createAnalogy(Math.max(origLength + premiseOffset, 3));
+    } else if (choiceIndex === 2) {
+        origLength = getPremisesFor("overrideTemporalPremises", length);
+        question = new LinearQuestion(new BeforeAfter()).createAnalogy(Math.max(origLength + premiseOffset, 3));
+    } else if (choiceIndex === 3) {
+        origLength = getPremisesFor("overrideDirectionPremises", length);
+        question = new DirectionQuestion(new Direction2D()).createAnalogy(Math.max(origLength + premiseOffset, 3));
     } else if (choiceIndex === 4) {
-        length = Math.max(3, getPremisesFor("overrideDirection3DPremises", length) + premiseOffset);
-        return new DirectionQuestion(new Direction3D()).createAnalogy(length, timeOffset);
+        origLength = getPremisesFor("overrideDirection3DPremises", length);
+        question = new DirectionQuestion(new Direction3D()).createAnalogy(Math.max(origLength + premiseOffset, 3));
     } else {
-        length = Math.max(3, getPremisesFor("overrideDirection4DPremises", length) + premiseOffset);
-        return new DirectionQuestion(new Direction4D()).createAnalogy(length, timeOffset);
+        origLength = getPremisesFor("overrideDirection4DPremises", length);
+        question = new DirectionQuestion(new Direction4D()).createAnalogy(Math.max(origLength + premiseOffset, 3));
     }
+
+    question.plen = origLength;
+    question.tlen = question.countdown || savedata.timer;
+    question.tags = ['analogy'];
+    if (question.countdown) {
+        question.countdown += timeOffset;
+    } else {
+        question.timeOffset = timeOffset;
+    }
+
+    return question;
 }

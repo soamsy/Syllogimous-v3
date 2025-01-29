@@ -87,6 +87,8 @@ function createBinaryQuestion(length) {
     const countdown = getBinaryCountdown();
     return {
         category: `Binary: ${choice.category} ${operandNames[operandIndex]} ${choice2.category}`,
+        type: "binary",
+        modifiers: ['op1'],
         startedAt: new Date().getTime(),
         subresults: [choice, choice2],
         isValid,
@@ -165,6 +167,8 @@ function createNestedBinaryQuestion(length) {
 
     return {
         category: `Nested Binary: ${category}`,
+        type: "binary",
+        modifiers: [`op${numOperands}`],
         startedAt: new Date().getTime(),
         subresults: questions,
         isValid,

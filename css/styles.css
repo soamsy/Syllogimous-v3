@@ -487,9 +487,13 @@ input[type="number"]::-moz-inner-spin-button {
 }
 
 .score {
-    padding: 0 1rem;
+    padding: 0 0.5rem;
     font-size: var(--step-1);
     text-shadow: var(--text-outline);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
 }
 
 .carousel {
@@ -732,6 +736,50 @@ input[type="number"]::-moz-inner-spin-button {
 .level {
     position: relative;
     padding: 0 0.5rem 0 calc(4px + 0.5rem);
+}
+
+.progress-tracker {
+    display: none;
+    position: relative;
+    bottom: 10px;
+    height: 10px;
+    margin-top: -4px;
+    left: 5%;
+    width: 90%;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: row-reverse;
+    opacity: 0.25;
+}
+
+.progress-tracker.visible {
+    display: flex;
+}
+
+.trailing-dot {
+    width: 5%;
+    text-align: center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.trailing-dot::before {
+    content: '';
+    display: inline-block;
+    width: 95%;
+    height: 6px;
+    border: 1px solid #0007;
+}
+
+.trailing-dot.success::before {
+    background-color: #11ff44;
+}
+
+.trailing-dot.fail::before {
+    background-color: #ee4411;
 }
 
 .is-connector {

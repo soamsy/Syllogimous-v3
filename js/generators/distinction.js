@@ -108,7 +108,7 @@ class DistinctionQuestion {
         this.bucketMap = bucketMap;
     }
 
-    createAnalogy(length, timeOffset) {
+    createAnalogy(length) {
         this.generate(length);
         const [a, b, c, d] = pickRandomItems([...this.buckets[0], ...this.buckets[1]], 4).picked;
 
@@ -136,10 +136,11 @@ class DistinctionQuestion {
             isValid = !isValidSame;
         }
         conclusion += analogyTo(c, d);
-        const countdown = this.getCountdown(timeOffset);
+        const countdown = this.getCountdown();
 
         return {
             category: "Analogy: Distinction",
+            type: "distinction",
             startedAt: new Date().getTime(),
             buckets: this.buckets,
             premises: this.premises,
@@ -164,6 +165,7 @@ class DistinctionQuestion {
         const countdown = this.getCountdown();
         return {
             category: "Distinction",
+            type: "distinction",
             startedAt: new Date().getTime(),
             buckets: this.buckets,
             premises: this.premises,
@@ -173,8 +175,8 @@ class DistinctionQuestion {
         };
     }
     
-    getCountdown(offset=0) {
-        return savedata.overrideDistinctionTime ? savedata.overrideDistinctionTime + offset : null;
+    getCountdown() {
+        return savedata.overrideDistinctionTime;
     }
 }
 

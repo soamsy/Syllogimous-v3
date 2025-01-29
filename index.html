@@ -73,6 +73,32 @@
 						<div class="mb-1">
 							<div class="ctrl__inner">
 								<div>
+									<input hidden id="p-41" type="checkbox">
+									<label class="switch" for="p-41"></label>
+								</div>
+								<span>Enable Auto Progression</span>
+								<div class="tooltip-container" tabindex="0">
+									?
+									<div class="tooltip-text">
+										Track the last 20 questions<br>
+										answered with the timer, and<br>
+										automatically update the<br>
+										timer/premises based on<br>
+										accuracy.<br>
+										<br>
+										Only applies when the<br>
+										timer is active.<br>
+									</div>
+								</div>
+								Goal
+								<span class="inline-premise-spinner">
+									<input id="p-42" type="number" placeholder="" value="10" min="1" max="25" style="width: 5ch">s
+								</span>
+							</div>
+						</div>
+						<div class="mb-1">
+							<div class="ctrl__inner">
+								<div>
 									<input hidden id="p-9" type="checkbox">
 									<label class="switch" for="p-9"></label>
 								</div>
@@ -626,7 +652,7 @@
 							</div>
 						</div>
 						<div class="mb-1">
-							<button onclick="resetApp()">Reset App</button>
+							<button id="reset-app" onclick="resetApp()">Reset App</button>
 							<ul class="explainer">
 								<li>Resets score, history and settings</li>
 							</ul>
@@ -650,7 +676,7 @@
 					<div>Avg correct answer time: <span id="average-correct-display"></span></div>
 					<div>% of answers correct: <span id="percent-correct-display"></span></div>
 					<div id="history-list" class="hql"></div>
-					<button onclick="clearHistory()">Clear History</button>
+					<button onclick="clearHistory()">Clear Session</button>
 				</div>
 			</div>
 			<input id="offcanvas-credits"
@@ -766,6 +792,7 @@
 						<h3 class="score"><span class="correctly-answered">0</span> / <span class="next-level">0</span></h3>
 					</div>
 				</div>
+				<div id="progress-tracker" class="progress-tracker"></div
 			</div>
 
 		</div>
@@ -1804,7 +1831,9 @@
 		<script src="js/generators/premise-reorder.js"></script>
 		<script src="js/explanation.js"></script>
 		<script src="js/db.js"></script>
+		<script src="js/rename-db.js"></script>
 		<script src="js/profile.js"></script>
+		<script src="js/progress.js"></script>
 		<script src="js/error-handling.js"></script>
 		<script src="js/index.js"></script>
 	</body>

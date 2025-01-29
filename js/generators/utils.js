@@ -127,3 +127,12 @@ function getLocalStorageObj(key) {
 function setLocalStorageObj(key, obj) {
     localStorage.setItem(key, JSON.stringify(obj));
 }
+
+function normalizeString(input) {
+    return input
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-+|-+$/g, '');
+}
