@@ -1295,6 +1295,10 @@ table.distinction {
     margin-right: 100px;
 }
 
+.tooltip-text.shift-left-left {
+    margin-right: 200px;
+}
+
 .tooltip-text.shift-right {
     margin-left: 100px;
 }
