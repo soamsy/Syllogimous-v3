@@ -946,7 +946,7 @@ label.open[for="offcanvas-credits"]:hover {
 .ctrl__inner {
     align-items: center;
     display: flex;
-    gap: 0.75rem;
+    gap: 0.6rem;
 }
 
 .big-input {
@@ -1261,9 +1261,10 @@ table.distinction {
     font-family: monospace;
     width: 20px;
     height: 20px;
+    padding-left: 2px;
     background-color: #404E4D;
     color: #fff;
-    font-size: var(--step--1);
+    font-size: var(--step--2);
     font-weight: bold;
     border-radius: 50%;
     cursor: pointer;
