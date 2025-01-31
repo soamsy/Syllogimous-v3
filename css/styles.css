@@ -158,7 +158,7 @@ button.delete:hover {
 }
 
 .feedback.active {
-    opacity: 0.93;
+    opacity: 0.98;
     pointer-events: all;
 }
 
@@ -167,6 +167,7 @@ button.delete:hover {
     border-left: none;
     border-right: none;
     background-image: url(../img/nnnoise.svg);
+    opacity: 0.88;
     position: fixed;
     height: 100vh;
     width: 100vw;
