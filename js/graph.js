@@ -157,7 +157,7 @@ class ProgressGraph {
                         type: 'time',
                         time: {
                             unit: 'day',
-                            tooltipFormat: 'yyyy-mm-dd',
+                            tooltipFormat: 'yyyy-MM-dd',
                         },
                         title: {
                             display: true,
