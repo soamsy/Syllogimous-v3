@@ -81,7 +81,7 @@ const storeProgressData = async (progressData) => {
     });
 };
 
-const getTopRRTProgress = async (key, count) => {
+const getTopRRTProgress = async (keys, count = 20) => {
     const db = await initDB();
 
     return new Promise((resolve, reject) => {
@@ -89,28 +89,46 @@ const getTopRRTProgress = async (key, count) => {
         const store = transaction.objectStore('RRTHistory');
         const index = store.index('orderIndex');
 
-        const keyRange = IDBKeyRange.bound(
-            [key, 0],
-            [key, Infinity]
-        );
+        let results = [];
+        let pendingKeys = keys.length;
+        let maxResults = count * keys.length;
 
-        const request = index.openCursor(keyRange, 'prev');
+        keys.forEach(key => {
+            const keyRange = IDBKeyRange.bound([key, 0], [key, Infinity]);
+            const request = index.openCursor(keyRange, 'prev');
 
-        const results = [];
-        request.onsuccess = (event) => {
-            const cursor = event.target.result;
-            if (cursor) {
-                results.push(cursor.value);
-                if (results.length >= count || cursor.value.didTriggerProgress === true) {
-                    resolve(results);
-                } else {
+            request.onsuccess = (event) => {
+                const cursor = event.target.result;
+                if (cursor) {
+                    results.push(cursor.value);
+
+                    if (results.length >= maxResults) {
+                        pendingKeys = 0;
+                        finalizeResults();
+                        return;
+                    }
+
                     cursor.continue();
+                } else {
+                    pendingKeys--;
+                    if (pendingKeys === 0) finalizeResults();
                 }
-            } else {
-                resolve(results);
-            }
-        };
+            };
 
-        request.onerror = (event) => reject(event.target.error);
+            request.onerror = (event) => reject(event.target.error);
+        });
+
+        function finalizeResults() {
+            results.sort((a, b) => b.timestamp - a.timestamp);
+
+            let filteredResults = [];
+            for (const result of results) {
+                if (filteredResults.length >= count || result.didTriggerProgress === true) {
+                    break;
+                }
+                filteredResults.push(result);
+            }
+            resolve(filteredResults);
+        }
     });
 };

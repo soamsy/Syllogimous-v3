@@ -9,11 +9,31 @@ const TYPE_TO_OVERRIDES = {
     "space-time"   : [ "overrideDirection4DPremises", "overrideDirection4DTime" ],
 };
 
+const COMMON_TYPES = [
+    ["comparison", "temporal"],
+]
+
+const COMMON_TYPES_TABLE = COMMON_TYPES.reduce((acc, types) => {
+    for (let i = 0; i < types.length; i++) {
+        for (let j = i+1; j < types.length; j++) {
+            acc[types[i]] = acc[types[i]] || [types[i]];
+            acc[types[j]] = acc[types[j]] || [types[j]];
+            acc[types[i]].push(types[j]);
+            acc[types[j]].push(types[i]);
+        }
+    }
+    return acc;
+}, {});
+
+
 const progressTracker = document.getElementById("progress-tracker");
 
 class ProgressStore {
     calculateKey(question) {
-        let type = question.type;
+        return this.calculateKeyFromCustomType(question, question.type);
+    }
+
+    calculateKeyFromCustomType(question, type) {
         let plen = question.premises;
         let countdown = question.countdown;
         let key = `${type}-${plen}-${countdown}`;
@@ -21,6 +41,12 @@ class ProgressStore {
             key += `-${question.modifiers.join('-')}`
         }
         return key;
+    }
+
+    calculateCommonKeys(question) {
+        const types = COMMON_TYPES_TABLE[question.type] || [question.type];
+        types.sort();
+        return types.map(type => this.calculateKeyFromCustomType(question, type));
     }
 
     convertForDatabase(question) {
@@ -55,49 +81,52 @@ class ProgressStore {
     }
 
     async determineLevelChange(q) {
-        let trailingProgress = await getTopRRTProgress(q.key, 19);
+        let trailingProgress = await getTopRRTProgress(this.calculateCommonKeys(q), 19);
         trailingProgress.push(q);
         if (trailingProgress.length < 20) {
             return;
         }
+        const commonTypes = COMMON_TYPES_TABLE[q.type] || [q.type];
         const successes = trailingProgress.filter(p => p.correctness === 'right');
-        const [overridePremiseSetting, overrideTimerSetting] = TYPE_TO_OVERRIDES[q.type];
-        if (18 <= successes.length) {
-            const minUpgrade = q.countdown - 1;
-            successes.sort((a, b) => a.timeElapsed - b.timeElapsed);
-            const left = successes[successes.length - 3].timeElapsed / 1000;
-            const right = successes[successes.length - 2].timeElapsed / 1000;
-            const percentile90ish = Math.floor((left + right) / 2) + 1;
-            const newTimerValue = Math.min(minUpgrade, percentile90ish);
-            if (newTimerValue <= savedata.autoProgressionGoal) {
-                savedata[overridePremiseSetting] = q.premises + 1;
-                savedata[overrideTimerSetting] = savedata.autoProgressionGoal + 20;
-            } else {
-                savedata[overrideTimerSetting] = newTimerValue;
-            }
-            q.didTriggerProgress = true;
-        } else if (14 <= successes.length) {
-            return;
-        } else {
-            const newTimerValue = q.countdown + (successes.length >= 10 ? 5 : 10);
-            if (newTimerValue > savedata.autoProgressionGoal + 25) {
-                if (q.premises > 2) {
-                    savedata[overridePremiseSetting] = q.premises - 1;
+        for (const type of commonTypes) {
+            const [overridePremiseSetting, overrideTimerSetting] = TYPE_TO_OVERRIDES[type];
+            if (18 <= successes.length) {
+                const minUpgrade = q.countdown - 1;
+                successes.sort((a, b) => a.timeElapsed - b.timeElapsed);
+                const left = successes[successes.length - 3].timeElapsed / 1000;
+                const right = successes[successes.length - 2].timeElapsed / 1000;
+                const percentile90ish = Math.floor((left + right) / 2) + 1;
+                const newTimerValue = Math.min(minUpgrade, percentile90ish);
+                if (newTimerValue <= savedata.autoProgressionGoal) {
+                    savedata[overridePremiseSetting] = q.premises + 1;
                     savedata[overrideTimerSetting] = savedata.autoProgressionGoal + 20;
                 } else {
-                    savedata[overrideTimerSetting] = Math.min(newTimerValue, 60);
+                    savedata[overrideTimerSetting] = newTimerValue;
                 }
+                q.didTriggerProgress = true;
+            } else if (14 <= successes.length) {
+                continue;
             } else {
-                savedata[overrideTimerSetting] = newTimerValue;
+                const newTimerValue = q.countdown + (successes.length >= 10 ? 5 : 10);
+                if (newTimerValue > savedata.autoProgressionGoal + 25) {
+                    if (q.premises > 2) {
+                        savedata[overridePremiseSetting] = q.premises - 1;
+                        savedata[overrideTimerSetting] = savedata.autoProgressionGoal + 20;
+                    } else {
+                        savedata[overrideTimerSetting] = Math.min(newTimerValue, 60);
+                    }
+                } else {
+                    savedata[overrideTimerSetting] = newTimerValue;
+                }
+                q.didTriggerProgress = true;
             }
-            q.didTriggerProgress = true;
         }
         populateSettings();
     }
 
     async renderCurrentProgress(question) {
         const q = this.convertForDatabase(question);
-        let trailingProgress = await getTopRRTProgress(q.key, 20);
+        let trailingProgress = await getTopRRTProgress(this.calculateCommonKeys(q), 20);
         progressTracker.innerHTML = '';
         if (!savedata.autoProgression) {
             progressTracker.classList.remove('visible');
