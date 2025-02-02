@@ -26,16 +26,24 @@ class ProgressGraph {
             }
             const score = question.premises + bonus;
 
-            if (!groupedByType[question.type]) {
-                groupedByType[question.type] = {};
+            let type = question.type;
+            if (question.modifiers && question.modifiers.length > 0) {
+                type += ` ${question.modifiers.join('-')}`;
+            }
+            if (question.tags && question.tags.length > 0) {
+                type += ` ${question.tags.join('-')}`;
             }
 
-            if (!groupedByType[question.type][day]) {
-                groupedByType[question.type][day] = { totalScore: 0, count: 0 };
+            if (!groupedByType[type]) {
+                groupedByType[type] = {};
             }
 
-            groupedByType[question.type][day].totalScore += score;
-            groupedByType[question.type][day].count += 1;
+            if (!groupedByType[type][day]) {
+                groupedByType[type][day] = { totalScore: 0, count: 0 };
+            }
+
+            groupedByType[type][day].totalScore += score;
+            groupedByType[type][day].count += 1;
         });
 
         const result = {};
