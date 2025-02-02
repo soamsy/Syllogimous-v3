@@ -10,7 +10,7 @@ const TYPE_TO_OVERRIDES = {
 };
 
 const COMMON_TYPES = [
-    ["comparison", "temporal"],
+    ["comparison", "temporal", "distinction", "syllogism"],
 ]
 
 const COMMON_TYPES_TABLE = COMMON_TYPES.reduce((acc, types) => {
