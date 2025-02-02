@@ -108,7 +108,7 @@ class ProgressGraph {
         const scoreDatasets = Object.keys(typeData).map((type) => {
             return {
                 label: type,
-                data: typeData[type].map((entry) => entry.score),
+                data: typeData[type].map((entry) => ({ x: entry.day, y: entry.score })),
                 borderColor: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
                 fill: false,
             };
@@ -117,7 +117,7 @@ class ProgressGraph {
         const countDatasets = Object.keys(typeData).map((type) => {
             return {
                 label: type,
-                data: typeData[type].map((entry) => entry.count),
+                data: typeData[type].map((entry) => ({ x: entry.day, y: entry.count })),
                 borderColor: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
                 fill: false,
             };
@@ -126,7 +126,7 @@ class ProgressGraph {
         const timeData = this.calculateTimeSpentData(data);
         const timeDatasets = [{
             label: 'Time Spent (Minutes)',
-            data: timeData.map(entry => entry.time),
+            data: timeData.map(entry => ({ x: entry.day, y: entry.time })),
             borderColor: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
             fill: false,
         }];
@@ -181,7 +181,7 @@ class ProgressGraph {
                         callbacks: {
                             label: function(tooltipItem) {
                                 let value = tooltipItem.raw;
-                                return `${tooltipItem.dataset.label}: ${value.toFixed(2)}`;
+                                return `${tooltipItem.dataset.label}: ${value.y.toFixed(2)}`;
                             }
                         }
                     }
