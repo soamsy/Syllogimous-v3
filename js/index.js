@@ -580,7 +580,7 @@ function resetApp() {
 }
 
 function clearHistory() {
-    const confirmed = confirm("Are you sure?");
+    const confirmed = confirm("Are you sure? (does not remove progress graph history)");
     if (confirmed) {
         appState.questions = [];
         appState.score = 0;
