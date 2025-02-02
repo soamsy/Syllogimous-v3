@@ -132,3 +132,17 @@ const getTopRRTProgress = async (keys, count = 20) => {
         }
     });
 };
+
+const getAllRRTProgress = async () => {
+    const db = await initDB();
+
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction('RRTHistory', 'readonly');
+        const store = transaction.objectStore('RRTHistory');
+        const getAll = store.getAll();
+        getAll.onsuccess = () => resolve(getAll.result);
+        getAll.onerror = () => reject(getAll.error);
+    });
+
+    request.onerror = () => reject(request.error);
+}

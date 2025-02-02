@@ -839,6 +839,13 @@ label.open[for="offcanvas-history"] {
 }
 
 label.open[for="offcanvas-credits"] {
+    left: 0;
+    bottom: 0;
+    transform-origin: bottom left;
+    transform: rotateZ(90deg) translateX(calc(-100% - 1rem));
+}
+
+label.open[for="offcanvas-graph"] {
     right: 0;
     bottom: 0;
     transform-origin: bottom right;
@@ -1254,6 +1261,10 @@ table.distinction {
     content: 'INFO';
 }
 
+.graph-label::before {
+    content: 'GRAPH';
+}
+
 .tooltip-container {
     position: relative;
     display: inline-flex;
@@ -1308,55 +1319,6 @@ table.distinction {
 .tooltip-container:focus-within .tooltip-text,
 .tooltip-container.show .tooltip-text {
     visibility: visible;
-}
-
-@media (max-width: 768px) {
-    .main-view {
-        border: 0;
-        box-shadow: none;
-    }
-}
-
-@media (max-width: 500px) {
-    .offcanvas {
-        max-width: none;
-        width: calc(100vw);
-    }
-
-    .display-inner {
-        margin: 0;
-    }
-
-    .display-inner .border-left,
-    .display-inner .border-right,
-    .display-inner .bracket-lip-top-left,
-    .display-inner .bracket-lip-top-right,
-    .display-inner .bracket-lip-bottom-left,
-    .display-inner .bracket-lip-bottom-right {
-        display: none;
-    }
-
-    label.open {
-        padding: 0.7rem;
-    }
-
-    .game-area {
-        max-width: calc(100vw - 3rem);
-    }
-
-    .inline-input__outer {
-        gap: 0.2rem;
-    }
-
-    .carousel_display_label-wrapper h2, .display-inner h2 {
-        gap: 0.2rem;
-    }
-}
-
-@media (max-width: 360px) {
-    label.open {
-        padding: 0.4rem;
-    }
 }
 
 .profile-container {
@@ -1534,18 +1496,133 @@ table.distinction {
     resize: none;
 }
 
-#error-close-popup {
+#error-close-popup, #graph-close-popup {
     font-family: "Espionage";
     font-size: var(--step-1);
-    position: absolute;
-    bottom: 4px;
-    right: 4px;
     background-color: #633;
     color: white;
     border: none;
     cursor: pointer;
 }
 
-#error-close-popup:hover {
+#error-close-popup:hover, #graph-close-popup:hover {
     background-color: #744;
+}
+
+#error-close-popup {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+}
+
+#graph-close-popup {
+    position: relative;
+    max-width: 300px;
+    align-self: flex-end;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.graph-popup {
+    position: fixed;
+    display: none;
+    z-index: 1000;
+    padding: 20px;
+    background-color: #222;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    top: 10.0%;
+    left: 10%;
+    width: 80vw;
+    min-height: 75vh;
+}
+
+.graph-popup.visible {
+    display: flex;
+    gap: 8px;
+    flex-direction: column;
+}
+
+.graph-popup-content {
+    height: 60vh;
+    display: none;
+}
+
+.graph-popup-content.visible {
+    display: block;
+}
+
+.graph-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.graph-end-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.graph-select {
+    flex-grow: 1;
+    flex-shrink: 1;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.graph-select.selected {
+    background: #1c3c30;
+}
+
+.graph-select.selected:hover {
+    background: #316154;
+}
+
+@media (max-width: 768px) {
+    .main-view {
+        border: 0;
+        box-shadow: none;
+    }
+}
+
+@media (max-width: 500px) {
+    .offcanvas {
+        max-width: none;
+        width: calc(100vw);
+    }
+
+    .display-inner {
+        margin: 0;
+    }
+
+    .display-inner .border-left,
+    .display-inner .border-right,
+    .display-inner .bracket-lip-top-left,
+    .display-inner .bracket-lip-top-right,
+    .display-inner .bracket-lip-bottom-left,
+    .display-inner .bracket-lip-bottom-right {
+        display: none;
+    }
+
+    label.open {
+        padding: 0.7rem;
+    }
+
+    .game-area {
+        max-width: calc(100vw - 3rem);
+    }
+
+    .inline-input__outer {
+        gap: 0.2rem;
+    }
+
+    .carousel_display_label-wrapper h2, .display-inner h2 {
+        gap: 0.2rem;
+    }
+}
+
+@media (max-width: 360px) {
+    label.open {
+        padding: 0.4rem;
+    }
 }

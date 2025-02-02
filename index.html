@@ -683,7 +683,7 @@
 			<input id="offcanvas-credits"
 				   type="checkbox"
 				   hidden>
-			<div class="offcanvas offcanvas--right">
+			<div class="offcanvas offcanvas--left">
 				<div class="offcanvas-side">
 					<label class="offcanvas-close" for="offcanvas-credits">✕</label>
 				</div>
@@ -717,6 +717,7 @@
 			<label class="open metal-gear" for="offcanvas-settings"><span class="sidebar-button settings-label"></span></label>
 			<label class="open metal-gear" for="offcanvas-history"><span class="sidebar-button history-label"></span></label>
 			<label class="open metal-gear" for="offcanvas-credits"><span class="sidebar-button credits-label"></span></label>
+			<label id="graph-label" class="open metal-gear" for="offcanvas-graph"><span class="sidebar-button graph-label"></span></label>
 
 			<div class="background-image"></div>
 
@@ -797,6 +798,22 @@
 			</div>
 
 		</div>
+
+		<div id="graph-popup" class="graph-popup">
+			<div class="graph-controls">
+				<button id="graph-select-time" class="graph-select selected">Time Spent (Minutes)</button>
+				<button id="graph-select-count" class="graph-select">Total Problems Answered</button>
+				<button id="graph-select-score" class="graph-select">Scores</button>
+			</div>
+			<div id="graph-popup-time" class="graph-popup-content visible"><canvas id="graph-canvas-time"></canvas></div>
+			<div id="graph-popup-count" class="graph-popup-content"><canvas id="graph-canvas-count"></canvas></div>
+			<div id="graph-popup-score" class="graph-popup-content"><canvas id="graph-canvas-score"></canvas></div>
+			<div class="graph-end-controls">
+				<div>* Only timed questions are displayed</div>
+				<button id="graph-close-popup" class="graph-close-popup">Close</button>
+			</div>
+		</div>
+
 		<div id="error-popup" class="error-popup">
 			<div class="error-popup-content">
 				<p id="error-message"></p>
@@ -1813,6 +1830,9 @@
 		</span>
 
 		<script src="js/lib/d3-delaunay.min.js"></script>
+		<script src="js/lib/chart.min.js"></script>
+		<script src="js/lib/chartjs-adapter-date-fns.min.js"></script>
+		<script src="js/lib/date-fns.min.js"></script>
 		<script src="js/codec.js"></script>
 		<script src="js/constants.js"></script>
 		<script src="js/generators/utils.js"></script>
@@ -1834,6 +1854,7 @@
 		<script src="js/db.js"></script>
 		<script src="js/rename-db.js"></script>
 		<script src="js/profile.js"></script>
+		<script src="js/graph.js"></script>
 		<script src="js/progress.js"></script>
 		<script src="js/error-handling.js"></script>
 		<script src="js/index.js"></script>
