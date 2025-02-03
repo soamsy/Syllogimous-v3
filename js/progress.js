@@ -80,44 +80,61 @@ class ProgressStore {
         await storeProgressData(q);
     }
 
+    success(q, trailingProgress, successes, type) {
+        const [overridePremiseSetting, overrideTimerSetting] = TYPE_TO_OVERRIDES[type];
+        const minUpgrade = q.countdown - 1;
+        const left = successes[successes.length - 3].timeElapsed / 1000;
+        const right = successes[successes.length - 2].timeElapsed / 1000;
+        const percentile90ish = Math.floor((left + right) / 2) + 1;
+        const newTimerValue = Math.min(minUpgrade, percentile90ish);
+        if (newTimerValue <= savedata.autoProgressionGoal) {
+            savedata[overridePremiseSetting] = q.premises + 1;
+            savedata[overrideTimerSetting] = savedata.autoProgressionGoal + 20;
+        } else {
+            savedata[overrideTimerSetting] = newTimerValue;
+        }
+    }
+
+    fail(q, trailingProgress, successes, type) {
+        const ratio = successes.length / trailingProgress.length;
+        const [overridePremiseSetting, overrideTimerSetting] = TYPE_TO_OVERRIDES[type];
+        const newTimerValue = q.countdown + (ratio <= 0.5 ? 10 : 5);
+        if (newTimerValue > savedata.autoProgressionGoal + 25) {
+            if (q.premises > 2) {
+                savedata[overridePremiseSetting] = q.premises - 1;
+                savedata[overrideTimerSetting] = savedata.autoProgressionGoal + 20;
+            } else {
+                savedata[overrideTimerSetting] = Math.min(newTimerValue, 60);
+            }
+        } else {
+            savedata[overrideTimerSetting] = newTimerValue;
+        }
+    }
+
     async determineLevelChange(q) {
         let trailingProgress = await getTopRRTProgress(this.calculateCommonKeys(q), 19);
         trailingProgress.push(q);
+        trailingProgress.sort((a, b) => a.timeElapsed - b.timeElapsed);
+        const successes = trailingProgress.filter(p => p.correctness === 'right');
+        const commonTypes = COMMON_TYPES_TABLE[q.type] || [q.type];
         if (trailingProgress.length < 20) {
+            const numFailures = trailingProgress.length - successes.length;
+            if (numFailures >= 7) {
+                for (const type of commonTypes) {
+                    this.fail(q, trailingProgress, successes, type);
+                }
+                q.didTriggerProgress = true;
+            }
             return;
         }
-        const commonTypes = COMMON_TYPES_TABLE[q.type] || [q.type];
-        const successes = trailingProgress.filter(p => p.correctness === 'right');
         for (const type of commonTypes) {
-            const [overridePremiseSetting, overrideTimerSetting] = TYPE_TO_OVERRIDES[type];
             if (18 <= successes.length) {
-                const minUpgrade = q.countdown - 1;
-                successes.sort((a, b) => a.timeElapsed - b.timeElapsed);
-                const left = successes[successes.length - 3].timeElapsed / 1000;
-                const right = successes[successes.length - 2].timeElapsed / 1000;
-                const percentile90ish = Math.floor((left + right) / 2) + 1;
-                const newTimerValue = Math.min(minUpgrade, percentile90ish);
-                if (newTimerValue <= savedata.autoProgressionGoal) {
-                    savedata[overridePremiseSetting] = q.premises + 1;
-                    savedata[overrideTimerSetting] = savedata.autoProgressionGoal + 20;
-                } else {
-                    savedata[overrideTimerSetting] = newTimerValue;
-                }
+                this.success(q, trailingProgress, successes, type);
                 q.didTriggerProgress = true;
             } else if (14 <= successes.length) {
                 continue;
             } else {
-                const newTimerValue = q.countdown + (successes.length >= 10 ? 5 : 10);
-                if (newTimerValue > savedata.autoProgressionGoal + 25) {
-                    if (q.premises > 2) {
-                        savedata[overridePremiseSetting] = q.premises - 1;
-                        savedata[overrideTimerSetting] = savedata.autoProgressionGoal + 20;
-                    } else {
-                        savedata[overrideTimerSetting] = Math.min(newTimerValue, 60);
-                    }
-                } else {
-                    savedata[overrideTimerSetting] = newTimerValue;
-                }
+                this.fail(q, trailingProgress, successes, type);
                 q.didTriggerProgress = true;
             }
         }
