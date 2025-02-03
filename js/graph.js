@@ -7,7 +7,13 @@ class ProgressGraph {
 
     findDay(question) {
         const adjustedTimestamp = question.timestamp - (4 * 60 * 60 * 1000);
-        return new Date(adjustedTimestamp).toISOString().split('T')[0];
+        const date = new Date(adjustedTimestamp);
+
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
     }
 
     calculateTypeData(data) {
