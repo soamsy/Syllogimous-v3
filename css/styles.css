@@ -1582,10 +1582,10 @@ table.distinction {
 .legacy-folder {
     cursor: pointer;
     padding: 8px;
-    width: 250px;
+    width: 300px;
     display: flex;
     align-items: center;
-    height: 40px;
+    height: 50px;
     background-color: #222;
     margin-bottom: 20px;
     user-select: none;
@@ -1607,6 +1607,12 @@ table.distinction {
 
 #legacy-folder-arrow.open {
     transform: rotate(90deg) translateX(3px);
+}
+
+#reset-app {
+    margin-top: 10px;
+    padding: 10px;
+    width: 200px;
 }
 
 @media (max-width: 768px) {
