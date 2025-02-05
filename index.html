@@ -104,18 +104,6 @@
 						<div class="mb-1">
 							<div class="ctrl__inner">
 								<div>
-									<input hidden id="p-9" type="checkbox">
-									<label class="switch" for="p-9"></label>
-								</div>
-								<span>Enable Carousel Mode</span>
-							</div>
-							<p class="explainer">
-								See only one word at time.
-							</p>
-						</div>
-						<div class="mb-1">
-							<div class="ctrl__inner">
-								<div>
 									<input hidden id="p-20" type="checkbox" checked>
 									<label class="switch" for="p-20"></label>
 								</div>
@@ -274,18 +262,6 @@
 								<span>Remove Negation Explainer</span>
 							</div>
 						</div>
-						<div class="mb-1">
-							<div class="ctrl__inner">
-								<div>
-									<input hidden id="p-16" type="checkbox">
-									<label class="switch" for="p-16"></label>
-								</div>
-								<span>Enable Meta</span>
-							</div>
-							<ul class="explainer">
-								<li>A is (C to D) of B</li>
-							</ul>
-						</div>
 						<hr class="divider"/>
 						<div class="mb-1">
 							<div class="ctrl__inner">
@@ -379,44 +355,6 @@
 								</span>
 							</div>
 						</div>
-						<div class="mb-1">
-							<div class="ctrl__inner">
-								<div>
-									<input hidden id="p-4" type="checkbox">
-									<label class="switch" for="p-4"></label>
-								</div>
-								<span>Enable Analogy</span>
-							</div>
-							<ul class="explainer">
-								<li>A is to B as B is to C</li>
-							</ul>
-							<div class="mb-1" style="margin-left: 2rem;">
-								<div class="ctrl__inner">
-									<div>
-										<input hidden id="p-14" type="checkbox">
-										<label class="switch" for="p-14"></label>
-									</div>
-									<span>Only Analogy</span>
-								</div>
-							</div>
-							<div class="multi-input">
-								<span class="single-input">
-									Premise Offset
-									<span class="inline-premise-spinner"><input id="p-4-premises" type="number" placeholder="" min="-100" max="100" value="" style="width: 5ch">ps</span>
-								</span>
-								<span class="single-input">
-									Time Offset
-									<span class="inline-premise-spinner"><input id="p-4-time" type="number" placeholder="" min="-600" max="600" value="" style="width: 5ch">sec</span>
-								</span>
-								<div class="tooltip-container" tabindex="0">
-									?
-									<div class="tooltip-text right">
-										Shifts the underlying question's<br>
-										premise/timer count. Try -1
-									</div>
-								</div>
-							</div>
-						</div>
 						<hr class="divider"/>
 						<div class="mb-1">
 							<div class="ctrl__inner">
@@ -437,10 +375,6 @@
 								<span class="single-input">
 									Time
 									<span class="inline-premise-spinner"><input id="p-6-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">sec</span>
-								</span>
-								<span class="single-input">
-									Transforms
-									<span class="inline-premise-spinner"><input id="p-29" type="number" placeholder="" min="0" max="10" value="" style="width: 5ch">lvl</span>
 								</span>
 							</div>
 						</div>
@@ -464,180 +398,9 @@
 									Time
 									<span class="inline-premise-spinner"><input id="p-12-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">sec</span>
 								</span>
-								<span class="single-input">
-									Transforms
-									<span class="inline-premise-spinner"><input id="p-30" type="number" placeholder="" min="0" max="10" value="" style="width: 5ch">lvl</span>
-								</span>
 							</div>
-						</div>
-						<div class="mb-1">
-							<div class="ctrl__inner">
-								<div>
-									<input hidden id="p-13" type="checkbox">
-									<label class="switch" for="p-13"></label>
-								</div>
-								<span>Enable Space-Time</span>
-							</div>
-							<ul class="explainer">
-								<li>A is at Before, Below and South of B</li>
-							</ul>
-							<div class="multi-input">
-								<span class="single-input">
-									Premises
-									<span class="inline-premise-spinner"><input id="p-13-premises" type="number" placeholder="" min="2" max="100" value="" style="width: 5ch">ps</span>
-								</span>
-								<span class="single-input">
-									Time
-									<span class="inline-premise-spinner"><input id="p-13-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">sec</span>
-								</span>
-								<span class="single-input">
-									Transforms
-									<span class="inline-premise-spinner"><input id="p-33" type="number" placeholder="" min="0" max="10" value="" style="width: 5ch">lvl</span>
-								</span>
-							</div>
-						</div>
-						<div class="mb-05">Transforms:</div>
-						<div class="ctrl__inner mb-05">
-							<div>
-								<input hidden id="p-35" type="checkbox" checked>
-								<label class="switch" for="p-35"></label>
-							</div>
-							<span>Mirror</span>
-							<div class="tooltip-container" tabindex="0">
-								?
-								<div class="tooltip-text shift-right">
-								Flips a word across another word,<br>
-								but only along one dimension (X/Y/Z).<br>
-								<br>
-								A is Y-mirrored across B<br>
-								<br>
-								Means to shift A up/down until<br>
-								it's fully mirrored across the<br>
-								X-axis of B.<br>
-								</div>
-							</div>
-							<div>
-								<input hidden id="p-36" type="checkbox" checked>
-								<label class="switch" for="p-36"></label>
-							</div>
-							<span>Scale</span>
-							<div class="tooltip-container" tabindex="0">
-								?
-								<div class="tooltip-text shift-left">
-									Shifts a word 2x away<br>
-									from another word, but only<br>
-									along one dimension (X/Y/Z).<br>
-									<br>
-									A is X-scaled 2x from B<br>
-									<br>
-									Means to shift A left/right<br>
-									until it doubles its<br>
-									X distance from B.<br>
-								</div>
-							</div>
-						</div>
-						<div class="ctrl__inner mb-05">
-							<div>
-								<input hidden id="p-34" type="checkbox" checked>
-								<label class="switch" for="p-34"></label>
-							</div>
-							<span>Set X/Y/Z</span>
-							<div class="tooltip-container" tabindex="0">
-								?
-								<div class="tooltip-text">
-									Moves a word so it lines up<br>
-									with the X/Y/Z of the another<br>
-									word.<br>
-								</div>
-							</div>
-							<div>
-								<input hidden id="p-37" type="checkbox">
-								<label class="switch" for="p-37"></label>
-							</div>
-							<span>Rotate</span>
-							<div class="tooltip-container" tabindex="0">
-								?
-								<div class="tooltip-text shift-left-left">
-									Rotates a word clockwise or<br>
-									counterclockwise around another<br>
-									word.<br>
-									<br>
-									In 3D mode, the word will<br>
-									need to rotate around the axis<br>
-									of the pivot word. For example,<br>
-									<br>
-									A is XY-rotated 90°↻ around B<br>
-									<br>
-									means that you find the Z-axis<br>
-									of B, and rotate A around that.<br>
-									(A will stay within the XY-plane)<br>
-								</div>
-							</div>
-						</div>
-						<div class="ctrl__inner">
-							<div>
-								<input hidden id="p-40" type="checkbox">
-								<label class="switch" for="p-40"></label>
-							</div>
-							<span>Interleave Mode</span>
-							<div class="tooltip-container" tabindex="0">
-								?
-								<div class="tooltip-text shift-left">
-								Transformations will be inserted<br>
-								in between premises, rather than<br>
-								only at the end. Requires 2+<br>
-								transforms to apply.<br>
-							</div>
-						</div>
 						</div>
 						<hr class="divider"/>
-						<div class="mb-1">
-							<div class="ctrl__inner">
-								<div>
-									<input hidden id="p-7" type="checkbox">
-									<label class="switch" for="p-7"></label>
-								</div>
-								<span>Enable Binary</span>
-							</div>
-							<ul class="explainer">
-								<li>A is the same as B</li>
-								<li>OR</li>
-								<li>C is at North-West of D</li>
-							</ul>
-							<div class="mb-1" style="margin-left: 2rem;">
-								<div class="ctrl__inner">
-									<div>
-										<input hidden id="p-15" type="checkbox">
-										<label class="switch" for="p-15"></label>
-									</div>
-									<span>Only Binary</span>
-								</div>
-							</div>
-							<div class="multi-input">
-								<span class="single-input">
-									Premises
-									<span class="inline-premise-spinner"><input id="p-7-premises" type="number" placeholder="" min="2" max="100" value="" style="width: 4ch">ps</span>
-								</span>
-								<span class="single-input shrink">
-									Time
-									<span class="inline-premise-spinner"><input id="p-7-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">sec</span>
-								</span>
-								<span class="single-input grow">
-									<div>
-										<span>Operators</span>
-										<div class="tooltip-container" tabindex="0">
-											?
-											<div class="tooltip-text right">
-												Number of binary<br>
-												operators to<br>
-												use in the conclusion
-											</div>
-										</div>
-									</div>
-									<span class="inline-premise-spinner"><input id="p-17" type="number" min="1" value="1" max="10" style="width: 5ch">lvl</span>
-								</span>
-							</div>
-						</div>
 						<div class="mb-2">
 							<div class="inline-input__outer">
 								Image
@@ -653,6 +416,252 @@
 								<span class="inline-input__inner">
 								  <input type="text" id="color-input" placeholder="Enter color (e.g. #ff0000)" value="#161F30CC" oninput="handleColorChange(event)"></input>
 								</span>
+							</div>
+						</div>
+						<div class="legacy-folder" onclick="toggleLegacyFolder()">
+							<span id="legacy-folder-arrow">▶</span><span>Legacy Options</span>
+						</div>
+						<div id="legacy-folder-content" class="legacy-folder-content">
+							<div class="mb-1">
+								<div class="ctrl__inner">
+									<div>
+										<input hidden id="p-4" type="checkbox">
+										<label class="switch" for="p-4"></label>
+									</div>
+									<span>Enable Analogy</span>
+								</div>
+								<ul class="explainer">
+									<li>A is to B as B is to C</li>
+								</ul>
+								<div class="mb-1" style="margin-left: 2rem;">
+									<div class="ctrl__inner">
+										<div>
+											<input hidden id="p-14" type="checkbox">
+											<label class="switch" for="p-14"></label>
+										</div>
+										<span>Only Analogy</span>
+									</div>
+								</div>
+								<div class="multi-input">
+									<span class="single-input">
+										Premise Offset
+										<span class="inline-premise-spinner"><input id="p-4-premises" type="number" placeholder="" min="-100" max="100" value="" style="width: 5ch">ps</span>
+									</span>
+									<span class="single-input">
+										Time Offset
+										<span class="inline-premise-spinner"><input id="p-4-time" type="number" placeholder="" min="-600" max="600" value="" style="width: 5ch">sec</span>
+									</span>
+									<div class="tooltip-container" tabindex="0">
+										?
+										<div class="tooltip-text right">
+											Shifts the underlying question's<br>
+											premise/timer count. Try -1
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="mb-1">
+								<div class="ctrl__inner">
+									<div>
+										<input hidden id="p-16" type="checkbox">
+										<label class="switch" for="p-16"></label>
+									</div>
+									<span>Enable Meta</span>
+								</div>
+								<ul class="explainer">
+									<li>A is (C to D) of B</li>
+								</ul>
+							</div>
+							<div class="mb-1">
+								<div class="ctrl__inner">
+									<div>
+										<input hidden id="p-13" type="checkbox">
+										<label class="switch" for="p-13"></label>
+									</div>
+									<span>Enable Space-Time</span>
+								</div>
+								<ul class="explainer">
+									<li>A is at Before, Below and South of B</li>
+								</ul>
+								<div class="multi-input">
+									<span class="single-input">
+										Premises
+										<span class="inline-premise-spinner"><input id="p-13-premises" type="number" placeholder="" min="2" max="100" value="" style="width: 5ch">ps</span>
+									</span>
+									<span class="single-input">
+										Time
+										<span class="inline-premise-spinner"><input id="p-13-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">sec</span>
+									</span>
+									<span class="single-input">
+										Transforms
+										<span class="inline-premise-spinner"><input id="p-33" type="number" placeholder="" min="0" max="10" value="" style="width: 5ch">lvl</span>
+									</span>
+								</div>
+							</div>
+							<div class="mb-05">Transforms:</div>
+							<div class="mb-1">
+								<div class="multi-input">
+									<span class="single-input">
+										2D Transforms
+										<span class="inline-premise-spinner"><input id="p-29" type="number" placeholder="" min="0" max="10" value="" style="width: 5ch">lvl</span>
+									</span>
+									<span class="single-input">
+										3D Transforms
+										<span class="inline-premise-spinner"><input id="p-30" type="number" placeholder="" min="0" max="10" value="" style="width: 5ch">lvl</span>
+									</span>
+								</div>
+							</div>
+							<div class="ctrl__inner mb-05">
+								<div>
+									<input hidden id="p-35" type="checkbox" checked>
+									<label class="switch" for="p-35"></label>
+								</div>
+								<span>Mirror</span>
+								<div class="tooltip-container" tabindex="0">
+									?
+									<div class="tooltip-text shift-right">
+									Flips a word across another word,<br>
+									but only along one dimension (X/Y/Z).<br>
+									<br>
+									A is Y-mirrored across B<br>
+									<br>
+									Means to shift A up/down until<br>
+									it's fully mirrored across the<br>
+									X-axis of B.<br>
+									</div>
+								</div>
+								<div>
+									<input hidden id="p-36" type="checkbox" checked>
+									<label class="switch" for="p-36"></label>
+								</div>
+								<span>Scale</span>
+								<div class="tooltip-container" tabindex="0">
+									?
+									<div class="tooltip-text shift-left">
+										Shifts a word 2x away<br>
+										from another word, but only<br>
+										along one dimension (X/Y/Z).<br>
+										<br>
+										A is X-scaled 2x from B<br>
+										<br>
+										Means to shift A left/right<br>
+										until it doubles its<br>
+										X distance from B.<br>
+									</div>
+								</div>
+							</div>
+							<div class="ctrl__inner mb-05">
+								<div>
+									<input hidden id="p-34" type="checkbox" checked>
+									<label class="switch" for="p-34"></label>
+								</div>
+								<span>Set X/Y/Z</span>
+								<div class="tooltip-container" tabindex="0">
+									?
+									<div class="tooltip-text">
+										Moves a word so it lines up<br>
+										with the X/Y/Z of the another<br>
+										word.<br>
+									</div>
+								</div>
+								<div>
+									<input hidden id="p-37" type="checkbox">
+									<label class="switch" for="p-37"></label>
+								</div>
+								<span>Rotate</span>
+								<div class="tooltip-container" tabindex="0">
+									?
+									<div class="tooltip-text shift-left-left">
+										Rotates a word clockwise or<br>
+										counterclockwise around another<br>
+										word.<br>
+										<br>
+										In 3D mode, the word will<br>
+										need to rotate around the axis<br>
+										of the pivot word. For example,<br>
+										<br>
+										A is XY-rotated 90°↻ around B<br>
+										<br>
+										means that you find the Z-axis<br>
+										of B, and rotate A around that.<br>
+										(A will stay within the XY-plane)<br>
+									</div>
+								</div>
+							</div>
+							<div class="ctrl__inner mb-1">
+								<div>
+									<input hidden id="p-40" type="checkbox">
+									<label class="switch" for="p-40"></label>
+								</div>
+								<span>Interleave Mode</span>
+								<div class="tooltip-container" tabindex="0">
+									?
+									<div class="tooltip-text shift-left">
+									Transformations will be inserted<br>
+									in between premises, rather than<br>
+									only at the end. Requires 2+<br>
+									transforms to apply.<br>
+									</div>
+								</div>
+							</div>
+							<div class="mb-1">
+								<div class="ctrl__inner">
+									<div>
+										<input hidden id="p-9" type="checkbox">
+										<label class="switch" for="p-9"></label>
+									</div>
+									<span>Enable Carousel Mode</span>
+								</div>
+								<p class="explainer">
+									See only one word at time.
+								</p>
+							</div>
+							<div class="mb-1">
+								<div class="ctrl__inner">
+									<div>
+										<input hidden id="p-7" type="checkbox">
+										<label class="switch" for="p-7"></label>
+									</div>
+									<span>Enable Binary</span>
+								</div>
+								<ul class="explainer">
+									<li>A is the same as B</li>
+									<li>OR</li>
+									<li>C is at North-West of D</li>
+								</ul>
+								<div class="mb-1" style="margin-left: 2rem;">
+									<div class="ctrl__inner">
+										<div>
+											<input hidden id="p-15" type="checkbox">
+											<label class="switch" for="p-15"></label>
+										</div>
+										<span>Only Binary</span>
+									</div>
+								</div>
+								<div class="multi-input">
+									<span class="single-input">
+										Premises
+										<span class="inline-premise-spinner"><input id="p-7-premises" type="number" placeholder="" min="2" max="100" value="" style="width: 4ch">ps</span>
+									</span>
+									<span class="single-input shrink">
+										Time
+										<span class="inline-premise-spinner"><input id="p-7-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">sec</span>
+									</span>
+									<span class="single-input grow">
+										<div>
+											<span>Operators</span>
+											<div class="tooltip-container" tabindex="0">
+												?
+												<div class="tooltip-text right">
+													Number of binary<br>
+													operators to<br>
+													use in the conclusion
+												</div>
+											</div>
+										</div>
+										<span class="inline-premise-spinner"><input id="p-17" type="number" min="1" value="1" max="10" style="width: 5ch">lvl</span>
+									</span>
+								</div>
 							</div>
 						</div>
 						<div class="mb-1">
@@ -1829,7 +1838,11 @@
 <symbol id="junk-998" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 50 50"><polygon points="50,50 45,50 24,40 50,11 50,50" fill="hsl(300, 90%, 80%)" /><polygon points="50,11 24,40 1,50 0,50 0,40 45,9 50,8 50,11" fill="hsl(45, 100%, 35%)" /><polygon points="0,0 50,0 50,8 45,9 0,14 0,0" fill="hsl(250, 50%, 10%)" /><polygon points="1,50 24,40 45,50 1,50" fill="hsl(350, 5%, 65%)" /><polygon points="0,14 45,9 0,40 0,14" fill="hsl(310, 50%, 65%)" /></symbol>
 <symbol id="junk-999" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 50 50"><polygon points="0,50 0,0 3,0 24,36 23,50 0,50" fill="hsl(130, 50%, 65%)" /><polygon points="50,0 50,9 24,36 3,0 50,0" fill="hsl(320, 5%, 50%)" /><polygon points="50,50 23,50 24,36 50,9 50,50" fill="hsl(55, 100%, 95%)" /></symbol>
 </defs>
-</svg>
+</svg>
+
+
+
+
 		</span>
 
 		<script src="js/lib/d3-delaunay.min.js"></script>

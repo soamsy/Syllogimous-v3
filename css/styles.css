@@ -891,7 +891,8 @@ label.open[for="offcanvas-credits"]:hover {
 }
 
 .offcanvas-body {
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     padding: 1rem;
     width: calc(100% - 2rem);
     font-size: var(--step--1);
@@ -1576,6 +1577,36 @@ table.distinction {
 
 .graph-select.selected:hover {
     background: #316154;
+}
+
+.legacy-folder {
+    cursor: pointer;
+    padding: 8px;
+    width: 250px;
+    display: flex;
+    align-items: center;
+    height: 40px;
+    background-color: #222;
+    margin-bottom: 20px;
+    user-select: none;
+}
+
+.legacy-folder-content {
+    display: none;
+    margin-bottom: 20px;
+}
+
+#legacy-folder-arrow {
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--step--1);
+}
+
+#legacy-folder-arrow.open {
+    transform: rotate(90deg) translateX(3px);
 }
 
 @media (max-width: 768px) {

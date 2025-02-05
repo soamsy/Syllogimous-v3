@@ -129,6 +129,7 @@ function load() {
     PROFILE_STORE.startup();
 
     renderHQL();
+    renderLegacyFolder();
     populateSettings();
 }
 
@@ -720,6 +721,24 @@ function createHQLI(question, i) {
         });
     }
     return parent.firstElementChild;
+}
+
+function toggleLegacyFolder() {
+    appState.isLegacyOpen = !appState.isLegacyOpen;
+    renderLegacyFolder();
+    save();
+}
+
+function renderLegacyFolder() {
+    const folderArrow = document.getElementById('legacy-folder-arrow');
+    const folderContent = document.getElementById('legacy-folder-content');
+    if (appState.isLegacyOpen) {
+        folderContent.style.display = 'block';
+        folderArrow.classList.add('open');
+    } else {
+        folderContent.style.display = 'none';
+        folderArrow.classList.remove('open');
+    }
 }
 
 // Events
