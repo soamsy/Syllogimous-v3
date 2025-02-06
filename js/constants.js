@@ -77,6 +77,7 @@ let savedata = {
     "enableTransformInterleave": false,
     "autoProgression": false,
     "autoProgressionGoal": 10,
+    "spoilerConclusion": false,
 };
 
 const defaultSavedata = structuredClone(savedata);
@@ -142,6 +143,7 @@ const compressedSettings = {
     "enableTransformInterleave": "tInterleave",
     "autoProgression": "auto",
     "autoProgressionGoal": "goal",
+    "spoilerConclusion": "spoiler",
 };
 
 const keySettingMap = {
@@ -206,6 +208,7 @@ const keySettingMap = {
     "p-43": "enableAnchorSpace",
     "p-44-premises": "overrideAnchorSpacePremises",
     "p-45-time": "overrideAnchorSpaceTime",
+    "p-46": "spoilerConclusion",
 };
 
 const meaningfulWords = {

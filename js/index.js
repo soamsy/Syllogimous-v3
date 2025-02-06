@@ -476,6 +476,15 @@ function init() {
     carouselInit();
     displayInit();
     PROGRESS_STORE.renderCurrentProgress(question);
+    renderConclusionSpoiler();
+}
+
+function renderConclusionSpoiler() {
+    if (savedata.spoilerConclusion) {
+        displayText.classList.add('spoiler');
+    } else {
+        displayText.classList.remove('spoiler');
+    }
 }
 
 function wowFeedbackRight(cb) {
