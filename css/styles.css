@@ -669,7 +669,7 @@ input[type="number"]::-moz-inner-spin-button {
     background: #000;
 }
 
-.spoiler .formatted-conclusion:hover:after {
+.spoiler:hover .formatted-conclusion::after {
     background: transparent;
     pointer-events: none;
 }

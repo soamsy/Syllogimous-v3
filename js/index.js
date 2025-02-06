@@ -481,9 +481,9 @@ function init() {
 
 function renderConclusionSpoiler() {
     if (savedata.spoilerConclusion) {
-        displayText.classList.add('spoiler');
+        gameArea.classList.add('spoiler');
     } else {
-        displayText.classList.remove('spoiler');
+        gameArea.classList.remove('spoiler');
     }
 }
 
