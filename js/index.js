@@ -54,6 +54,7 @@ const displayText = display.querySelector(".display_text");;
 
 const liveStyles = document.getElementById('live-styles');
 const gameArea = document.getElementById('game-area');
+const spoilerArea = document.getElementById('spoiler-area');
 
 const confirmationButtons = document.querySelector(".confirmation-buttons");
 let imagePromise = Promise.resolve();
@@ -481,9 +482,9 @@ function init() {
 
 function renderConclusionSpoiler() {
     if (savedata.spoilerConclusion) {
-        gameArea.classList.add('spoiler');
+        spoilerArea.classList.add('spoiler');
     } else {
-        gameArea.classList.remove('spoiler');
+        spoilerArea.classList.remove('spoiler');
     }
 }
 
