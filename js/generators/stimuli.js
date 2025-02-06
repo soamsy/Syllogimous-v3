@@ -63,8 +63,9 @@ function createVisualNoiseTag() {
     return [id, `[vnoise]${id},${splits}[/vnoise]`];
 }
 
-function createStimuli(numberOfStimuli) {
-    const quota = maxStimuliAllowed();
+function createStimuli(numberOfStimuli, usedStimuli) {
+    usedStimuli = usedStimuli ?? [];
+    const quota = maxStimuliAllowed() - usedStimuli.length;
     
     const uniqueWords = {
         meaningful: {
@@ -77,6 +78,11 @@ function createStimuli(numberOfStimuli) {
         junkEmoji: new Set(),
         visualNoise: new Set(),
     };
+
+    usedStimuli.forEach(word => {
+        uniqueWords.nonsense.add(word);
+        uniqueWords.garbage.add(word);
+    });
 
     const stimulusTypes = new Set();
     

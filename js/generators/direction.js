@@ -68,8 +68,9 @@ function pickWeightedRandomDirection(dirCoords, baseWord, neighbors, wordCoordMa
 }
 
 class Direction2D {
-    constructor(enableHardMode=true) {
+    constructor(enableHardMode=true, enableAnchor=false) {
         this.enableHardMode = enableHardMode;
+        this.enableAnchor = enableAnchor;
     }
 
     pickDirection(baseWord, neighbors, wordCoordMap) {
@@ -93,7 +94,11 @@ class Direction2D {
     }
 
     getName() {
-        return "Space Two D";
+        if (this.enableAnchor) {
+            return "Anchor Space"
+        } else {
+            return "Space Two D";
+        }
     }
 
     hardModeAllowed() {
@@ -105,7 +110,15 @@ class Direction2D {
     }
 
     getCountdown() {
-        return savedata.overrideDirectionTime;
+        if (this.enableAnchor) {
+            return savedata.overrideAnchorSpaceTime;
+        } else {
+            return savedata.overrideDirectionTime;
+        }
+    }
+
+    shouldUseAnchor() {
+        return this.enableAnchor;
     }
 }
 
@@ -148,6 +161,10 @@ class Direction3D {
 
     getCountdown() {
         return savedata.overrideDirection3DTime;
+    }
+
+    shouldUseAnchor() {
+        return false;
     }
 }
 
@@ -193,9 +210,12 @@ class Direction4D {
         return savedata.space4DHardModeLevel;
     }
 
-
     getCountdown() {
         return savedata.overrideDirection4DTime;
+    }
+
+    shouldUseAnchor() {
+        return false;
     }
 }
 
@@ -241,7 +261,9 @@ class DirectionQuestion {
         let [numInterleaved, numTransforms] = this.getNumTransformsSplit(length);
         const branchesAllowed = Math.random() > 0.33;
         while (true) {
-            if (numInterleaved > 0) {
+            if (this.generator.shouldUseAnchor()) {
+                [wordCoordMap, neighbors, premises, usedDirCoords] = this.createWordMapAnchor(length, branchesAllowed);
+            } else if (numInterleaved > 0) {
                 [wordCoordMap, neighbors, premises, usedDirCoords] = this.createWordMapInterleaved(length);
             } else {
                 [wordCoordMap, neighbors, premises, usedDirCoords] = this.createWordMap(length, branchesAllowed);
@@ -312,7 +334,9 @@ class DirectionQuestion {
         const branchesAllowed = Math.random() > 0.2;
         const flip = coinFlip();
         while (flip !== isValidSame) {
-            if (numInterleaved > 0) {
+            if (this.generator.shouldUseAnchor()) {
+                [wordCoordMap, neighbors, premises, usedDirCoords] = this.createWordMapAnchor(length, branchesAllowed);
+            } else if (numInterleaved > 0) {
                 [wordCoordMap, neighbors, premises, usedDirCoords] = this.createWordMapInterleaved(length);
             } else {
                 [wordCoordMap, neighbors, premises, usedDirCoords] = this.createWordMap(length, branchesAllowed);
@@ -462,16 +486,60 @@ class DirectionQuestion {
     }
 
     createWordMap(length, branchesAllowed) {
-        const words = createStimuli(length + 1);
-        let wordCoordMap = {[words[0]]: this.generator.initialCoord() };
-        let neighbors = {[words[0]]: []};
+        const baseWords = createStimuli(length + 1);
+        const start = baseWords[0];
+        const words = baseWords.slice(1, baseWords.length);
+        let wordCoordMap = {[start]: this.generator.initialCoord() };
+        let neighbors = {[start]: []};
+        return this.buildOntoWordMap(words, wordCoordMap, neighbors, branchesAllowed);
+    }
+
+    createWordMapAnchor(length, branchesAllowed) {
+        let result;
+        for (let i = 0; i < 10; i++) {
+            const words = createStimuli(length, ['A', 'B', 'C', 'D']);
+            let wordCoordMap = {
+                ['A']: [0, 1],
+                ['B']: [1, 1],
+                ['C']: [0, 0],
+                ['D']: [1, 0],
+            };
+
+            let starters = ['A', 'B', 'C', 'D'];
+            shuffle(starters);
+            let neighbors;
+            if (branchesAllowed) {
+                neighbors = {
+                    [starters[0]]: [starters[1], starters[2], starters[3]],
+                    [starters[1]]: [starters[0]],
+                    [starters[2]]: [starters[0]],
+                    [starters[3]]: [starters[0]],
+                };
+            } else {
+                neighbors = {
+                    [starters[0]]: [starters[1], starters[2]],
+                    [starters[1]]: [starters[0], starters[3]],
+                    [starters[2]]: [starters[0]],
+                    [starters[3]]: [starters[1]],
+                };
+            }
+
+            result = this.buildOntoWordMap(words, wordCoordMap, neighbors, branchesAllowed);
+            const anchorConnections = starters.map(s => neighbors[s].length).reduce((a, b) => a + b, 0);
+            if (anchorConnections >= 8) {
+                break;
+            }
+        }
+        return result;
+    }
+
+    buildOntoWordMap(words, wordCoordMap, neighbors, branchesAllowed) {
         let premiseMap = {};
         let usedDirCoords = [];
 
-        for (let i = 0; i < words.length - 1; i++) {
+        for (const nextWord of words) {
             const baseWord = pickBaseWord(neighbors, branchesAllowed);
             const dirCoord = this.generator.pickDirection(baseWord, neighbors, wordCoordMap);
-            const nextWord = words[i+1];
             wordCoordMap[nextWord] = addCoords(wordCoordMap[baseWord], dirCoord);
             premiseMap[premiseKey(baseWord, nextWord)] = this.generator.createDirectionStatement(baseWord, nextWord, dirCoord);
             usedDirCoords.push(dirCoord);
@@ -497,4 +565,8 @@ function createDirectionQuestion3D(length) {
 
 function createDirectionQuestion4D(length) {
     return new DirectionQuestion(new Direction4D()).createQuestion(length);
+}
+
+function createDirectionQuestionAnchor(length) {
+    return new DirectionQuestion(new Direction2D(false, true)).createQuestion(length);
 }

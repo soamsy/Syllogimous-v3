@@ -169,7 +169,7 @@ function carouselInit() {
 function displayInit() {
     const q = renderJunkEmojis(question);
     displayLabelType.textContent = q.category.split(":")[0];
-    displayLabelLevel.textContent = q.premises.length + " ps";
+    displayLabelLevel.textContent = q.premises.length + "p";
     displayText.innerHTML = [
         ...q.premises.map(p => `<div class="formatted-premise ${savedata.scrambleLimit === 0 ? 'easy' : ''}">${p}</div>`),
         ...(q.operations ? q.operations.map(o => `<div class="formatted-operation">${o}</div>`) : []),
@@ -372,9 +372,7 @@ function findStartingTimerState() {
     return ['default', Math.max(1, +timerTime)];
 }
 
-function init() {
-    stopCountDown();
-
+function generateQuestion() {
     const analogyEnable = [
         savedata.enableDistinction,
         savedata.enableComparison,
@@ -398,20 +396,23 @@ function init() {
     quota = savedata.premises
     quota = Math.min(quota, maxStimuliAllowed());
 
-    if (savedata.enableDistinction && !(savedata.onlyAnalogy || savedata.onlyBinary))
+    const banNormalModes = savedata.onlyAnalogy || savedata.onlyBinary;
+    if (savedata.enableDistinction && !banNormalModes)
         choices.push(createSameOpposite(getPremisesFor('overrideDistinctionPremises', quota)));
-    if (savedata.enableComparison && !(savedata.onlyAnalogy || savedata.onlyBinary))
+    if (savedata.enableComparison && !banNormalModes)
         choices.push(createMoreLess(getPremisesFor('overrideComparisonPremises', quota)));
-    if (savedata.enableTemporal && !(savedata.onlyAnalogy || savedata.onlyBinary))
+    if (savedata.enableTemporal && !banNormalModes)
         choices.push(createBeforeAfter(getPremisesFor('overrideTemporalPremises', quota)));
-    if (savedata.enableSyllogism && !(savedata.onlyAnalogy || savedata.onlyBinary))
+    if (savedata.enableSyllogism && !banNormalModes)
         choices.push(createSyllogism(getPremisesFor('overrideSyllogismPremises', quota)));
-    if (savedata.enableDirection && !(savedata.onlyAnalogy || savedata.onlyBinary))
+    if (savedata.enableDirection && !banNormalModes)
         choices.push(createDirectionQuestion(getPremisesFor('overrideDirectionPremises', quota)));
-    if (savedata.enableDirection3D && !(savedata.onlyAnalogy || savedata.onlyBinary))
+    if (savedata.enableDirection3D && !banNormalModes)
         choices.push(createDirectionQuestion3D(getPremisesFor('overrideDirection3DPremises', quota)));
-    if (savedata.enableDirection4D && !(savedata.onlyAnalogy || savedata.onlyBinary))
+    if (savedata.enableDirection4D && !banNormalModes)
         choices.push(createDirectionQuestion4D(getPremisesFor('overrideDirection4DPremises', quota)));
+    if (savedata.enableAnchorSpace && !banNormalModes)
+        choices.push(createDirectionQuestionAnchor(getPremisesFor('overrideAnchorSpacePremises', quota)));
     if (
      savedata.enableAnalogy
      && !savedata.onlyBinary
@@ -446,13 +447,22 @@ function init() {
     if (choices.length === 0)
         return;
 
-    question = choices[Math.floor(Math.random() * choices.length)];
+    let q = choices[Math.floor(Math.random() * choices.length)];
 
-    if (!savedata.removeNegationExplainer && /is-negated/.test(JSON.stringify(question)))
-        question.premises.unshift('<span class="negation-explainer">Invert the <span class="is-negated">Red</span> text</span>');
+    if (!savedata.removeNegationExplainer && /is-negated/.test(JSON.stringify(q)))
+        q.premises.unshift('<span class="negation-explainer">Invert the <span class="is-negated">Red</span> text</span>');
 
-    // Switch confirmation buttons a random amount of times
-    for (let i = Math.floor(Math.random()*10); i > 0; i--) {
+    return q;
+}
+
+function init() {
+    stopCountDown();
+    question = generateQuestion();
+    if (!question) {
+        return;
+    }
+
+    if (coinFlip()) {
         switchButtons();
     }
 
