@@ -79,11 +79,12 @@ class LinearQuestion {
         let premises;
         let conclusion;
         let buckets;
+        let bucketMap;
 
         const words = createStimuli(length + 1);
 
         if (this.generator.isBacktrackingEnabled()) {
-            [premises, conclusion, isValid, buckets] = this.buildBacktrackingMap(words);
+            [premises, conclusion, isValid, buckets, bucketMap] = this.buildBacktrackingMap(words);
         } else {
             [premises, conclusion, isValid] = this.buildLinearMap(words);
         }
@@ -98,6 +99,7 @@ class LinearQuestion {
         this.isValid = isValid;
         if (this.generator.isBacktrackingEnabled()) {
             this.buckets = buckets;
+            this.bucketMap = bucketMap;
         } else {
             this.bucket = words;
         }
@@ -196,15 +198,28 @@ class LinearQuestion {
             isValid = bucketMap[a] > bucketMap[b];
         }
 
-        return [premises, conclusion, isValid, buckets];
+        return [premises, conclusion, isValid, buckets, bucketMap];
+    }
+
+    indexOfWord(word) {
+        if (this.generator.isBacktrackingEnabled()) {
+            return this.bucketMap[word];
+        } else {
+            return this.bucket.indexOf(word);
+        }
     }
 
     createAnalogy(length) {
         this.generate(length);
-        const [a, b, c, d] = pickRandomItems(this.bucket, 4).picked;
+        let a, b, c, d;
+        if (this.generator.isBacktrackingEnabled()) {
+            [a, b, c, d] = pickRandomItems(Object.keys(this.bucketMap), 4).picked
+        } else {
+            [a, b, c, d] = pickRandomItems(this.bucket, 4).picked;
+        }
 
-        const [indexOfA, indexOfB] = [this.bucket.indexOf(a), this.bucket.indexOf(b)];
-        const [indexOfC, indexOfD] = [this.bucket.indexOf(c), this.bucket.indexOf(d)];
+        const [indexOfA, indexOfB] = [this.indexOfWord(a), this.indexOfWord(b)];
+        const [indexOfC, indexOfD] = [this.indexOfWord(c), this.indexOfWord(d)];
         const isValidSame = indexOfA > indexOfB && indexOfC > indexOfD
                    || indexOfA < indexOfB && indexOfC < indexOfD;
 
