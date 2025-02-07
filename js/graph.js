@@ -107,6 +107,9 @@ class ProgressGraph {
 
     async plotScore() {
         const data = await getAllRRTProgress();
+        if (!data || data.length === 0) {
+            return;
+        }
         const typeData = this.calculateTypeData(data);
 
         const labels = Object.values(typeData)[0].map((entry) => entry.day);
