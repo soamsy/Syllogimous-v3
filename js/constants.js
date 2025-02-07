@@ -78,6 +78,8 @@ let savedata = {
     "autoProgression": false,
     "autoProgressionGoal": 10,
     "spoilerConclusion": false,
+    "enableBacktrackingComparison": false,
+    "enableBacktrackingTemporal": false,
 };
 
 const defaultSavedata = structuredClone(savedata);
@@ -144,6 +146,8 @@ const compressedSettings = {
     "autoProgression": "auto",
     "autoProgressionGoal": "goal",
     "spoilerConclusion": "spoiler",
+    "enableBacktrackingComparison": "backC",
+    "enableBacktrackingTemporal": "backT",
 };
 
 const keySettingMap = {
@@ -209,6 +213,8 @@ const keySettingMap = {
     "p-44-premises": "overrideAnchorSpacePremises",
     "p-45-time": "overrideAnchorSpaceTime",
     "p-46": "spoilerConclusion",
+    "p-47": "enableBacktrackingComparison",
+    "p-48": "enableBacktrackingTemporal",
 };
 
 const meaningfulWords = {

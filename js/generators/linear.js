@@ -35,6 +35,10 @@ class MoreLess {
     getCountdown() {
         return savedata.overrideComparisonTime;
     }
+
+    isBacktrackingEnabled() {
+        return savedata.enableBacktrackingComparison;
+    }
 }
 
 class BeforeAfter {
@@ -59,6 +63,10 @@ class BeforeAfter {
     getCountdown(offset=0) {
         return savedata.overrideTemporalTime ? savedata.overrideTemporalTime + offset : null;
     }
+
+    isBacktrackingEnabled() {
+        return savedata.enableBacktrackingTemporal;
+    }
 }
 
 class LinearQuestion {
@@ -70,31 +78,14 @@ class LinearQuestion {
         let isValid;
         let premises;
         let conclusion;
+        let buckets;
 
-        const bucket = createStimuli(length + 1);
+        const words = createStimuli(length + 1);
 
-        premises = [];
-        let next;
-
-        for (let i = 0; i < bucket.length - 1; i++) {
-            let curr = bucket[i];
-            next = bucket[i + 1];
-
-            if (coinFlip()) {
-                premises.push(this.generator.createLinearPremise(curr, next));
-            } else {
-                premises.push(this.generator.createReverseLinearPremise(next, curr));
-            }
-        }
-
-        const [i, j] = findTwoWordIndexes(bucket);
-
-        if (coinFlip()) {
-            this.conclusion = this.generator.createLinearPremise(bucket[i], bucket[j]);
-            this.isValid = i < j;
+        if (this.generator.isBacktrackingEnabled()) {
+            [premises, conclusion, isValid, buckets] = this.buildBacktrackingMap(words);
         } else {
-            this.conclusion = this.generator.createReverseLinearPremise(bucket[i], bucket[j]);
-            this.isValid = i > j;
+            [premises, conclusion, isValid] = this.buildLinearMap(words);
         }
 
         if (savedata.enableMeta) {
@@ -103,7 +94,109 @@ class LinearQuestion {
 
         premises = scramble(premises);
         this.premises = premises;
-        this.bucket = bucket;
+        this.conclusion = conclusion;
+        this.isValid = isValid;
+        if (this.generator.isBacktrackingEnabled()) {
+            this.buckets = buckets;
+        } else {
+            this.bucket = words;
+        }
+    }
+
+    buildLinearMap(words) {
+        let premises = [];
+        let conclusion;
+        let isValid;
+
+        for (let i = 0; i < words.length - 1; i++) {
+            const curr = words[i];
+            const next = words[i + 1];
+
+            if (coinFlip()) {
+                premises.push(this.generator.createLinearPremise(curr, next));
+            } else {
+                premises.push(this.generator.createReverseLinearPremise(next, curr));
+            }
+        }
+
+        const [i, j] = findTwoWordIndexes(words);
+
+        if (coinFlip()) {
+            conclusion = this.generator.createLinearPremise(words[i], words[j]);
+            isValid = i < j;
+        } else {
+            conclusion = this.generator.createReverseLinearPremise(words[i], words[j]);
+            isValid = i > j;
+        }
+
+        return [premises, conclusion, isValid];
+    }
+
+
+    buildBacktrackingMap(words) {
+        let premiseMap = {};
+        let first = words[0];
+        let bucketMap = { [first]: 0 };
+        let neighbors = { [first]: [] };
+
+        for (let i = 1; i < words.length; i++) {
+            const source = pickBaseWord(neighbors, Math.random() < 0.6);
+            const target = words[i];
+
+            const key = premiseKey(source, target);
+            if (coinFlip()) {
+                if (coinFlip()) {
+                    premiseMap[key] = this.generator.createLinearPremise(source, target);
+                } else {
+                    premiseMap[key] = this.generator.createReverseLinearPremise(target, source);
+                }
+                bucketMap[target] = bucketMap[source] + 1;
+            } else {
+                if (coinFlip()) {
+                    premiseMap[key] = this.generator.createLinearPremise(target, source);
+                } else {
+                    premiseMap[key] = this.generator.createReverseLinearPremise(source, target);
+                }
+                bucketMap[target] = bucketMap[source] - 1;
+            }
+
+            neighbors[source] = neighbors?.[source] ?? [];
+            neighbors[target] = neighbors?.[target] ?? [];
+            neighbors[target].push(source);
+            neighbors[source].push(target);
+        }
+
+        const bucketTargets = Object.values(bucketMap);
+        const low = bucketTargets.reduce((a, b) => Math.min(a, b));
+        const high = bucketTargets.reduce((a, b) => Math.max(a, b));
+        let buckets = Array(high - low + 1).fill(0);
+        buckets = buckets.map(x => []);
+        for (const word in bucketMap) {
+            buckets[bucketMap[word] - low].push(word);
+        }
+
+        let premises = orderPremises(premiseMap, neighbors);
+        let a, b, tries;
+        for (let tries = 0; tries < 10; tries++) {
+            [a, b] = new DirectionPairChooser().pickTwoDistantWords(neighbors);
+            if (bucketMap[a] !== bucketMap[b]) {
+                break;
+            }
+        }
+        for (let tries = 0; tries < 9999 && bucketMap[a] === bucketMap[b]; tries++) {
+            [a, b] = pickRandomItems(words, 2).picked;
+        }
+
+        let conclusion, isValid;
+        if (coinFlip()) {
+            conclusion = this.generator.createLinearPremise(a, b);
+            isValid = bucketMap[a] < bucketMap[b];
+        } else {
+            conclusion = this.generator.createReverseLinearPremise(a, b);
+            isValid = bucketMap[a] > bucketMap[b];
+        }
+
+        return [premises, conclusion, isValid, buckets];
     }
 
     createAnalogy(length) {
@@ -131,7 +224,8 @@ class LinearQuestion {
             category: 'Analogy: ' + this.generator.getName(),
             type: normalizeString(this.generator.getName()),
             startedAt: new Date().getTime(),
-            bucket: this.bucket,
+            ...(this.bucket ? { bucket: this.bucket } : {}),
+            ...(this.buckets ? { buckets: this.buckets } : {}),
             premises: this.premises,
             isValid,
             conclusion,
@@ -146,7 +240,8 @@ class LinearQuestion {
             category: this.generator.getName(),
             type: normalizeString(this.generator.getName()),
             startedAt: new Date().getTime(),
-            bucket: this.bucket,
+            ...(this.bucket && { bucket: this.bucket }),
+            ...(this.buckets && { buckets: this.buckets }),
             premises: this.premises,
             isValid: this.isValid,
             conclusion: this.conclusion,

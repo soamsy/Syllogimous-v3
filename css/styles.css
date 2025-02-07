@@ -1002,6 +1002,11 @@ label.open[for="offcanvas-credits"]:hover {
     width: 0.75rem;
 }
 
+.inline-premise-spinner .switch {
+    height: 1.5rem;
+    width: 1.5rem;
+}
+
 input[type="checkbox"]:checked + .switch {
     border-color: #cff9;
     box-shadow: 0 0 6px 1px  #cff6;
@@ -1258,13 +1263,17 @@ svg.junk, svg.noise {
     margin-bottom: 3px;
 }
 
-table.distinction td {
+table.distinction td,
+table.distinction th {
     vertical-align: top;
+    border-left: 1px solid white;
+    border-right: 1px solid white;
     min-width: 1em;
 }
 
 table.distinction {
     margin: 0 auto;
+    border-collapse: collapse;
 }
 
 .settings-label::before {

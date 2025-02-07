@@ -114,20 +114,17 @@ function createExplanationBucket(question) {
 
 function createExplanationBuckets(question) {
     const filler = createFiller(question.buckets);
-    const [a, b] = question.buckets;
-    const verticalLength = Math.max(a.length, b.length);
+    const verticalLength = question.buckets.reduce((a, b) => Math.max(a, b));
     let s = '<table class="distinction">';
     s += '<tr>';
-    s += '<td>';
-    for (const item of a) {
-        s += '<div>' + centerText(item, filler.length) + '</div>';
+    for (const bucket of question.buckets) {
+        
+        s += '<td>';
+        for (const item of bucket) {
+            s += '<div>' + centerText(item, filler.length) + '</div>';
+        }
+        s += '</td>';
     }
-    s += '</td>';
-    s += '<td>';
-    for (const item of b) {
-        s += '<div>' + centerText(item, filler.length) + '</div>';
-    }
-    s += '</td>';
     s += '</tr>';
     s += '</table>';
     return s;
