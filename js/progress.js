@@ -87,7 +87,8 @@ class ProgressStore {
         const right = successes[successes.length - 2].timeElapsed / 1000;
         const percentile90ish = Math.floor((left + right) / 2) + 1;
         const newTimerValue = Math.min(minUpgrade, percentile90ish);
-        if (newTimerValue <= savedata.autoProgressionGoal) {
+        const averageTime = successes.map(s => s.timeElapsed / 1000).reduce((a, b) => a + b) / successes.length;
+        if (averageTime <= savedata.autoProgressionGoal || newTimerValue <= savedata.autoProgressionGoal) {
             savedata[overridePremiseSetting] = q.premises + 1;
             savedata[overrideTimerSetting] = savedata.autoProgressionGoal + 20;
         } else {
