@@ -26,8 +26,6 @@ let timerInstance;
 let timerRunning = false;
 let processingAnswer = false;
 
-let quota
-
 const historyList = document.getElementById("history-list");
 const historyButton = document.querySelector(`label.open[for="offcanvas-history"]`);
 const historyCheckbox = document.getElementById("offcanvas-history");
@@ -393,33 +391,33 @@ function generateQuestion() {
         savedata.enableSyllogism
     ].reduce((a, c) => a + +c, 0) > 1;
 
-    const choices = [];
-    quota = savedata.premises
+    const generators = [];
+    let quota = savedata.premises
     quota = Math.min(quota, maxStimuliAllowed());
 
     const banNormalModes = savedata.onlyAnalogy || savedata.onlyBinary;
     if (savedata.enableDistinction && !banNormalModes)
-        choices.push(createSameOpposite(getPremisesFor('overrideDistinctionPremises', quota)));
+        generators.push(() => createSameOpposite(getPremisesFor('overrideDistinctionPremises', quota)));
     if (savedata.enableComparison && !banNormalModes)
-        choices.push(createMoreLess(getPremisesFor('overrideComparisonPremises', quota)));
+        generators.push(() => createMoreLess(getPremisesFor('overrideComparisonPremises', quota)));
     if (savedata.enableTemporal && !banNormalModes)
-        choices.push(createBeforeAfter(getPremisesFor('overrideTemporalPremises', quota)));
+        generators.push(() => createBeforeAfter(getPremisesFor('overrideTemporalPremises', quota)));
     if (savedata.enableSyllogism && !banNormalModes)
-        choices.push(createSyllogism(getPremisesFor('overrideSyllogismPremises', quota)));
+        generators.push(() => createSyllogism(getPremisesFor('overrideSyllogismPremises', quota)));
     if (savedata.enableDirection && !banNormalModes)
-        choices.push(createDirectionQuestion(getPremisesFor('overrideDirectionPremises', quota)));
+        generators.push(() => createDirectionQuestion(getPremisesFor('overrideDirectionPremises', quota)));
     if (savedata.enableDirection3D && !banNormalModes)
-        choices.push(createDirectionQuestion3D(getPremisesFor('overrideDirection3DPremises', quota)));
+        generators.push(() => createDirectionQuestion3D(getPremisesFor('overrideDirection3DPremises', quota)));
     if (savedata.enableDirection4D && !banNormalModes)
-        choices.push(createDirectionQuestion4D(getPremisesFor('overrideDirection4DPremises', quota)));
+        generators.push(() => createDirectionQuestion4D(getPremisesFor('overrideDirection4DPremises', quota)));
     if (savedata.enableAnchorSpace && !banNormalModes)
-        choices.push(createDirectionQuestionAnchor(getPremisesFor('overrideAnchorSpacePremises', quota)));
+        generators.push(() => createDirectionQuestionAnchor(getPremisesFor('overrideAnchorSpacePremises', quota)));
     if (
      savedata.enableAnalogy
      && !savedata.onlyBinary
      && analogyEnable
     ) {
-        choices.push(createSameDifferent(quota));
+        generators.push(() => createSameDifferent(quota));
     }
 
     const binaryQuota = getPremisesFor('overrideBinaryPremises', quota);
@@ -429,9 +427,9 @@ function generateQuestion() {
      && binaryEnable
     ) {
         if ((savedata.maxNestedBinaryDepth ?? 1) <= 1)
-            choices.push(createBinaryQuestion(binaryQuota));
+            generators.push(() => createBinaryQuestion(binaryQuota));
         else
-            choices.push(createNestedBinaryQuestion(binaryQuota));
+            generators.push(() => createNestedBinaryQuestion(binaryQuota));
     }
 
     if (savedata.enableAnalogy && !analogyEnable) {
@@ -445,10 +443,10 @@ function generateQuestion() {
         if (savedata.onlyBinary)
             return;
     }
-    if (choices.length === 0)
+    if (generators.length === 0)
         return;
 
-    let q = choices[Math.floor(Math.random() * choices.length)];
+    let q = generators[Math.floor(Math.random() * generators.length)]();
 
     if (!savedata.removeNegationExplainer && /is-negated/.test(JSON.stringify(q)))
         q.premises.unshift('<span class="negation-explainer">Invert the <span class="is-negated">Red</span> text</span>');
