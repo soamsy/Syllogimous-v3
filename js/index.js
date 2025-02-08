@@ -128,7 +128,7 @@ function load() {
     PROFILE_STORE.startup();
 
     renderHQL();
-    renderLegacyFolder();
+    renderFolders();
     populateSettings();
 }
 
@@ -743,14 +743,25 @@ function createHQLI(question, i) {
 
 function toggleLegacyFolder() {
     appState.isLegacyOpen = !appState.isLegacyOpen;
-    renderLegacyFolder();
+    renderFolders();
     save();
 }
 
-function renderLegacyFolder() {
-    const folderArrow = document.getElementById('legacy-folder-arrow');
-    const folderContent = document.getElementById('legacy-folder-content');
-    if (appState.isLegacyOpen) {
+function toggleExperimentalFolder() {
+    appState.isExperimentalOpen = !appState.isExperimentalOpen;
+    renderFolders();
+    save();
+}
+
+function renderFolders() {
+    renderFolder('legacy-folder-arrow', 'legacy-folder-content', appState.isLegacyOpen);
+    renderFolder('experimental-folder-arrow', 'experimental-folder-content', appState.isExperimentalOpen);
+}
+
+function renderFolder(arrowId, contentId, isOpen) {
+    const folderArrow = document.getElementById(arrowId);
+    const folderContent = document.getElementById(contentId);
+    if (isOpen) {
         folderContent.style.display = 'block';
         folderArrow.classList.add('open');
     } else {

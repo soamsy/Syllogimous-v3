@@ -1609,7 +1609,7 @@ table.distinction {
     background: #316154;
 }
 
-.legacy-folder {
+.folder {
     cursor: pointer;
     padding: 8px;
     width: 300px;
@@ -1621,12 +1621,12 @@ table.distinction {
     user-select: none;
 }
 
-.legacy-folder-content {
+.folder-content {
     display: none;
     margin-bottom: 20px;
 }
 
-#legacy-folder-arrow {
+.folder-arrow {
     width: 25px;
     height: 25px;
     display: flex;
@@ -1635,7 +1635,7 @@ table.distinction {
     font-size: var(--step--1);
 }
 
-#legacy-folder-arrow.open {
+.folder-arrow.open {
     transform: rotate(90deg) translateX(3px);
 }
 

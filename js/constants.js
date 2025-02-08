@@ -10,6 +10,7 @@ let appState = {
     "questions": [],
     "backgroundImage": null,
     "gameAreaColor": "#161F30CC",
+    "isExperimentalOpen": false,
     "isLegacyOpen": false,
 };
 
