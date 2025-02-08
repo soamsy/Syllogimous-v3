@@ -158,7 +158,7 @@ button.delete:hover {
 }
 
 .feedback.active {
-    opacity: 0.98;
+    opacity: 1.0;
     pointer-events: all;
 }
 
@@ -167,7 +167,7 @@ button.delete:hover {
     border-left: none;
     border-right: none;
     background-image: url(../img/nnnoise.svg);
-    opacity: 0.88;
+    opacity: 0.9;
     position: fixed;
     height: 100vh;
     width: 100vw;
@@ -182,7 +182,7 @@ button.delete:hover {
 }
 
 .feedback--wrong {
-    color: #f00a;
+    color: #d00;
 }
 
 .feedback--missed {
@@ -190,7 +190,7 @@ button.delete:hover {
 }
 
 .feedback--right {
-    color: #0f0a;
+    color: #0d0;
 }
 
 .feedback span {

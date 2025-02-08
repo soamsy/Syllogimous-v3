@@ -1,18 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" viewBox="0 0 600 600" width="600" height="600">
   <defs>
     <filter id="static-noise-filter" color-interpolation-filters="sRGB">
-      <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="2" seed="15" stitchTiles="stitch" result="turbulence"></feTurbulence>
+      <feTurbulence type="fractalNoise" baseFrequency="0.55" numOctaves="22" seed="15" stitchTiles="stitch" result="turbulence"></feTurbulence>
       <feSpecularLighting surfaceScale="5" specularConstant="0.85" specularExponent="20" lighting-color="#999999" in="turbulence" result="specularLighting">
         <feDistantLight azimuth="45" elevation="60"></feDistantLight>
       </feSpecularLighting>
       <feColorMatrix type="saturate" values="0" in="specularLighting" result="grayscaleNoise"></feColorMatrix>
       <feComponentTransfer in="grayscaleNoise" result="adjustedNoise">
-        <feFuncR type="linear" slope="1.2" intercept="-0.1"></feFuncR>
-        <feFuncG type="linear" slope="1.2" intercept="-0.1"></feFuncG>
-        <feFuncB type="linear" slope="1.2" intercept="-0.1"></feFuncB>
+        <feFuncR type="linear" slope="1.1" intercept="-0.01"></feFuncR>
+        <feFuncG type="linear" slope="1.1" intercept="-0.01"></feFuncG>
+        <feFuncB type="linear" slope="1.1" intercept="-0.01"></feFuncB>
       </feComponentTransfer>
     </filter>
   </defs>
-  <rect width="600" height="600" fill="#050505"></rect>
-  <rect width="600" height="600" fill="#ffffff" filter="url(#static-noise-filter)"></rect>
+  <rect width="600" height="600" fill="#0d0d0d"></rect>
+  <rect width="600" height="600" fill="#f9f9f9" filter="url(#static-noise-filter)"></rect>
 </svg>
