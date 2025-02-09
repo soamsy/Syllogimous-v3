@@ -397,6 +397,7 @@ input[type="number"]::-moz-inner-spin-button {
     padding: .25rem;
     display: flex;
     gap: 0.25rem;
+    position: relative;
 }
 
 .multi-input {
