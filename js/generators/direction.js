@@ -219,7 +219,7 @@ class Direction4D {
     }
 }
 
-function pickBaseWord(neighbors, branchesAllowed, bannedFromBranching) {
+function pickBaseWord(neighbors, branchesAllowed, bannedFromBranching=[]) {
     if (savedata.enableConnectionBranching === false) {
         branchesAllowed = false;
     }
