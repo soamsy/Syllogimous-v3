@@ -150,6 +150,10 @@ function renderJunkEmojisText(text) {
         return new VisualNoise().generateVisualNoise(parseInt(seed), parseInt(splits));
     });
 
+    text = text.replaceAll(/\[svg\](\d+)\[\/svg\]/gi, (match, id) => {
+        return ANCHOR_SVGS[id];
+    });
+
     return text;
 }
 

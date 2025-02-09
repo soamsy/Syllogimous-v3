@@ -1257,10 +1257,13 @@ input[type="checkbox"]:checked + .switch::after {
 .indent-h::before { content: '((((((('; visibility: hidden; }
 .indent-i::before { content: '(((((((('; visibility: hidden; }
 
-svg.junk, svg.noise {
+svg.junk, svg.noise, svg.anchor {
     height: 1em;
     width: auto;
     vertical-align: middle;
+}
+
+svg.junk, svg.noise {
     box-shadow: 0 0 0 0.04em #000;
 }
 

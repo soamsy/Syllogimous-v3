@@ -495,17 +495,22 @@ class DirectionQuestion {
     }
 
     createWordMapAnchor(length, branchesAllowed) {
+        const star = '[svg]0[/svg]';
+        const circle = '[svg]1[/svg]';
+        const triangle = '[svg]2[/svg]';
+        const heart = '[svg]3[/svg]';
+
         let result;
         for (let i = 0; i < 10; i++) {
-            const words = createStimuli(length, ['A', 'B', 'C', 'D']);
+            const words = createStimuli(length, [star, circle, triangle, heart]);
             let wordCoordMap = {
-                ['A']: [0, 1],
-                ['B']: [1, 1],
-                ['C']: [0, 0],
-                ['D']: [1, 0],
+                [star]: [0, 1],
+                [circle]: [1, 1],
+                [triangle]: [0, 0],
+                [heart]: [1, 0],
             };
 
-            let starters = ['A', 'B', 'C', 'D'];
+            let starters = [star, circle, triangle, heart];
             shuffle(starters);
             let neighbors;
             if (branchesAllowed) {
