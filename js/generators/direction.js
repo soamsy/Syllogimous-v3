@@ -219,7 +219,7 @@ class Direction4D {
     }
 }
 
-function pickBaseWord(neighbors, branchesAllowed) {
+function pickBaseWord(neighbors, branchesAllowed, bannedFromBranching) {
     if (savedata.enableConnectionBranching === false) {
         branchesAllowed = false;
     }
@@ -228,6 +228,10 @@ function pickBaseWord(neighbors, branchesAllowed) {
     let pool = [];
     for (const word of options) {
         if (neighbors[word] && neighbors[word].length > neighborLimit) {
+            continue;
+        }
+
+        if (bannedFromBranching.includes(word) && neighbors[word].length > 1) {
             continue;
         }
 
@@ -512,24 +516,15 @@ class DirectionQuestion {
 
             let starters = [star, circle, triangle, heart];
             shuffle(starters);
-            let neighbors;
-            if (branchesAllowed) {
-                neighbors = {
-                    [starters[0]]: [starters[1], starters[2], starters[3]],
-                    [starters[1]]: [starters[0]],
-                    [starters[2]]: [starters[0]],
-                    [starters[3]]: [starters[0]],
-                };
-            } else {
-                neighbors = {
-                    [starters[0]]: [starters[1], starters[2]],
-                    [starters[1]]: [starters[0], starters[3]],
-                    [starters[2]]: [starters[0]],
-                    [starters[3]]: [starters[1]],
-                };
-            }
+            const bannedFromBranching = [starters[1], starters[2], starters[3]];
+            const neighbors = {
+                [starters[0]]: [starters[1], starters[2]],
+                [starters[1]]: [starters[0], starters[3]],
+                [starters[2]]: [starters[0]],
+                [starters[3]]: [starters[1]],
+            };
 
-            result = this.buildOntoWordMap(words, wordCoordMap, neighbors, branchesAllowed);
+            result = this.buildOntoWordMap(words, wordCoordMap, neighbors, branchesAllowed, bannedFromBranching);
             const anchorConnections = starters.map(s => neighbors[s].length).reduce((a, b) => a + b, 0);
             if (anchorConnections >= 8) {
                 break;
@@ -538,12 +533,12 @@ class DirectionQuestion {
         return result;
     }
 
-    buildOntoWordMap(words, wordCoordMap, neighbors, branchesAllowed) {
+    buildOntoWordMap(words, wordCoordMap, neighbors, branchesAllowed, bannedFromBranching=[]) {
         let premiseMap = {};
         let usedDirCoords = [];
 
         for (const nextWord of words) {
-            const baseWord = pickBaseWord(neighbors, branchesAllowed);
+            const baseWord = pickBaseWord(neighbors, branchesAllowed, bannedFromBranching);
             const dirCoord = this.generator.pickDirection(baseWord, neighbors, wordCoordMap);
             wordCoordMap[nextWord] = addCoords(wordCoordMap[baseWord], dirCoord);
             premiseMap[premiseKey(baseWord, nextWord)] = this.generator.createDirectionStatement(baseWord, nextWord, dirCoord);
