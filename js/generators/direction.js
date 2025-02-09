@@ -509,20 +509,30 @@ class DirectionQuestion {
             const words = createStimuli(length, [star, circle, triangle, heart]);
             let wordCoordMap = {
                 [star]: [0, 1],
-                [circle]: [1, 1],
-                [triangle]: [0, 0],
-                [heart]: [1, 0],
+                [circle]: [1, 0],
+                [triangle]: [-1, 0],
+                [heart]: [0, -1],
             };
 
             let starters = [star, circle, triangle, heart];
             shuffle(starters);
             const bannedFromBranching = [starters[1], starters[2], starters[3]];
-            const neighbors = {
-                [starters[0]]: [starters[1], starters[2]],
-                [starters[1]]: [starters[0], starters[3]],
-                [starters[2]]: [starters[0]],
-                [starters[3]]: [starters[1]],
-            };
+            let neighbors;
+            if (branchesAllowed) {
+                neighbors = {
+                    [starters[0]]: [starters[1], starters[2], starters[3]],
+                    [starters[1]]: [starters[0]],
+                    [starters[2]]: [starters[0]],
+                    [starters[3]]: [starters[0]],
+                };
+            } else {
+                neighbors = {
+                    [starters[0]]: [starters[1], starters[2]],
+                    [starters[1]]: [starters[0], starters[3]],
+                    [starters[2]]: [starters[0]],
+                    [starters[3]]: [starters[1]],
+                };
+            }
 
             result = this.buildOntoWordMap(words, wordCoordMap, neighbors, branchesAllowed, bannedFromBranching);
             const anchorConnections = starters.map(s => neighbors[s].length).reduce((a, b) => a + b, 0);
