@@ -6,11 +6,30 @@ function pickLinearPremise(a, b, comparison, reverseComparison) {
     return pickNegatable(ps);
 }
 
+function startHeavyWeightedChoiceInRange(start, end) {
+    const weights = Array.from({ length: end - start + 1 }, (_, i) => end - start - i + 1);
+    const totalWeight = weights.reduce((acc, val) => acc + val, 0);
+    const randomNum = Math.random() * totalWeight;
+    let sum = 0;
+
+    for (let i = start; i <= end; i++) {
+        sum += weights[i - start];
+        if (randomNum <= sum) {
+            return i
+        }
+    }
+    return end;
+}
+
 function findTwoWordIndexes(words) {
-    let wordsJump = Math.max(2, randomInclusive(words.length - 3, words.length - 1));
-    let wordsOffset = randomInclusive(0, words.length - wordsJump - 1);
-    let wordsEnd = Math.min(words.length - 1, wordsOffset + wordsJump);
-    return [wordsOffset, wordsEnd];
+    const minSpan = Math.min(words.length - 1, words.length < 8 ? 3 : 4);
+    const selectedSpan = startHeavyWeightedChoiceInRange(minSpan, words.length - 1);
+    const defaultStartOption = Math.floor((words.length - selectedSpan - 1) / 2);
+    const devianceFromDefault = startHeavyWeightedChoiceInRange(0, defaultStartOption)
+    let start = defaultStartOption + devianceFromDefault * (coinFlip() ? 1 : -1);
+    start = Math.max(0, Math.min(start, words.length - selectedSpan - 1));
+    const end = start + selectedSpan;
+    return [start, end];
 }
 
 class MoreLess {
