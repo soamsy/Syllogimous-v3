@@ -10,6 +10,7 @@ class ProfileStore {
     constructor() {
         this.profiles = [];
         this.selectedProfile = 0;
+        this.settingsMigration = new SettingsMigration();
     }
 
     startup() {
@@ -69,13 +70,11 @@ class ProfileStore {
     }
 
     syncProfileChange() {
+        for (const profile of this.profiles) {
+            this.settingsMigration.update(profile.savedata);
+        }
         this.saveProfiles();
         savedata = this.current().savedata;
-        for (const key of Object.keys(defaultSavedata)) {
-            if (!savedata.hasOwnProperty(key)) {
-                savedata[key] = defaultSavedata[key];
-            }
-        }
     }
 
     handleProfileChange() {
@@ -91,8 +90,8 @@ class ProfileStore {
     selectProfile(index) {
         this.selectedProfile = index;
         profileList.style.display = 'none';
-        this.renderDropdown();
         this.handleProfileChange();
+        this.renderDropdown();
     }
 
     deleteProfile(index) {
@@ -100,8 +99,8 @@ class ProfileStore {
         if (this.selectedProfile >= this.profiles.length) {
             this.selectedProfile = 0;
         }
-        this.renderDropdown();
         this.handleProfileChange();
+        this.renderDropdown();
     }
 
     copySelectedProfile() {
@@ -114,8 +113,8 @@ class ProfileStore {
 
         this.profiles.push(newProfile);
         this.selectedProfile = this.profiles.length - 1;
-        this.renderDropdown();
         this.handleProfileChange();
+        this.renderDropdown();
         profileInput.select();
     }
 
@@ -268,8 +267,8 @@ class ProfileStore {
 
         this.profiles.push(newProfile);
         this.selectedProfile = this.profiles.length - 1;
-        this.renderDropdown();
         this.handleProfileChange();
+        this.renderDropdown();
     }
 }
 

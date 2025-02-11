@@ -280,11 +280,36 @@
 									<input hidden id="p-2" type="checkbox" checked>
 									<label class="switch" for="p-2"></label>
 								</div>
-								<span>Enable Comparison</span>
+								<span>Enable Linear</span>
+								<span class="linear-settings">
+									<a id="linear-settings-button" class="settings-gear"><img src="img/gear-solid.svg" alt="Settings Icon" width="20" height="20"></a>
+									<div id="linear-dropdown" class="dropdown">
+										<div class="dropdown-item">
+											<input hidden id="p-leftright" type="checkbox">
+											<label class="switch" for="p-leftright"></label>
+											Left/Right
+										</div>
+										<div class="dropdown-item">
+											<input hidden id="p-topunder" type="checkbox">
+											<label class="switch" for="p-topunder"></label>
+											Top/Under
+										</div>
+										<div class="dropdown-item">
+											<input hidden id="p-comparison" type="checkbox">
+											<label class="switch" for="p-comparison"></label>
+											Comparison
+										</div>
+										<div class="dropdown-item">
+											<input hidden id="p-temporal" type="checkbox">
+											<label class="switch" for="p-temporal"></label>
+											Temporal
+										</div>
+									</div>
+								</span>
 							</div>
 							<ul class="explainer">
-								<li>A is less than B</li>
-								<li>A is greater than B</li>
+								<li>A is left of B</li>
+								<li>A is right of B</li>
 							</ul>
 							<div class="multi-input">
 								<span class="single-input">
@@ -300,51 +325,6 @@
 									<span class="inline-premise-spinner">
 										<input hidden id="p-47" type="checkbox">
 										<label class="switch" for="p-47"></label>
-										<div class="tooltip-container" style="position: absolute; right: 0;" tabindex="0">
-											?
-											<div class="tooltip-text right">
-												Rather than only creating a<br>
-												straight line of relations,<br>
-												allow relations to flip<br>
-												directions, potentially<br>
-												creating overlap.<br>
-												<br>
-												For example, the relations may<br>
-												go left, then right, then left<br>
-												left left, then right again,<br>
-												randomly.<br>
-											</div>
-										</div>
-									</span>
-								</span>
-							</div>
-						</div>
-						<div class="mb-1">
-							<div class="ctrl__inner">
-								<div>
-									<input hidden id="p-10" type="checkbox" checked>
-									<label class="switch" for="p-10"></label>
-								</div>
-								<span>Enable Temporal</span>
-							</div>
-							<ul class="explainer">
-								<li>A is before B</li>
-								<li>A is after B</li>
-							</ul>
-							<div class="multi-input">
-								<span class="single-input">
-									Premises
-									<span class="inline-premise-spinner"><input id="p-10-premises" type="number" placeholder="" min="2" max="100" value="" style="width: 5ch">ps</span>
-								</span>
-								<span class="single-input">
-									Time
-									<span class="inline-premise-spinner"><input id="p-10-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">sec</span>
-								</span>
-								<span class="single-input">
-									180° Mode
-									<span class="inline-premise-spinner">
-										<input hidden id="p-48" type="checkbox">
-										<label class="switch" for="p-48"></label>
 										<div class="tooltip-container" style="position: absolute; right: 0;" tabindex="0">
 											?
 											<div class="tooltip-text right">
@@ -1963,8 +1943,10 @@
 		<script src="js/generators/stimuli.js"></script>
 		<script src="js/generators/premise-reorder.js"></script>
 		<script src="js/explanation.js"></script>
+		<script src="js/backwards-compatibility.js"></script>
 		<script src="js/db.js"></script>
 		<script src="js/rename-db.js"></script>
+		<script src="js/linear-dropdown.js"></script>
 		<script src="js/profile.js"></script>
 		<script src="js/graph.js"></script>
 		<script src="js/progress.js"></script>

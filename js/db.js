@@ -1,6 +1,6 @@
 const openDatabase = () => {
     return new Promise((resolve, reject) => {
-        const request = indexedDB.open('SyllDB', 3);
+        const request = indexedDB.open('SyllDB', 4);
 
         // Create the object store if it's the first time opening the database
         request.onupgradeneeded = (event) => {
@@ -13,6 +13,9 @@ const openDatabase = () => {
                 const progressStore = db.createObjectStore('RRTHistory', { keyPath: 'id', autoIncrement: true });
                 progressStore.createIndex('orderIndex', ['key', 'timestamp'], { unique: false });
             }
+
+            const progressStore = event.target.transaction.objectStore('RRTHistory');
+            new SettingsMigration().updateRRTHistory(progressStore);
         };
 
         request.onsuccess = (event) => resolve(event.target.result);
@@ -21,7 +24,6 @@ const openDatabase = () => {
 };
 
 const initDB = async () => {
-    await renameDatabase("Images", "SyllDB");
     return await openDatabase();
 };
 

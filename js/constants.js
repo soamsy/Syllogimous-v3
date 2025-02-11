@@ -15,11 +15,12 @@ let appState = {
 };
 
 let savedata = {
-    "version": 1,
+    "version": 2,
     "premises": 2,
     "timer": 30,
     "enableDistinction": true,
-    "enableComparison": true,
+    "enableLinear": true,
+    "linearWording": 'leftright,comparison',
     "enableSyllogism": true,
     "enableAnalogy": false,
     "enableDirection": true,
@@ -29,7 +30,6 @@ let savedata = {
     "enableBinary": false,
     "useMeaningfulWords": false,
     "enableCarouselMode": false,
-    "enableTemporal": true,
     "enableNegation": false,
     "enableMeta": false,
     "onlyAnalogy": false,
@@ -44,8 +44,7 @@ let savedata = {
     "meaningfulWordNouns": true,
     "meaningfulWordAdjectives": false,
     "overrideDistinctionPremises": null,
-    "overrideComparisonPremises": null,
-    "overrideTemporalPremises": null,
+    "overrideLinearPremises": null,
     "overrideSyllogismPremises": null,
     "offsetAnalogyPremises": null,
     "overrideBinaryPremises": null,
@@ -54,8 +53,7 @@ let savedata = {
     "overrideDirection4DPremises": null,
     "overrideAnchorSpacePremises": null,
     "overrideDistinctionTime": null,
-    "overrideComparisonTime": null,
-    "overrideTemporalTime": null,
+    "overrideLinearTime": null,
     "overrideSyllogismTime": null,
     "offsetAnalogyTime": null,
     "overrideBinaryTime": null,
@@ -79,8 +77,7 @@ let savedata = {
     "autoProgression": false,
     "autoProgressionGoal": 10,
     "spoilerConclusion": false,
-    "enableBacktrackingComparison": false,
-    "enableBacktrackingTemporal": false,
+    "enableBacktrackingLinear": false,
 };
 
 const defaultSavedata = structuredClone(savedata);
@@ -149,15 +146,20 @@ const compressedSettings = {
     "spoilerConclusion": "spoiler",
     "enableBacktrackingComparison": "backC",
     "enableBacktrackingTemporal": "backT",
+    "enableLinear": "lin",
+    "linearWording": 'linW',
+    "overrideLinearPremises": "linP",
+    "overrideLinearTime": "linT",
+    "enableBacktrackingLinear": "backL",
 };
 
 const keySettingMap = {
     "p-1": "enableDistinction",
     "p-1-premises": "overrideDistinctionPremises",
     "p-1-time": "overrideDistinctionTime",
-    "p-2": "enableComparison",
-    "p-2-premises": "overrideComparisonPremises",
-    "p-2-time": "overrideComparisonTime",
+    "p-2": "enableLinear",
+    "p-2-premises": "overrideLinearPremises",
+    "p-2-time": "overrideLinearTime",
     "p-3": "enableSyllogism",
     "p-3-premises": "overrideSyllogismPremises",
     "p-3-time": "overrideSyllogismTime",
@@ -173,9 +175,6 @@ const keySettingMap = {
     "p-7-time": "overrideBinaryTime",
     "p-8": "useMeaningfulWords",
     "p-9": "enableCarouselMode",
-    "p-10": "enableTemporal",
-    "p-10-premises": "overrideTemporalPremises",
-    "p-10-time": "overrideTemporalTime",
     "p-11": "enableNegation",
     "p-12": "enableDirection3D",
     "p-12-premises": "overrideDirection3DPremises",
@@ -214,8 +213,7 @@ const keySettingMap = {
     "p-44-premises": "overrideAnchorSpacePremises",
     "p-45-time": "overrideAnchorSpaceTime",
     "p-46": "spoilerConclusion",
-    "p-47": "enableBacktrackingComparison",
-    "p-48": "enableBacktrackingTemporal",
+    "p-47": "enableBacktrackingLinear",
 };
 
 const meaningfulWords = {

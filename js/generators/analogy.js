@@ -37,16 +37,17 @@ function createSameDifferent(length) {
 
     if (savedata.enableDistinction)
         choiceIndices.push(0);
-    if (savedata.enableComparison)
-        choiceIndices.push(1);
-    if (savedata.enableTemporal)
-        choiceIndices.push(2);
+    if (savedata.enableLinear) {
+        for (let i = 0; i < getLinearQuestionsCount(); i++) {
+            choiceIndices.push(1);
+        }
+    }
     if (savedata.enableDirection)
-        choiceIndices.push(3);
+        choiceIndices.push(2);
     if (savedata.enableDirection3D)
-        choiceIndices.push(4);
+        choiceIndices.push(3);
     if (savedata.enableDirection4D)
-        choiceIndices.push(5);
+        choiceIndices.push(4);
 
     const choiceIndex = pickRandomItems(choiceIndices, 1).picked[0];
     let question;
@@ -55,15 +56,12 @@ function createSameDifferent(length) {
         origLength = getPremisesFor("overrideDistinctionPremises", length);
         question = new DistinctionQuestion().createAnalogy(Math.max(origLength + premiseOffset, 3));
     } else if (choiceIndex === 1) {
-        origLength = getPremisesFor("overrideComparisonPremises", length);
-        question = new LinearQuestion(new MoreLess()).createAnalogy(Math.max(origLength + premiseOffset, 3));
+        origLength = getPremisesFor("overrideLinearPremises", length);
+        question = createLinearQuestion().createAnalogy(Math.max(origLength + premiseOffset, 3));
     } else if (choiceIndex === 2) {
-        origLength = getPremisesFor("overrideTemporalPremises", length);
-        question = new LinearQuestion(new BeforeAfter()).createAnalogy(Math.max(origLength + premiseOffset, 3));
-    } else if (choiceIndex === 3) {
         origLength = getPremisesFor("overrideDirectionPremises", length);
         question = new DirectionQuestion(new Direction2D()).createAnalogy(Math.max(origLength + premiseOffset, 3));
-    } else if (choiceIndex === 4) {
+    } else if (choiceIndex === 3) {
         origLength = getPremisesFor("overrideDirection3DPremises", length);
         question = new DirectionQuestion(new Direction3D()).createAnalogy(Math.max(origLength + premiseOffset, 3));
     } else {

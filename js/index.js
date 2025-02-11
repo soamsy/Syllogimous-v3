@@ -156,6 +156,8 @@ function populateSettings() {
         }
     }
 
+    populateLinearDropdown();
+
     timerInput.value = savedata.timer;
     timerTime = timerInput.value;
 }
@@ -374,8 +376,7 @@ function findStartingTimerState() {
 function generateQuestion() {
     const analogyEnable = [
         savedata.enableDistinction,
-        savedata.enableComparison,
-        savedata.enableTemporal,
+        savedata.enableLinear,
         savedata.enableDirection,
         savedata.enableDirection3D,
         savedata.enableDirection4D
@@ -383,8 +384,7 @@ function generateQuestion() {
 
     const binaryEnable = [
         savedata.enableDistinction,
-        savedata.enableComparison,
-        savedata.enableTemporal,
+        savedata.enableLinear,
         savedata.enableDirection,
         savedata.enableDirection3D,
         savedata.enableDirection4D,
@@ -398,10 +398,11 @@ function generateQuestion() {
     const banNormalModes = savedata.onlyAnalogy || savedata.onlyBinary;
     if (savedata.enableDistinction && !banNormalModes)
         generators.push(() => createSameOpposite(getPremisesFor('overrideDistinctionPremises', quota)));
-    if (savedata.enableComparison && !banNormalModes)
-        generators.push(() => createMoreLess(getPremisesFor('overrideComparisonPremises', quota)));
-    if (savedata.enableTemporal && !banNormalModes)
-        generators.push(() => createBeforeAfter(getPremisesFor('overrideTemporalPremises', quota)));
+    if (savedata.enableLinear && !banNormalModes) {
+        for (let i = 0; i < getLinearQuestionsCount(); i++) {
+            generators.push(() => createBasicLinear(getPremisesFor('overrideLinearPremises', quota)));
+        }
+    }
     if (savedata.enableSyllogism && !banNormalModes)
         generators.push(() => createSyllogism(getPremisesFor('overrideSyllogismPremises', quota)));
     if (savedata.enableDirection && !banNormalModes)
@@ -592,7 +593,7 @@ function resetApp() {
         localStorage.removeItem(selectedProfileKey);
         localStorage.removeItem(appStateKey);
         document.getElementById("reset-app").innerText = 'Resetting...';
-        deleteDatabase("SyllDB").then(() => deleteDatabase("Images")).then(() => {
+        deleteDatabase("SyllDB").then(() => {
             window.location.reload();
         });
     }

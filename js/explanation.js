@@ -105,7 +105,9 @@ function createExplanation4D(grid) {
 }
 
 function createExplanationBucket(question) {
-    if (question.category == 'Comparison') {
+    if (question.category === 'Vertical') {
+        return question.bucket.map(word => `<div>${word}</div>`).join('');
+    } else if (question.category === 'Comparison') {
         return question.bucket.join(' < ');
     } else {
         return question.bucket.join(" ");
@@ -156,7 +158,6 @@ function createExplanation(question) {
 }
 
 function createExplanationPopup(question, e) {
-    const { clientX: mouseX, clientY: mouseY } = event;
     const popup = document.createElement("div");
     popup.className = "explanation-popup";
     popup.style.position = "fixed";

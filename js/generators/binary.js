@@ -3,10 +3,11 @@ function createBinaryQuestionPool() {
 
     if (savedata.enableDistinction)
         pool.push(createSameOpposite);
-    if (savedata.enableComparison)
-        pool.push(createMoreLess);
-    if (savedata.enableTemporal)
-        pool.push(createBeforeAfter);
+    if (savedata.enableLinear) {
+        for (let i = 0; i < getLinearQuestionsCount(); i++) {
+            pool.push(createBasicLinear);
+        }
+    }
     if (savedata.enableSyllogism)
         pool.push(createSyllogism);
     if (savedata.enableDirection)

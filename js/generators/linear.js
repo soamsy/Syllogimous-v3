@@ -50,14 +50,6 @@ class MoreLess {
     getName() {
         return 'Comparison';
     }
-
-    getCountdown() {
-        return savedata.overrideComparisonTime;
-    }
-
-    isBacktrackingEnabled() {
-        return savedata.enableBacktrackingComparison;
-    }
 }
 
 class BeforeAfter {
@@ -78,13 +70,45 @@ class BeforeAfter {
     getName() {
         return 'Temporal';
     }
+}
 
-    getCountdown(offset=0) {
-        return savedata.overrideTemporalTime ? savedata.overrideTemporalTime + offset : null;
+class LeftRight {
+    createLinearPremise(a, b) {
+        return pickRandomItems([
+            pickLinearPremise(a, b, 'left of', 'right of'),
+            pickLinearPremise(b, a, 'right of', 'left of'),
+        ], 1).picked[0];
     }
 
-    isBacktrackingEnabled() {
-        return savedata.enableBacktrackingTemporal;
+    createReverseLinearPremise(a, b) {
+        return pickRandomItems([
+            pickLinearPremise(a, b, 'right of', 'left of'),
+            pickLinearPremise(b, a, 'left of', 'right of'),
+        ], 1).picked[0];
+    }
+
+    getName() {
+        return 'Horizontal';
+    }
+}
+
+class TopUnder {
+    createLinearPremise(a, b) {
+        return pickRandomItems([
+            pickLinearPremise(a, b, 'on top of', 'under'),
+            pickLinearPremise(b, a, 'under', 'on top of'),
+        ], 1).picked[0];
+    }
+
+    createReverseLinearPremise(a, b) {
+        return pickRandomItems([
+            pickLinearPremise(a, b, 'under', 'on top of'),
+            pickLinearPremise(b, a, 'on top of', 'under'),
+        ], 1).picked[0];
+    }
+
+    getName() {
+        return 'Vertical';
     }
 }
 
@@ -102,7 +126,7 @@ class LinearQuestion {
 
         const words = createStimuli(length + 1);
 
-        if (this.generator.isBacktrackingEnabled()) {
+        if (this.isBacktrackingEnabled()) {
             [premises, conclusion, isValid, buckets, bucketMap] = this.buildBacktrackingMap(words);
         } else {
             [premises, conclusion, isValid] = this.buildLinearMap(words);
@@ -116,7 +140,7 @@ class LinearQuestion {
         this.premises = premises;
         this.conclusion = conclusion;
         this.isValid = isValid;
-        if (this.generator.isBacktrackingEnabled()) {
+        if (this.isBacktrackingEnabled()) {
             this.buckets = buckets;
             this.bucketMap = bucketMap;
         } else {
@@ -221,7 +245,7 @@ class LinearQuestion {
     }
 
     indexOfWord(word) {
-        if (this.generator.isBacktrackingEnabled()) {
+        if (this.isBacktrackingEnabled()) {
             return this.bucketMap[word];
         } else {
             return this.bucket.indexOf(word);
@@ -231,7 +255,7 @@ class LinearQuestion {
     createAnalogy(length) {
         this.generate(length);
         let a, b, c, d;
-        if (this.generator.isBacktrackingEnabled()) {
+        if (this.isBacktrackingEnabled()) {
             [a, b, c, d] = pickRandomItems(Object.keys(this.bucketMap), 4).picked
         } else {
             [a, b, c, d] = pickRandomItems(this.bucket, 4).picked;
@@ -253,10 +277,10 @@ class LinearQuestion {
         }
         conclusion += analogyTo(c, d);
 
-        const countdown = this.generator.getCountdown();
+        const countdown = this.getCountdown();
         return {
             category: 'Analogy: ' + this.generator.getName(),
-            type: normalizeString(this.generator.getName()),
+            type: normalizeString('linear'),
             startedAt: new Date().getTime(),
             ...(this.bucket && { bucket: this.bucket }),
             ...(this.buckets && { buckets: this.buckets, modifiers: ['180'] }),
@@ -269,10 +293,10 @@ class LinearQuestion {
 
     createQuestion(length) {
         this.generate(length);
-        const countdown = this.generator.getCountdown();
+        const countdown = this.getCountdown();
         return {
             category: this.generator.getName(),
-            type: normalizeString(this.generator.getName()),
+            type: normalizeString('linear'),
             startedAt: new Date().getTime(),
             ...(this.bucket && { bucket: this.bucket }),
             ...(this.buckets && { buckets: this.buckets, modifiers: ['180'] }),
@@ -282,12 +306,42 @@ class LinearQuestion {
             ...(countdown && { countdown }),
         }
     }
+
+    getCountdown(offset=0) {
+        return savedata.overrideLinearTime ? savedata.overrideLinearTime + offset : null;
+    }
+
+    isBacktrackingEnabled() {
+        return savedata.enableBacktrackingLinear;
+    }
 }
 
-function createBeforeAfter(length) {
-    return new LinearQuestion(new BeforeAfter()).createQuestion(length);
+function createLinearQuestion() {
+    const options = getEnabledLinearWordings();
+    if (options.length === 0) {
+        return new LinearQuestion(new LeftRight());
+    }
+
+    const picked = pickRandomItems(options, 1).picked[0];
+    if (picked === 'comparison') {
+        return new LinearQuestion(new MoreLess());
+    } else if (picked === 'temporal') {
+        return new LinearQuestion(new BeforeAfter());
+    } else if (picked === 'topunder') {
+        return new LinearQuestion(new TopUnder());
+    } else {
+        return new LinearQuestion(new LeftRight());
+    }
 }
 
-function createMoreLess(length) {
-    return new LinearQuestion(new MoreLess()).createQuestion(length);
+function createBasicLinear(length) {
+    return createLinearQuestion().createQuestion(length);
+}
+
+function getEnabledLinearWordings() {
+    return savedata.linearWording.split(',').filter(wording => wording && wording.length > 0);
+}
+
+function getLinearQuestionsCount() {
+    return Math.min(Math.max(1, getEnabledLinearWordings().length), 2);
 }
