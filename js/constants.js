@@ -12,6 +12,7 @@ let appState = {
     "gameAreaColor": "#161F30CC",
     "isExperimentalOpen": false,
     "isLegacyOpen": false,
+    "sfx": "none",
 };
 
 let savedata = {

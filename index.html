@@ -422,12 +422,21 @@
 							</div>
 							<button onclick="clearBackgroundImage()" style="float:right;">Clear Image</button>
 						</div>
-						<div class="mb-2">
+						<div class="mb-1">
 							<div class="inline-input__outer">
 								Color
 								<span class="inline-input__inner">
 								  <input type="text" id="color-input" placeholder="Enter color (e.g. #ff0000)" value="#161F30CC" oninput="handleColorChange(event)"></input>
 								</span>
+							</div>
+						</div>
+						<div class="mb-2">
+							<div class="ctrl__inner">
+								<div>
+									<input hidden id="p-sfx" type="checkbox" onchange="handleSfxChange(event)">
+									<label class="switch" for="p-sfx"></label>
+								</div>
+								<span>Enable SFX</span>
 							</div>
 						</div>
 						<div class="folder" onclick="toggleExperimentalFolder()">

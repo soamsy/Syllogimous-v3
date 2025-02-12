@@ -157,6 +157,7 @@ function populateSettings() {
     }
 
     populateLinearDropdown();
+    populateAppearanceSettings();
 
     timerInput.value = savedata.timer;
     timerTime = timerInput.value;
@@ -206,9 +207,21 @@ function handleImageChange(event) {
     }
 }
 
+function populateAppearanceSettings() {
+    document.getElementById('color-input').value = appState.gameAreaColor;
+    document.getElementById('p-sfx').checked = appState.sfx === 'sfx1';
+}
+
 function handleColorChange(event) {
     const color = event.target.value;
     appState.gameAreaColor = color;
+    save();
+    init();
+}
+
+function handleSfxChange(event) {
+    const isEnabled = event.target.checked;
+    appState.sfx = isEnabled ? 'sfx1' : 'none';
     save();
     init();
 }
@@ -487,8 +500,26 @@ function renderConclusionSpoiler() {
     }
 }
 
+const successSound = new Audio('sounds/success.mp3');
+const failureSound = new Audio('sounds/failure.mp3');
+const missedSound = new Audio('sounds/missed.mp3');
+
+function playSoundFor(sound, duration) {
+    sound.currentTime = 0;
+    sound.volume = 0.6;
+    sound.play();
+
+    setTimeout(() => {
+        sound.pause();
+        sound.currentTime = 0;
+    }, duration);
+}
+
 function wowFeedbackRight(cb) {
     feedbackRight.classList.add("active");
+    if (appState.sfx === 'sfx1') {
+        playSoundFor(successSound, 1400);
+    }
     setTimeout(() => {
         feedbackRight.classList.remove("active");
         cb();
@@ -498,6 +529,9 @@ function wowFeedbackRight(cb) {
 
 function wowFeedbackWrong(cb) {
     feedbackWrong.classList.add("active");
+    if (appState.sfx === 'sfx1') {
+        playSoundFor(failureSound, 1400);
+    }
     setTimeout(() => {
         feedbackWrong.classList.remove("active");
         cb();
@@ -507,6 +541,9 @@ function wowFeedbackWrong(cb) {
 
 function wowFeedbackMissed(cb) {
     feedbackMissed.classList.add("active");
+    if (appState.sfx === 'sfx1') {
+        playSoundFor(missedSound, 1400);
+    }
     setTimeout(() => {
         feedbackMissed.classList.remove("active");
         cb();
