@@ -10,6 +10,10 @@ function normalize(a) {
     return a.map(c => c/Math.abs(c) || 0);
 }
 
+function inverse(a) {
+    return a.map(c => -c);
+}
+
 function findDirection(a, b) {
     return normalize(diffCoords(a, b));
 }
@@ -21,13 +25,19 @@ function getConclusionCoords(wordCoordMap, startWord, endWord) {
     return [diffCoord, conclusionCoord];
 }
 
-function createDirectionTemplate(source, target, direction, isNegated, decorator='') {
-    let directionElement = direction;
+function createDirectionTemplate(source, target, direction, minimalDirection, isNegated, before='', after='') {
+    let isMinimal = savedata.minimalMode;
+    let directionElement = isMinimal ? minimalDirection : direction;
     if (isNegated) {
         directionElement = '<span class="is-negated">' + directionElement + '</span>';
     }
-    directionElement = decorator + directionElement;
-    return `<span class="subject">${target}</span> ${directionElement} of <span class="subject">${source}</span>`;
+    if (before && !isMinimal) {
+        directionElement = before + ' ' + directionElement;
+    }
+    if (after && !isMinimal) {
+        directionElement = directionElement + ' ' + after;
+    }
+    return `<span class="subject">${target}</span> <span class="relation">${directionElement}</span> <span class="subject">${source}</span>`;
 }
 
 function taxicabDistance(a, b) {
@@ -78,14 +88,15 @@ class Direction2D {
     }
 
     createDirectionStatement(a, b, dirCoord) {
-        const dirName = dirStringFromCoord(dirCoord);
-        return this._pickDirectionStatement(a, b, dirName, nameInverseDir[dirName])
-    }
-
-    _pickDirectionStatement(a, b, direction, reverseDirection) {
+        const direction = dirStringFromCoord(dirCoord);
+        const reverseDirection = dirStringFromCoord(inverse(dirCoord));
+        const minimalDirection = dirStringMinimal(dirCoord);
+        const minimalReverseDirection = dirStringMinimal(inverse(dirCoord));
+        const before = 'is';
+        const after = 'of';
         return pickRandomItems([
-            pickNegatable([createDirectionTemplate(a, b, direction, false, 'is '), createDirectionTemplate(a, b, reverseDirection, true, 'is ')]),
-            pickNegatable([createDirectionTemplate(b, a, reverseDirection, false, 'is '), createDirectionTemplate(b, a, direction, true, 'is ')])
+            pickNegatable([createDirectionTemplate(a, b, direction, minimalDirection, false, before, after), createDirectionTemplate(a, b, reverseDirection, minimalReverseDirection, true, before, after)]),
+            pickNegatable([createDirectionTemplate(b, a, reverseDirection, minimalReverseDirection, false, before, after), createDirectionTemplate(b, a, direction, minimalDirection, true, before, after)])
         ], 1).picked[0];
     }
 
@@ -132,14 +143,15 @@ class Direction3D {
     }
 
     createDirectionStatement(a, b, dirCoord) {
-        const dirName = dirStringFromCoord(dirCoord);
-        return this._pickDirectionStatement(a, b, dirName, nameInverseDir3D[dirName])
-    }
-
-    _pickDirectionStatement(a, b, direction, reverseDirection) {
+        const direction = dirStringFromCoord(dirCoord);
+        const reverseDirection = dirStringFromCoord(inverse(dirCoord));
+        const minimalDirection = dirStringMinimal(dirCoord);
+        const minimalReverseDirection = dirStringMinimal(inverse(dirCoord));
+        const before = 'is';
+        const after = 'of';
         return pickRandomItems([
-            pickNegatable([createDirectionTemplate(a, b, direction, false, 'is '), createDirectionTemplate(a, b, reverseDirection, true, 'is ')]),
-            pickNegatable([createDirectionTemplate(b, a, reverseDirection, false, 'is '), createDirectionTemplate(b, a, direction, true, 'is ')])
+            pickNegatable([createDirectionTemplate(a, b, direction, minimalDirection, false, before, after), createDirectionTemplate(a, b, reverseDirection, minimalReverseDirection, true, before, after)]),
+            pickNegatable([createDirectionTemplate(b, a, reverseDirection, minimalReverseDirection, false, before, after), createDirectionTemplate(b, a, direction, minimalDirection, true, before, after)])
         ], 1).picked[0];
     }
 
@@ -182,15 +194,16 @@ class Direction4D {
     }
 
     createDirectionStatement(a, b, dirCoord) {
-        const dirName = dirStringFromCoord(dirCoord);
+        const direction = dirStringFromCoord(dirCoord);
+        const reverseDirection = dirStringFromCoord(inverse(dirCoord));
+        const minimalDirection = dirStringMinimal(dirCoord);
+        const minimalReverseDirection = dirStringMinimal(inverse(dirCoord));
         const timeName = timeMapping[dirCoord[3]];
-        return this._pickDirectionStatement(a, b, dirName, nameInverseDir3D[dirName], timeName, reverseTimeNames[timeName])
-    }
-
-    _pickDirectionStatement(a, b, direction, reverseDirection, timeName, reverseTimeName) {
+        const reverseTimeName = reverseTimeNames[timeName];
+        const after = 'of';
         return pickRandomItems([
-            pickNegatable([createDirectionTemplate(a, b, direction, false, timeName + ' '), createDirectionTemplate(a, b, reverseDirection, true, reverseTimeName + ' ')]),
-            pickNegatable([createDirectionTemplate(b, a, reverseDirection, false, reverseTimeName + ' '), createDirectionTemplate(b, a, direction, true, timeName + ' ')])
+            pickNegatable([createDirectionTemplate(a, b, direction, minimalDirection, false, timeName, after), createDirectionTemplate(a, b, reverseDirection, minimalReverseDirection, true, reverseTimeName, after)]),
+            pickNegatable([createDirectionTemplate(b, a, reverseDirection, minimalReverseDirection, false, reverseTimeName, after), createDirectionTemplate(b, a, direction, minimalDirection, true, timeName, after)])
         ], 1).picked[0];
     }
 

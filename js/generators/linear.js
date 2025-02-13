@@ -1,7 +1,14 @@
-function pickLinearPremise(a, b, comparison, reverseComparison) {
+function pickLinearPremise(a, b, comparison, reverseComparison, min, minRev) {
+    if (savedata.minimalMode) {
+        comparison = min;
+        reverseComparison = minRev;
+    } else {
+        comparison = 'is ' + comparison;
+        reverseComparison = 'is ' + reverseComparison;
+    }
     const ps = [
-    `<span class="subject">${a}</span> is ${comparison} <span class="subject">${b}</span>`,
-    `<span class="subject">${a}</span> is <span class="is-negated">${reverseComparison}</span> <span class="subject">${b}</span>`,
+    `<span class="subject">${a}</span> <span class="relation">${comparison}</span> <span class="subject">${b}</span>`,
+    `<span class="subject">${a}</span> <span class="relation"><span class="is-negated">${reverseComparison}</span></span> <span class="subject">${b}</span>`,
     ];
     return pickNegatable(ps);
 }
@@ -35,15 +42,15 @@ function findTwoWordIndexes(words) {
 class MoreLess {
     createLinearPremise(a, b) {
         return pickRandomItems([
-            pickLinearPremise(a, b, 'less than', 'more than'),
-            pickLinearPremise(b, a, 'more than', 'less than'),
+            pickLinearPremise(a, b, 'less than', 'more than', '<', '>'),
+            pickLinearPremise(b, a, 'more than', 'less than', '>', '<'),
         ], 1).picked[0];
     }
 
     createReverseLinearPremise(a, b) {
         return pickRandomItems([
-            pickLinearPremise(a, b, 'more than', 'less than'),
-            pickLinearPremise(b, a, 'less than', 'more than'),
+            pickLinearPremise(a, b, 'more than', 'less than', '>', '<'),
+            pickLinearPremise(b, a, 'less than', 'more than', '<', '>'),
         ], 1).picked[0];
     }
 
@@ -55,15 +62,15 @@ class MoreLess {
 class BeforeAfter {
     createLinearPremise(a, b) {
         return pickRandomItems([
-            pickLinearPremise(a, b, 'before', 'after'),
-            pickLinearPremise(b, a, 'after', 'before'),
+            pickLinearPremise(a, b, 'before', 'after', '➙', '⭠'),
+            pickLinearPremise(b, a, 'after', 'before', '⭠', '➙'),
         ], 1).picked[0];
     }
 
     createReverseLinearPremise(a, b) {
         return pickRandomItems([
-            pickLinearPremise(a, b, 'after', 'before'),
-            pickLinearPremise(b, a, 'before', 'after'),
+            pickLinearPremise(a, b, 'after', 'before', '⭠', '➙'),
+            pickLinearPremise(b, a, 'before', 'after', '➙', '⭠'),
         ], 1).picked[0];
     }
 
@@ -75,15 +82,15 @@ class BeforeAfter {
 class LeftRight {
     createLinearPremise(a, b) {
         return pickRandomItems([
-            pickLinearPremise(a, b, 'left of', 'right of'),
-            pickLinearPremise(b, a, 'right of', 'left of'),
+            pickLinearPremise(a, b, 'left of', 'right of', '➙', '⭠'),
+            pickLinearPremise(b, a, 'right of', 'left of', '⭠', '➙'),
         ], 1).picked[0];
     }
 
     createReverseLinearPremise(a, b) {
         return pickRandomItems([
-            pickLinearPremise(a, b, 'right of', 'left of'),
-            pickLinearPremise(b, a, 'left of', 'right of'),
+            pickLinearPremise(a, b, 'right of', 'left of', '⭠', '➙'),
+            pickLinearPremise(b, a, 'left of', 'right of', '➙', '⭠'),
         ], 1).picked[0];
     }
 
@@ -95,15 +102,15 @@ class LeftRight {
 class TopUnder {
     createLinearPremise(a, b) {
         return pickRandomItems([
-            pickLinearPremise(a, b, 'on top of', 'under'),
-            pickLinearPremise(b, a, 'under', 'on top of'),
+            pickLinearPremise(a, b, 'on top of', 'under', '⭣', '⭡'),
+            pickLinearPremise(b, a, 'under', 'on top of', '⭡', '⭣'),
         ], 1).picked[0];
     }
 
     createReverseLinearPremise(a, b) {
         return pickRandomItems([
-            pickLinearPremise(a, b, 'under', 'on top of'),
-            pickLinearPremise(b, a, 'on top of', 'under'),
+            pickLinearPremise(a, b, 'under', 'on top of', '⭡', '⭣'),
+            pickLinearPremise(b, a, 'on top of', 'under', '⭣', '⭡'),
         ], 1).picked[0];
     }
 
@@ -132,8 +139,8 @@ class LinearQuestion {
             [premises, conclusion, isValid] = this.buildLinearMap(words);
         }
 
-        if (savedata.enableMeta) {
-            premises = applyMeta(premises, p => p.match(/is (?:<span class="is-negated">)*(.*?)(?:<\/span>)* /)[1]);
+        if (savedata.enableMeta && !savedata.minimalMode) {
+            premises = applyMeta(premises, p => p.match(/<span class="relation">(?:<span class="is-negated">)?(.*?)<\/span>/)[1]);
         }
 
         premises = scramble(premises);

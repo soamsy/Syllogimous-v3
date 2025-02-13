@@ -172,12 +172,27 @@ function displayInit() {
     const q = renderJunkEmojis(question);
     displayLabelType.textContent = q.category.split(":")[0];
     displayLabelLevel.textContent = q.premises.length + "p";
+    const easy = savedata.scrambleLimit === 0 ? ' (easy)' : '';
     displayText.innerHTML = [
-        ...q.premises.map(p => `<div class="formatted-premise ${savedata.scrambleLimit === 0 ? 'easy' : ''}">${p}</div>`),
+        `<div class="preamble">Premises${easy}</div>`,
+        ...q.premises.map(p => `<div class="formatted-premise">${p}</div>`),
+        ...((q.operations && q.operations.length > 0) ? ['<div class="transform-header">Transformations</div>'] : []),
         ...(q.operations ? q.operations.map(o => `<div class="formatted-operation">${o}</div>`) : []),
-        '<div class="conclusion-padding"></div>',
-        '<div class="formatted-conclusion">'+q.conclusion+'</div>'
+        '<div class="postamble">Conclusion</div>',
+        '<div class="formatted-conclusion">'+q.conclusion+'</div>',
     ].join('');
+    const isAnalogy = question?.tags?.includes('analogy');
+    const isBinary = question.type === 'binary';
+    if (savedata.minimalMode && question.type !== 'syllogism') {
+        displayText.classList.add('minimal');
+    } else {
+        displayText.classList.remove('minimal');
+    }
+    if (isAnalogy || isBinary) {
+        displayText.classList.add('complicated-conclusion');
+    } else {
+        displayText.classList.remove('complicated-conclusion');
+    }
     imagePromise = imagePromise.then(() => updateCustomStyles());
 }
 
@@ -748,9 +763,12 @@ function createHQLI(question, i) {
     <div class="inner">
         <div class="index"></div>
         <div class="hqli-premises">
+            <div class="hqli-preamble">Premises</div>
             ${htmlPremises}
+            ${htmlOperations ? '<div class="hqli-transform-header">Transformations</div>' : ''}
             ${htmlOperations}
         </div>
+        <div class="hqli-postamble">Conclusion</div>
         <div class="hqli-conclusion">${q.conclusion}</div>
         <div class="hqli-answer-user ${answerUserClassName}">${answerUserDisplay}</div>
         <div class="hqli-answer ${answer}">${answerDisplay}</div>

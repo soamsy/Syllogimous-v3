@@ -1,17 +1,24 @@
-function pickDistinctionPremise(a, b, comparison, reverseComparison) {
+function pickDistinctionPremise(a, b, comparison, reverseComparison, min, minRev) {
+    if (savedata.minimalMode) {
+        comparison = min;
+        reverseComparison = minRev;
+    } else {
+        comparison = 'is ' + comparison;
+        reverseComparison = 'is ' + reverseComparison;
+    }
     const ps = [
-    `<span class="subject">${a}</span> is ${comparison} <span class="subject">${b}</span>`,
-    `<span class="subject">${a}</span> is <span class="is-negated">${reverseComparison}</span> <span class="subject">${b}</span>`,
+    `<span class="subject">${a}</span> <span class="relation">${comparison}</span> <span class="subject">${b}</span>`,
+    `<span class="subject">${a}</span> <span class="relation"><span class="is-negated">${reverseComparison}</span></span> <span class="subject">${b}</span>`,
     ];
     return pickNegatable(ps);
 }
 
 function createSamePremise(a, b) {
-    return pickDistinctionPremise(a, b, 'same as', 'opposite of');
+    return pickDistinctionPremise(a, b, 'same as', 'opposite of', '=', '☍');
 }
 
 function createOppositePremise(a, b) {
-    return pickDistinctionPremise(a, b, 'opposite of', 'same as');
+    return pickDistinctionPremise(a, b, 'opposite of', 'same as', '☍', '=');
 }
 
 function applyMeta(premises, relationFinder) {
@@ -36,19 +43,19 @@ function applyMeta(premises, relationFinder) {
         const isSame = negations[0] ^ negations[1] ^ (relations[0] === relations[1]);
         if (isSame) {
             substitution = pickNegatable([
-                `$1 same as <span class="is-meta">(<span class="subject">${a}</span> to <span class="subject">${b}</span>)</span> to `,
-                `$1 <span class="is-negated">opposite of</span> <span class="is-meta">(<span class="subject">${a}</span> to <span class="subject">${b}</span>)</span> to `
+                `$1 is same as <span class="is-meta">(<span class="subject">${a}</span> to <span class="subject">${b}</span>)</span> to $3`,
+                `$1 is <span class="is-negated">opposite of</span> <span class="is-meta">(<span class="subject">${a}</span> to <span class="subject">${b}</span>)</span> to $3`
             ]);
         } else {
             substitution = pickNegatable([
-                `$1 opposite of <span class="is-meta">(<span class="subject">${a}</span> to <span class="subject">${b}</span>)</span> to `,
-                `$1 <span class="is-negated">same as</span> <span class="is-meta">(<span class="subject">${a}</span> to <span class="subject">${b}</span>)</span> to `
+                `$1 is opposite of <span class="is-meta">(<span class="subject">${a}</span> to <span class="subject">${b}</span>)</span> to $3`,
+                `$1 is <span class="is-negated">same as</span> <span class="is-meta">(<span class="subject">${a}</span> to <span class="subject">${b}</span>)</span> to $3`
             ]);
         }
         
         // Replace relation with meta-relation via substitution string
         const metaPremise = choosenPair.picked[1]
-            .replace(/(is) (.*)(?=<span class="subject">)/, substitution);
+            .replace(/(<span class="relation">)(.*)(<\/span>) (?=<span class="subject">)/, substitution);
 
         // Push premise and its corresponding meta-premise
         premises.push(choosenPair.picked[0], metaPremise);
@@ -96,8 +103,8 @@ class DistinctionQuestion {
             Object.keys(bucketMap).filter(w => bucketMap[w] === 1)
         ]
 
-        if (savedata.enableMeta) {
-            premises = applyMeta(premises, p => p.match(/is (?:<span class="is-negated">)?(.*) (?:as|of)/)[1]);
+        if (savedata.enableMeta && !savedata.minimalMode) {
+            premises = applyMeta(premises, p => p.match(/<span class="relation">(?:<span class="is-negated">)?(.*?)<\/span>/)[1]);
         }
 
         premises = scramble(premises);

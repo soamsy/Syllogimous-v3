@@ -192,11 +192,11 @@ class SpaceHardMode {
             if (coinFlip()) {
                 newPoint[m] += diffN
                 newPoint[n] += -diffM
-                operations.push(createRotationTemplate(a, b, planeOp, `<span class="pos-degree">90°↷</span>`));
+                operations.push(createRotationTemplate(a, b, planeOp, planeName, `<span class="pos-degree">90°↷</span>`));
             } else {
                 newPoint[m] += -diffN
                 newPoint[n] += diffM
-                operations.push(createRotationTemplate(a, b, planeOp, `<span class="neg-degree">-90°↺</span>`));
+                operations.push(createRotationTemplate(a, b, planeOp, planeName, `<span class="neg-degree">-90°↺</span>`));
             }
             return newPoint;
         }
@@ -252,17 +252,25 @@ class SpaceHardMode {
 }
 
 function createMirrorTemplate(a, b, dimension) {
-    return `<span class="subject">${b}</span> is <span class="highlight">${dimension}</span>-mirrored across <span class="subject">${a}</span>`;
+    const relation = savedata.minimalMode ? (dimension + '🪞') : `is <span class="highlight">${dimension}</span>-mirrored across`;
+    return `<span class="subject">${b}</span> <span class="relation">${relation}</span> <span class="subject">${a}</span>`;
 }
+
 function createScaleTemplate(a, b, dimension, scale) {
-    return ` <span class="subject">${b}</span> is <span class="highlight">${dimension}</span>-scaled <span class="highlight">${scale}×</span> from <span class="subject">${a}</span>`;
+    const relation = savedata.minimalMode ? (dimension + '↔️') : `is <span class="highlight">${dimension}</span>-scaled <span class="highlight">${scale}×</span> from`;
+    return `<span class="subject">${b}</span> <span class="relation">${relation}</span> <span class="subject">${a}</span>`;
 }
+
 function createSetTemplate(a, b, dimension) {
-    return `<span class="highlight">${dimension}</span> of <span class="subject">${b}</span> is set to <span class="highlight">${dimension}</span> of <span class="subject">${a}</span>`;
+    if (savedata.minimalMode) {
+        const relation = dimension + ' :=';
+        return `<span class="subject">${b}</span> <span class="relation">${relation}</span> <span class="subject">${a}</span>`;
+    } else {
+        return `<span class="highlight">${dimension}</span> of <span class="subject">${b}</span> is set to <span class="highlight">${dimension}</span> of <span class="subject">${a}</span>`;
+    }
 }
-function createShiftTemplate(word, direction, shift) {
-    return `<span class="subject">${word}</span> is moved ${direction} by <span class="highlight">${shift}</span>`;
-}
-function createRotationTemplate(a, b, planeOp, degree) {
-    return `<span class="subject">${b}</span> is ${planeOp} ${degree} around <span class="subject">${a}</span>`
+
+function createRotationTemplate(a, b, planeOp, planeName, degree) {
+    const relation = savedata.minimalMode ? `${planeName} ${degree}` : `is ${planeOp} ${degree} around`;
+    return `<span class="subject">${b}</span> <span class="relation">${relation}</span> <span class="subject">${a}</span>`;
 }

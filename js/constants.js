@@ -79,6 +79,7 @@ let savedata = {
     "autoProgressionGoal": 10,
     "spoilerConclusion": false,
     "enableBacktrackingLinear": false,
+    "minimalMode": false,
 };
 
 const defaultSavedata = structuredClone(savedata);
@@ -152,6 +153,7 @@ const compressedSettings = {
     "overrideLinearPremises": "linP",
     "overrideLinearTime": "linT",
     "enableBacktrackingLinear": "backL",
+    "minimalMode": "min",
 };
 
 const keySettingMap = {
@@ -215,6 +217,7 @@ const keySettingMap = {
     "p-45-time": "overrideAnchorSpaceTime",
     "p-46": "spoilerConclusion",
     "p-47": "enableBacktrackingLinear",
+    "p-48": "minimalMode",
 };
 
 const meaningfulWords = {
@@ -4029,6 +4032,57 @@ const dirString = (x, y, z) => {
 
 const dirStringFromCoord = (coord) => {
     return dirString.apply(null, coord);
+}
+
+function twoDToArrow(coord) {
+    const arrowMap = {
+        "1,0": "⭠",
+        "1,1": "⭩",
+        "1,-1": "⭦",
+        "0,1": "⭣",
+        "0,-1": "⭡",
+        "-1,0": "➙",
+        "-1,1": "➘",
+        "-1,-1": "➚",
+    };
+
+    return arrowMap[coord.slice(0, 2).join(",")] || "";
+}
+
+function threeDToTriangle(coord) {
+    if (coord.length < 3) {
+        return '';
+    }
+
+    if (coord[2] === 1) {
+        return '▼';
+    } else if (coord[2] === -1) {
+        return '▲';
+    } else {
+        return '';
+    }
+}
+
+function fourDToArrow(coord) {
+    if (coord.length < 4) {
+        return '';
+    }
+
+    if (coord[3] === 1) {
+        return '⮐';
+    } else if (coord[3] === -1) {
+        return '⮑';
+    } else {
+        return '';
+    }
+}
+
+const dirStringMinimal = (coord) => {
+    let str = '';
+    str += fourDToArrow(coord);
+    str += threeDToTriangle(coord);
+    str += twoDToArrow(coord);
+    return str;
 }
 
 const dirCoords3D = [];

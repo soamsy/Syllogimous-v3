@@ -554,26 +554,39 @@ input[type="number"]::-moz-inner-spin-button {
     overflow-x: hidden;
 }
 
-.formatted-premise::before,
-.formatted-operation::before,
-.formatted-conclusion::before,
-.hqli-premise::before,
-.hqli-operation::before,
-.hqli-conclusion::before {
-    color: #aaa;
-    display: block;
-    font-size: var(--step--1);
-    font-weight: bolder;
-    line-height: 0.4rem;
-    margin-bottom: 0.7rem;
-    opacity: 0.6;
+.display_text.minimal .formatted-premise,
+.display_text.minimal .formatted-operation,
+.display_text.minimal:not(.complicated-conclusion) .formatted-conclusion {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    justify-items: center;
+    gap: 1.2rem;
 }
 
-.hqli-premise::before,
-.hqli-operation::before,
-.hqli-conclusion::before {
+.display_text.minimal .formatted-premise > span:nth-child(1),
+.display_text.minimal .formatted-operation > span:nth-child(1),
+.display_text.minimal:not(.complicated-conclusion) .formatted-conclusion > span:nth-child(1) {
+    justify-self: end;
+}
+
+.display_text.minimal .formatted-premise > span:nth-child(2),
+.display_text.minimal .formatted-operation > span:nth-child(2),
+.display_text.minimal:not(.complicated-conclusion) .formatted-conclusion > span:nth-child(2) {
+    min-width: 2rem;
+    justify-self: center;
+    text-align: center;
+}
+
+.display_text.minimal .formatted-premise > span:nth-child(3),
+.display_text.minimal .formatted-operation > span:nth-child(3),
+.display_text.minimal:not(.complicated-conclusion) .formatted-conclusion > span:nth-child(3) {
+    justify-self: start;
+}
+
+.hqli-preamble,
+.hqli-postamble,
+.hqli-transform-header {
     font-size: var(--step--2);
-    margin-bottom: 0.4rem;
     opacity: 0.4;
 }
 
@@ -589,41 +602,21 @@ input[type="number"]::-moz-inner-spin-button {
     margin-bottom: 0.4rem;
 }
 
-.formatted-premise:nth-child(1)::before,
-.hqli-premise:nth-child(1)::before {
-    margin: 0.5rem 0 1rem 0;
-    content: 'Premises';
+.preamble,
+.postamble,
+.transform-header {
+    user-select: none;
+    color: #aaa;
+    display: block;
+    font-size: var(--step--1);
+    font-weight: bolder;
+    line-height: 0.4rem;
+    margin: 0.5rem 0 0.9rem 0;
+    opacity: 0.6;
 }
 
-.formatted-premise.easy:nth-child(1)::before,
-.hqli-premise.easy:nth-child(1)::before {
-    margin: 0.5rem 0 1rem 0;
-    content: 'Premises (Easy)';
-}
-
-.hqli-premise:nth-child(1)::before {
-    margin: 0.3rem 0 0.6rem 0;
-}
-
-.formatted-operation::before,
-.hqli-operation::before {
-    margin: 2rem 0 1rem 0;
-    content: 'Transformations';
-}
-
-.hqli-operation::before {
-    margin: 1rem 0 0.5rem 0;
-}
-
-.formatted-operation ~ .formatted-operation::before,
-.hqli-operation ~ .hqli-operation::before {
-    margin: 0;
-    content: '';
-}
-
-.formatted-operation:first-of-type::before,
-.hqli-operation:first-of-type::before {
-    color: cyan;
+.postamble, .transform-header {
+    margin-top: 2.2rem;
 }
 
 .highlight {
@@ -647,20 +640,14 @@ input[type="number"]::-moz-inner-spin-button {
     position: relative;
 }
 
-.conclusion-padding {
-    height: 2px;
-    margin: 1rem 0;
-}
-
 .formatted-conclusion,
 .formatted-premise,
-.formatted-operation {
+.formatted-operation,
+.preamble,
+.postamble,
+.transform-header {
     padding: 0 1px;
     text-shadow: var(--text-outline);
-}
-
-.formatted-conclusion::before {
-    content: 'Conclusion';
 }
 
 .spoiler .formatted-conclusion::after {
@@ -1095,11 +1082,6 @@ input[type="checkbox"]:checked + .switch::after {
     color: #fffa;
     font-weight: bold;
     margin-right: 0.25rem;
-}
-
-.hqli-conclusion::before {
-    content: "Conclusion";
-    display: block;
 }
 
 .hqli-answer-user::before {
