@@ -1769,6 +1769,10 @@ table.distinction {
     .carousel_display_label-wrapper h2, .display-inner h2 {
         gap: 0.2rem;
     }
+
+    .display_text.minimal {
+        font-size: var(--step-1);
+    }
 }
 
 @media (max-width: 360px) {
