@@ -13,6 +13,7 @@ let appState = {
     "isExperimentalOpen": false,
     "isLegacyOpen": false,
     "sfx": "none",
+    "fastUi": false,
 };
 
 let savedata = {
@@ -3815,10 +3816,6 @@ const emoji = [
     "ℹ",
     "↔",
     "↕",
-    "↖",
-    "↗",
-    "↘",
-    "↙",
     "↩",
     "↪",
     "#",
@@ -3908,14 +3905,10 @@ const emoji = [
     "➕",
     "➖",
     "➗",
-    "➡",
     "➰",
     "➿",
     "⤴",
     "⤵",
-    "⬅",
-    "⬆",
-    "⬇",
     "⬛",
     "⬜",
     "⭐",

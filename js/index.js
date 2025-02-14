@@ -225,6 +225,7 @@ function handleImageChange(event) {
 function populateAppearanceSettings() {
     document.getElementById('color-input').value = appState.gameAreaColor;
     document.getElementById('p-sfx').checked = appState.sfx === 'sfx1';
+    document.getElementById('p-fast-ui').checked = appState.fastUi;
 }
 
 function handleColorChange(event) {
@@ -237,6 +238,14 @@ function handleColorChange(event) {
 function handleSfxChange(event) {
     const isEnabled = event.target.checked;
     appState.sfx = isEnabled ? 'sfx1' : 'none';
+    save();
+    init();
+}
+
+function handleFastUiChange(event) {
+    appState.fastUi = event.target.checked;
+    removeFastFeedback();
+    switchButtons();
     save();
     init();
 }
@@ -341,6 +350,9 @@ function switchButtons() {
     const parent = document.querySelectorAll(".confirmation-buttons");
     for (let p of parent) {
         const firstChild = p.firstElementChild;
+        if (appState.fastUi && firstChild.classList.contains('confirmation-true')) {
+            return;
+        }
         p.removeChild(firstChild);
         p.appendChild(firstChild);
     }
@@ -530,40 +542,75 @@ function playSoundFor(sound, duration) {
     }, duration);
 }
 
+function removeFastFeedback() {
+    gameArea.classList.remove('right');
+    gameArea.classList.remove('wrong');
+    gameArea.classList.remove('missed');
+}
+
+let fastFeedbackTimer = null;
+function fastFeedback(cb, className) {
+    if (fastFeedbackTimer) {
+        clearTimeout(fastFeedbackTimer);
+        fastFeedbackTimer = null;
+    }
+    removeFastFeedback();
+    gameArea.classList.add(className);
+    setTimeout(() => {
+        cb();
+        processingAnswer = false;
+        fastFeedbackTimer = setTimeout(() => {
+            removeFastFeedback();
+        }, 1000);
+    }, 350);
+}
+
 function wowFeedbackRight(cb) {
-    feedbackRight.classList.add("active");
     if (appState.sfx === 'sfx1') {
         playSoundFor(successSound, 1400);
     }
-    setTimeout(() => {
-        feedbackRight.classList.remove("active");
-        cb();
-        processingAnswer = false;
-    }, 1000);
+    if (appState.fastUi) {
+        fastFeedback(cb, 'right');
+    } else {
+        feedbackRight.classList.add("active");
+        setTimeout(() => {
+            feedbackRight.classList.remove("active");
+            cb();
+            processingAnswer = false;
+        }, 1000);
+    }
 }
 
 function wowFeedbackWrong(cb) {
-    feedbackWrong.classList.add("active");
     if (appState.sfx === 'sfx1') {
         playSoundFor(failureSound, 1400);
     }
-    setTimeout(() => {
-        feedbackWrong.classList.remove("active");
-        cb();
-        processingAnswer = false;
-    }, 1000);
+    if (appState.fastUi) {
+        fastFeedback(cb, 'wrong');
+    } else {
+        feedbackWrong.classList.add("active");
+        setTimeout(() => {
+            feedbackWrong.classList.remove("active");
+            cb();
+            processingAnswer = false;
+        }, 1000);
+    }
 }
 
 function wowFeedbackMissed(cb) {
-    feedbackMissed.classList.add("active");
     if (appState.sfx === 'sfx1') {
         playSoundFor(missedSound, 1400);
     }
-    setTimeout(() => {
-        feedbackMissed.classList.remove("active");
-        cb();
-        processingAnswer = false;
-    }, 1000);
+    if (appState.fastUi) {
+        fastFeedback(cb, 'missed');
+    } else {
+        feedbackMissed.classList.add("active");
+        setTimeout(() => {
+            feedbackMissed.classList.remove("active");
+            cb();
+            processingAnswer = false;
+        }, 1000);
+    }
 }
 
 function wowFeedback() {

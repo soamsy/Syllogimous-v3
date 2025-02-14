@@ -430,13 +430,27 @@
 								</span>
 							</div>
 						</div>
-						<div class="mb-2">
+						<div class="mb-2 ux-customize">
 							<div class="ctrl__inner">
 								<div>
 									<input hidden id="p-sfx" type="checkbox" onchange="handleSfxChange(event)">
 									<label class="switch" for="p-sfx"></label>
 								</div>
 								<span>Enable SFX</span>
+							</div>
+							<div class="ctrl__inner">
+								<div>
+									<input hidden id="p-fast-ui" type="checkbox" onchange="handleFastUiChange(event)">
+									<label class="switch" for="p-fast-ui"></label>
+								</div>
+								<span>Fast UI</span>
+								<span class="tooltip-container" tabindex="0">?
+									<div class="tooltip-text right">
+										Removes feedback animation,<br>
+										and disables true/false<br>
+										button swapping.<br>
+									</div>
+								</span>
 							</div>
 						</div>
 						<div class="folder" onclick="toggleExperimentalFolder()">

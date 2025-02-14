@@ -447,6 +447,56 @@ input[type="number"]::-moz-inner-spin-button {
     flex-direction: column;
     border-radius: 0 0 20px 20px;
     max-width: 750px;
+    transition: box-shadow 0.3s ease-in-out;
+    position: relative;
+}
+
+.game-area:before {
+    display: none;
+    font-family: "Espionage", sans-serif;
+    position: absolute;
+    bottom: 100%;
+    width: calc(100% + 4px);
+    left: -2px;
+    text-align: center;
+}
+
+.game-area.right, .game-area.right:before {
+    border: 2px solid #28a745; /* Green border */
+    box-shadow: 0 0 10px rgba(40, 167, 69, 0.7); /* Glowing green effect */
+}
+
+.game-area.right:before {
+    content: 'RIGHT';
+    display: block;
+    background: #28a745;
+}
+
+.game-area.wrong, .game-area.wrong:before {
+    border: 2px solid #dc3545;
+    box-shadow: 0 0 10px rgba(220, 53, 69, 0.7);
+}
+
+.game-area.wrong:before {
+    content: 'WRONG';
+    display: block;
+    background: #dc3545;
+}
+
+.game-area.missed, .game-area.missed:before {
+    border: 2px solid #6c757d;
+    box-shadow: 0 0 10px rgba(108, 117, 125, 0.7);
+}
+
+.game-area.missed:before {
+    content: 'MISSED';
+    display: block;
+    background: #6c757d;
+}
+
+.ux-customize {
+    display: flex;
+    gap: 1rem;
 }
 
 .carousel, .display-outer {
