@@ -62,15 +62,15 @@ class MoreLess {
 class BeforeAfter {
     createLinearPremise(a, b) {
         return pickRandomItems([
-            pickLinearPremise(a, b, 'before', 'after', '<i class="ci-Arrow_Right_LG"></i>', '<i class="ci-Arrow_Left_LG"></i>'),
-            pickLinearPremise(b, a, 'after', 'before', '<i class="ci-Arrow_Left_LG"></i>', '<i class="ci-Arrow_Right_LG"></i>'),
+            pickLinearPremise(a, b, 'before', 'after', '<i class="ci-Arrow_Right_LG"></i>', '<i class="ci-Arrow_Left_MD"></i>'),
+            pickLinearPremise(b, a, 'after', 'before', '<i class="ci-Arrow_Left_MD"></i>', '<i class="ci-Arrow_Right_LG"></i>'),
         ], 1).picked[0];
     }
 
     createReverseLinearPremise(a, b) {
         return pickRandomItems([
-            pickLinearPremise(a, b, 'after', 'before', '<i class="ci-Arrow_Left_LG"></i>', '<i class="ci-Arrow_Right_LG"></i>'),
-            pickLinearPremise(b, a, 'before', 'after', '<i class="ci-Arrow_Right_LG"></i>', '<i class="ci-Arrow_Left_LG"></i>'),
+            pickLinearPremise(a, b, 'after', 'before', '<i class="ci-Arrow_Left_MD"></i>', '<i class="ci-Arrow_Right_LG"></i>'),
+            pickLinearPremise(b, a, 'before', 'after', '<i class="ci-Arrow_Right_LG"></i>', '<i class="ci-Arrow_Left_MD"></i>'),
         ], 1).picked[0];
     }
 
@@ -82,15 +82,15 @@ class BeforeAfter {
 class LeftRight {
     createLinearPremise(a, b) {
         return pickRandomItems([
-            pickLinearPremise(a, b, 'left of', 'right of', '<i class="ci-Arrow_Right_LG"></i>', '<i class="ci-Arrow_Left_LG"></i>'),
-            pickLinearPremise(b, a, 'right of', 'left of', '<i class="ci-Arrow_Left_LG"></i>', '<i class="ci-Arrow_Right_LG"></i>'),
+            pickLinearPremise(a, b, 'left of', 'right of', '<i class="ci-Arrow_Right_LG"></i>', '<i class="ci-Arrow_Left_MD"></i>'),
+            pickLinearPremise(b, a, 'right of', 'left of', '<i class="ci-Arrow_Left_MD"></i>', '<i class="ci-Arrow_Right_LG"></i>'),
         ], 1).picked[0];
     }
 
     createReverseLinearPremise(a, b) {
         return pickRandomItems([
-            pickLinearPremise(a, b, 'right of', 'left of', '<i class="ci-Arrow_Left_LG"></i>', '<i class="ci-Arrow_Right_LG"></i>'),
-            pickLinearPremise(b, a, 'left of', 'right of', '<i class="ci-Arrow_Right_LG"></i>', '<i class="ci-Arrow_Left_LG"></i>'),
+            pickLinearPremise(a, b, 'right of', 'left of', '<i class="ci-Arrow_Left_MD"></i>', '<i class="ci-Arrow_Right_LG"></i>'),
+            pickLinearPremise(b, a, 'left of', 'right of', '<i class="ci-Arrow_Right_LG"></i>', '<i class="ci-Arrow_Left_MD"></i>'),
         ], 1).picked[0];
     }
 
