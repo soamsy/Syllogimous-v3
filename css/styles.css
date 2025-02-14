@@ -625,6 +625,9 @@ input[type="number"]::-moz-inner-spin-button {
     min-width: 2rem;
     justify-self: center;
     text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .display_text.minimal .formatted-premise > span:nth-child(3),
