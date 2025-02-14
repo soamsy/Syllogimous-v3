@@ -244,6 +244,7 @@ function handleSfxChange(event) {
 
 function handleFastUiChange(event) {
     appState.fastUi = event.target.checked;
+    appState.staticButtons = event.target.checked;
     removeFastFeedback();
     switchButtons();
     save();
@@ -350,7 +351,7 @@ function switchButtons() {
     const parent = document.querySelectorAll(".confirmation-buttons");
     for (let p of parent) {
         const firstChild = p.firstElementChild;
-        if (appState.fastUi && firstChild.classList.contains('confirmation-true')) {
+        if (appState.staticButtons && firstChild.classList.contains('confirmation-true')) {
             return;
         }
         p.removeChild(firstChild);
