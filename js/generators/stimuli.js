@@ -52,8 +52,19 @@ function createGarbageWord() {
     return string;
 }
 
+let currentJunkEmojiSequence = [0, 1, 2, 3, 4, 5, 6, 7];
+shuffle(currentJunkEmojiSequence);
+let currentJunkEmojiSequenceId = 0;
 function createJunkEmoji() {
-    const id = Math.floor(Math.random() * JUNK_EMOJI_COUNT);
+    const splitSize = Math.floor(JUNK_EMOJI_COUNT / currentJunkEmojiSequence.length);
+    const numSplits = JUNK_EMOJI_COUNT / splitSize;
+    let offset = currentJunkEmojiSequence[currentJunkEmojiSequenceId] * splitSize;
+    const choice = Math.floor(Math.random() * JUNK_EMOJI_COUNT / numSplits);
+    const id = offset + choice;
+    currentJunkEmojiSequenceId++;
+    if (currentJunkEmojiSequenceId >= currentJunkEmojiSequence.length) {
+        currentJunkEmojiSequenceId = 0;
+    }
     return [id, `[junk]${id}[/junk]`];
 }
 
