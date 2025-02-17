@@ -194,9 +194,19 @@ class LinearQuestion {
         for (let i = 1; i < words.length; i++) {
             const source = pickBaseWord(neighbors, Math.random() < 0.6);
             const target = words[i];
-
             const key = premiseKey(source, target);
-            if (coinFlip()) {
+
+            let forwardChance = 0.5;
+            const neighborList = neighbors[source];
+            const firstNeighbor = neighborList[0];
+            if (firstNeighbor && neighborList.every(word => bucketMap[word] === bucketMap[firstNeighbor])) {
+                if (bucketMap[firstNeighbor] + 1 == bucketMap[source]) {
+                    forwardChance = 0.6;
+                } else {
+                    forwardChance = 0.4;
+                }
+            }
+            if (Math.random() < forwardChance) {
                 if (coinFlip()) {
                     premiseMap[key] = this.generator.createLinearPremise(source, target);
                 } else {
