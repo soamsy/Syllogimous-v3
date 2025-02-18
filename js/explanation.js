@@ -115,6 +115,11 @@ function createExplanationBucket(question) {
 }
 
 function createExplanationBuckets(question) {
+    if (question.category === 'Vertical') {
+        return question.buckets
+            .map(bucket => '<div style="justify-self: start;">' + bucket.join(' ') + '</div>')
+            .join('<div class="divider"></div>');
+    }
     const filler = createFiller(question.buckets);
     const verticalLength = question.buckets.reduce((a, b) => Math.max(a, b));
     let s = '<table class="distinction">';
