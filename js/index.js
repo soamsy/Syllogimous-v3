@@ -1104,7 +1104,7 @@ function exportHistoryToCSV() {
     // 5. Create and Trigger Download
     const link = document.createElement("a");
     link.setAttribute("href", url);
-    link.setAttribute("download", "syllogimous_history.csv");
+    link.setAttribute("download", "syllogimous_v3_history.csv");
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();
