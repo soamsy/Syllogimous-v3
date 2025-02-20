@@ -503,18 +503,18 @@ function init() {
     if (!question) {
         return;
     }
-
+    // Initialize the timer status property
+    question.timerWasRunning = false;
+    
     if (coinFlip()) {
         switchButtons();
     }
-
     stopCountDown();
     if (timerToggled) {
         startCountDown();
     } else {
         renderTimerBar();
     }
-
     carouselInit();
     displayInit();
     PROGRESS_STORE.renderCurrentProgress(question);
@@ -626,6 +626,9 @@ function wowFeedback() {
 }
 
 function storeQuestionAndSave() {
+    // Mark if the timer was running when this question was answered
+    question.timerWasRunning = timerRunning;
+    
     appState.questions.push(question);
     if (timerToggle.checked) {
         PROGRESS_STORE.storeCompletedQuestion(question)
@@ -706,15 +709,6 @@ function resetApp() {
     }
 }
 
-function clearHistory() {
-    const confirmed = confirm("Are you sure? (does not remove progress graph history)");
-    if (confirmed) {
-        appState.questions = [];
-        appState.score = 0;
-        save();
-        renderHQL();
-    }
-}
 
 function deleteQuestion(i, isRight) {
     appState.score += (isRight ? -1 : 1);
@@ -954,50 +948,73 @@ function handleKeyPress(event) {
     }
 }
 
+function clearHistory() {
+    const confirmed = confirm("Are you sure? (This will clear the displayed history but preserve data for CSV export)");
+    if (confirmed) {
+        // Store the questions in a separate array for CSV export
+        if (!appState.archivedQuestions) {
+            appState.archivedQuestions = [];
+        }
+        
+        // Move current questions to archive instead of deleting them
+        appState.archivedQuestions = [...appState.archivedQuestions, ...appState.questions];
+        
+        // Clear the visible questions and reset the score
+        appState.questions = [];
+        appState.score = 0;
+        
+        save();
+        renderHQL();
+    }
+}
+
+// Modify the exportHistoryToCSV function to include archived questions
 function exportHistoryToCSV() {
-    if (appState.questions.length === 0) {
+    // Combine current and archived questions for export
+    const allQuestions = [...(appState.archivedQuestions || []), ...appState.questions];
+    
+    if (allQuestions.length === 0) {
         alert("No history to export.");
         return;
     }
-
+    
     // 1. Prepare CSV Header
     const csvHeader = [
         "Category",
         "Type",
+        "Number of Premises",
         "Premises",
         "Conclusion",
         "User Answer",
         "Correct Answer",
         "Response Time (s)",
-        "Modifiers",
+        "Timer On",
         "Timestamp"
     ].join(",") + "\n";
-
+    
     // 2. Format Data to CSV
-   const csvRows = appState.questions.map(question => {
+    const csvRows = allQuestions.map(question => {
         const category = question.category.replace(/"/g, '""');
         const type = question.type;
+        const numPremises = question.premises.length;
         const premises = question.premises.join('; ').replace(/"/g, '""');
         const conclusion = question.conclusion.replace(/"/g, '""');
         const userAnswer = question.answerUser === undefined ? "MISSED" : (question.answerUser ? "TRUE" : "FALSE");
         const correctAnswer = question.isValid ? "TRUE" : "FALSE";
-
-        // **Corrected Line: Use question.timeElapsed, not question.startedAt**
         const responseTime = question.timeElapsed !== undefined ? (question.timeElapsed / 1000).toFixed(2) : "";
-
-        const modifiers = question.modifiers ? question.modifiers.join('; ') : '';
+        // Get timer status from timerRunning state
+        const timerOn = question.timerWasRunning === true ? "TRUE" : "FALSE";
         const timestamp = question.startedAt; // Unix timestamp
-
-        return `"${category}","${type}","${premises}","${conclusion}","${userAnswer}","${correctAnswer}","${responseTime}","${modifiers}","${timestamp}"`;
+        return `"${category}","${type}","${numPremises}","${premises}","${conclusion}","${userAnswer}","${correctAnswer}","${responseTime}","${timerOn}","${timestamp}"`;
     });
-
+    
     // 3. Combine Header and Rows
     const csvContent = csvHeader + csvRows.join("\n");
-
+    
     // 4. Create Download Link (Data URL)
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
-
+    
     // 5. Create and Trigger Download
     const link = document.createElement("a");
     link.setAttribute("href", url);
