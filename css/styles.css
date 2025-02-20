@@ -124,6 +124,19 @@ button.delete:hover {
     box-shadow: 0 2px 4px #bf3f65;
 }
 
+/* Style for Export to CSV button */
+button.export-csv-button {
+    background-color: #e7c04d; /* Example: Gold color */
+    color: white; /* Example: White text color for contrast */
+    border: 1px solid #e7c04d; /* Optional: Add a border to match the theme */
+}
+
+button.export-csv-button:hover {
+    background-color: #e7c04d; /* Example: Lighter Gold on hover */
+    box-shadow: 0 2px 4px #e7c04d; /* Optional: Adjust hover effect to match the color */
+}
+
+
 /* start of Utils */
 .mb-05 {
     margin-bottom: 1rem;
