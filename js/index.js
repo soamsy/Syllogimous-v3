@@ -499,6 +499,7 @@ function generateQuestion() {
 function init() {
     stopCountDown();
     question = generateQuestion();
+    console.log("Correct answer:", question.isValid); 
     if (!question) {
         return;
     }
