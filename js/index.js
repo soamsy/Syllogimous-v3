@@ -647,6 +647,8 @@ function checkIfTrue() {
         question.correctness = 'wrong';
     }
     question.answeredAt = new Date().getTime();
+    question.timeElapsed = question.answeredAt - question.startedAt;
+    console.log("checkIfTrue Question before store:", question); // ADDED CONSOLE LOG
     storeQuestionAndSave();
     renderHQL(true);
     wowFeedback();
@@ -666,6 +668,8 @@ function checkIfFalse() {
         question.correctness = 'wrong';
     }
     question.answeredAt = new Date().getTime();
+    question.timeElapsed = question.answeredAt - question.startedAt;
+    console.log("checkIfFalse Question before store:", question); // ADDED CONSOLE LOG
     storeQuestionAndSave();
     renderHQL(true);
     wowFeedback();
@@ -680,6 +684,8 @@ function timeElapsed() {
     question.correctness = 'missed';
     question.answerUser = undefined;
     question.answeredAt = new Date().getTime();
+    question.timeElapsed = question.answeredAt - question.startedAt;
+    console.log("timeElapsed Question before store:", question); // ADDED CONSOLE LOG
     storeQuestionAndSave();
     renderHQL(true);
     wowFeedback();
@@ -964,22 +970,25 @@ function exportHistoryToCSV() {
         "Correct Answer",
         "Response Time (s)",
         "Modifiers",
-        "Timestamp"  // Add timestamp for easy sorting
+        "Timestamp"
     ].join(",") + "\n";
 
     // 2. Format Data to CSV
-    const csvRows = appState.questions.map(question => {
-        const category = question.category.replace(/"/g, '""'); // Escape double quotes
+   const csvRows = appState.questions.map(question => {
+        const category = question.category.replace(/"/g, '""');
         const type = question.type;
         const premises = question.premises.join('; ').replace(/"/g, '""');
         const conclusion = question.conclusion.replace(/"/g, '""');
         const userAnswer = question.answerUser === undefined ? "MISSED" : (question.answerUser ? "TRUE" : "FALSE");
         const correctAnswer = question.isValid ? "TRUE" : "FALSE";
-        const responseTime = question.timeElapsed !== undefined ? (question.timeElapsed / 1000).toFixed(2) : "";  //Convert to seconds. Handle undefined for older saved data.
+
+        // **Corrected Line: Use question.timeElapsed, not question.startedAt**
+        const responseTime = question.timeElapsed !== undefined ? (question.timeElapsed / 1000).toFixed(2) : "";
+
         const modifiers = question.modifiers ? question.modifiers.join('; ') : '';
         const timestamp = question.startedAt; // Unix timestamp
 
-        return `"${category}","${type}","${premises}","${conclusion}","${userAnswer}","${correctAnswer}","${responseTime}","${modifiers}", "${timestamp}"`;
+        return `"${category}","${type}","${premises}","${conclusion}","${userAnswer}","${correctAnswer}","${responseTime}","${modifiers}","${timestamp}"`;
     });
 
     // 3. Combine Header and Rows
@@ -993,11 +1002,11 @@ function exportHistoryToCSV() {
     const link = document.createElement("a");
     link.setAttribute("href", url);
     link.setAttribute("download", "syllogimous_history.csv");
-    link.style.visibility = 'hidden'; // Make the link invisible
+    link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link);  // Clean up
-    URL.revokeObjectURL(url);
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url); // release the object URL
 }
 
 document.addEventListener("keydown", handleKeyPress);
