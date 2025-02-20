@@ -79,6 +79,9 @@ let savedata = {
     "enableTransformInterleave": false,
     "autoProgression": false,
     "autoProgressionGoal": 10,
+    "autoProgressionTrailing": 20,
+    "autoProgressionPercentSuccess": 90,
+    "autoProgressionPercentFail": 65,
     "spoilerConclusion": false,
     "enableBacktrackingLinear": false,
     "minimalMode": false,
@@ -147,6 +150,9 @@ const compressedSettings = {
     "enableTransformInterleave": "tInterleave",
     "autoProgression": "auto",
     "autoProgressionGoal": "goal",
+    "autoProgressionTrailing": "autoT",
+    "autoProgressionPercentSuccess": "autoS",
+    "autoProgressionPercentFail": "autoF",
     "spoilerConclusion": "spoiler",
     "enableBacktrackingComparison": "backC",
     "enableBacktrackingTemporal": "backT",
@@ -220,6 +226,9 @@ const keySettingMap = {
     "p-46": "spoilerConclusion",
     "p-47": "enableBacktrackingLinear",
     "p-48": "minimalMode",
+    "p-49": "autoProgressionTrailing",
+    "p-50": "autoProgressionPercentSuccess",
+    "p-51": "autoProgressionPercentFail",
 };
 
 const meaningfulWords = {

@@ -94,11 +94,34 @@
 										separately from normal questions.<br>
 									</div>
 								</div>
-								<span style="padding-left: 15px;">
-									Goal
-								</span>
-								<span class="inline-premise-spinner">
-									<input id="p-42" type="number" placeholder="" value="10" min="1" max="25" style="width: 5ch">s
+								<span class="dropdown-settings">
+									<a style="margin-left: 0.5rem;" id="progression-settings-button" class="settings-gear"><img src="img/gear-solid.svg" alt="Settings Icon" width="20" height="20"></a>
+									<div id="progression-dropdown" class="dropdown">
+										<div class="dropdown-item">
+											Goal
+											<span class="inline-premise-spinner">
+												<input id="p-42" type="number" placeholder="" value="10" min="1" max="25" style="width: 5ch">sec
+											</span>
+										</div>
+										<div class="dropdown-item">
+											Questions to track
+											<span class="inline-premise-spinner">
+												<input id="p-49" type="number" placeholder="" value="20" min="5" max="50" style="width: 5ch">q
+											</span>
+										</div>
+										<div class="dropdown-item">
+											Success criteria
+											<span class="inline-premise-spinner">
+												<input id="p-50" type="number" placeholder="" value="90" min="50" max="100" style="width: 5ch">%
+											</span>
+										</div>
+										<div class="dropdown-item">
+											Failure criteria
+											<span class="inline-premise-spinner">
+												<input id="p-51" type="number" placeholder="" value="65" min="0" max="99" style="width: 5ch">%
+											</span>
+										</div>
+									</div>
 								</span>
 							</div>
 						</div>
@@ -282,7 +305,7 @@
 									<label class="switch" for="p-2"></label>
 								</div>
 								<span>Enable Linear</span>
-								<span class="linear-settings">
+								<span class="dropdown-settings">
 									<a id="linear-settings-button" class="settings-gear"><img src="img/gear-solid.svg" alt="Settings Icon" width="20" height="20"></a>
 									<div id="linear-dropdown" class="dropdown">
 										<div class="dropdown-item">
@@ -1975,6 +1998,7 @@
 		<script src="js/backwards-compatibility.js"></script>
 		<script src="js/db.js"></script>
 		<script src="js/rename-db.js"></script>
+		<script src="js/progress-dropdown.js"></script>
 		<script src="js/linear-dropdown.js"></script>
 		<script src="js/profile.js"></script>
 		<script src="js/graph.js"></script>

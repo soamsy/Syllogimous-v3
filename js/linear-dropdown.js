@@ -7,7 +7,7 @@ const linearTemporalCheckbox = document.getElementById('p-temporal');
 
 linearSettingsButton.addEventListener('click', (event) => {
   event.preventDefault();
-  linearDropdown.style.display = linearDropdown.style.display === 'block' ? 'none' : 'block';
+  linearDropdown.style.display = linearDropdown.style.display === 'flex' ? 'none' : 'flex';
 });
 
 document.addEventListener('click', (event) => {

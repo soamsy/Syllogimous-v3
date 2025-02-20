@@ -1529,8 +1529,16 @@ table.distinction {
 }
 
 
-.linear-settings {
+.dropdown-settings {
     position: relative;
+}
+
+#progression-dropdown {
+    font-size: var(--step--2);
+    right: 50%;
+    transform: translateX(50%);
+    width: 15rem;
+    gap: 6px;
 }
 
 .settings-gear {
@@ -1542,19 +1550,24 @@ table.distinction {
 
 .dropdown {
     display: none;
+    flex-direction: column;
     top: 120%;
     position: absolute;
-    background-color: #333;
+    background-color: #222;
     padding: 4px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 1000;
+    padding: 6px;
+    border-radius: 7px;
 }
 
 .dropdown-item {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 4px;
     margin-bottom: 4px;
+    
 }
 
 .error-popup {
