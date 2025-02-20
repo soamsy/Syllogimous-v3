@@ -969,6 +969,72 @@ function clearHistory() {
 }
 
 // Modify the exportHistoryToCSV function to include archived questions
+// Function to strip HTML tags and clean premise text
+function cleanPremiseText(text) {
+    // Remove all HTML tags
+    const withoutTags = text.replace(/<\/?[^>]+(>|$)/g, "");
+    
+    // Remove extra whitespace
+    const cleanedText = withoutTags.replace(/\s+/g, " ").trim();
+    
+    return cleanedText;
+}
+
+// Update the exportHistoryToCSV function to clean premises
+// Function to clean premise text while preserving negated elements
+function cleanPremiseText(text) {
+    // Replace negated spans with content in *asterisks* to show they're negated
+    let result = text.replace(/<span class="is-negated">(.*?)<\/span>/g, "*$1*");
+    
+    // Handle subject spans - just keep the content
+    result = result.replace(/<span class="subject">(.*?)<\/span>/g, "$1");
+    
+    // Handle relation spans - just keep the content
+    result = result.replace(/<span class="relation">(.*?)<\/span>/g, "$1");
+    
+    // Handle meta spans - just keep the content
+    result = result.replace(/<span class="is-meta">(.*?)<\/span>/g, "$1");
+    
+    // Remove negation explainer span entirely
+    result = result.replace(/<span class="negation-explainer">.*?<\/span>;?/g, "");
+    
+    // Remove any remaining HTML tags
+    result = result.replace(/<\/?[^>]+(>|$)/g, "");
+    
+    // Clean up multiple spaces and trim
+    result = result.replace(/\s+/g, " ").trim();
+    
+    return result;
+}
+
+// Update the exportHistoryToCSV function
+// Function to clean premise text while preserving negated elements
+function cleanPremiseText(text) {
+    // Replace negated spans with content in *asterisks* to show they're negated
+    let result = text.replace(/<span class="is-negated">(.*?)<\/span>/g, "*$1*");
+    
+    // Handle subject spans - just keep the content
+    result = result.replace(/<span class="subject">(.*?)<\/span>/g, "$1");
+    
+    // Handle relation spans - just keep the content
+    result = result.replace(/<span class="relation">(.*?)<\/span>/g, "$1");
+    
+    // Handle meta spans - just keep the content
+    result = result.replace(/<span class="is-meta">(.*?)<\/span>/g, "$1");
+    
+    // Remove negation explainer span entirely
+    result = result.replace(/<span class="negation-explainer">.*?<\/span>;?/g, "");
+    
+    // Remove any remaining HTML tags
+    result = result.replace(/<\/?[^>]+(>|$)/g, "");
+    
+    // Clean up multiple spaces and trim
+    result = result.replace(/\s+/g, " ").trim();
+    
+    return result;
+}
+
+// Update the exportHistoryToCSV function
 function exportHistoryToCSV() {
     // Combine current and archived questions for export
     const allQuestions = [...(appState.archivedQuestions || []), ...appState.questions];
@@ -997,13 +1063,20 @@ function exportHistoryToCSV() {
         const category = question.category.replace(/"/g, '""');
         const type = question.type;
         const numPremises = question.premises.length;
-        const premises = question.premises.join('; ').replace(/"/g, '""');
-        const conclusion = question.conclusion.replace(/"/g, '""');
+        
+        // Clean each premise but preserve negation with *asterisks*
+        const cleanedPremises = question.premises
+            .map(premise => cleanPremiseText(premise))
+            .join(" | ")
+            .replace(/"/g, '""');
+            
+        const cleanedConclusion = cleanPremiseText(question.conclusion).replace(/"/g, '""');
         const userAnswer = question.answerUser === undefined ? "MISSED" : (question.answerUser ? "TRUE" : "FALSE");
         const correctAnswer = question.isValid ? "TRUE" : "FALSE";
         const responseTime = question.timeElapsed !== undefined ? (question.timeElapsed / 1000).toFixed(2) : "";
-        // Get timer status from timerRunning state
         const timerOn = question.timerWasRunning === true ? "TRUE" : "FALSE";
+        
+        // Removed the unused raw premises line
         
         // Convert timestamp to human-readable format without milliseconds
         let formattedTimestamp = "";
@@ -1018,7 +1091,7 @@ function exportHistoryToCSV() {
             formattedTimestamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
         }
         
-        return `"${category}","${type}","${numPremises}","${premises}","${conclusion}","${userAnswer}","${correctAnswer}","${responseTime}","${timerOn}","${formattedTimestamp}"`;
+        return `"${category}","${type}","${numPremises}","${cleanedPremises}","${cleanedConclusion}","${userAnswer}","${correctAnswer}","${responseTime}","${timerOn}","${formattedTimestamp}"`;
     });
     
     // 3. Combine Header and Rows
