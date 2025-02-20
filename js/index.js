@@ -948,6 +948,58 @@ function handleKeyPress(event) {
     }
 }
 
+function exportHistoryToCSV() {
+    if (appState.questions.length === 0) {
+        alert("No history to export.");
+        return;
+    }
+
+    // 1. Prepare CSV Header
+    const csvHeader = [
+        "Category",
+        "Type",
+        "Premises",
+        "Conclusion",
+        "User Answer",
+        "Correct Answer",
+        "Response Time (s)",
+        "Modifiers",
+        "Timestamp"  // Add timestamp for easy sorting
+    ].join(",") + "\n";
+
+    // 2. Format Data to CSV
+    const csvRows = appState.questions.map(question => {
+        const category = question.category.replace(/"/g, '""'); // Escape double quotes
+        const type = question.type;
+        const premises = question.premises.join('; ').replace(/"/g, '""');
+        const conclusion = question.conclusion.replace(/"/g, '""');
+        const userAnswer = question.answerUser === undefined ? "MISSED" : (question.answerUser ? "TRUE" : "FALSE");
+        const correctAnswer = question.isValid ? "TRUE" : "FALSE";
+        const responseTime = question.timeElapsed !== undefined ? (question.timeElapsed / 1000).toFixed(2) : "";  //Convert to seconds. Handle undefined for older saved data.
+        const modifiers = question.modifiers ? question.modifiers.join('; ') : '';
+        const timestamp = question.startedAt; // Unix timestamp
+
+        return `"${category}","${type}","${premises}","${conclusion}","${userAnswer}","${correctAnswer}","${responseTime}","${modifiers}", "${timestamp}"`;
+    });
+
+    // 3. Combine Header and Rows
+    const csvContent = csvHeader + csvRows.join("\n");
+
+    // 4. Create Download Link (Data URL)
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+
+    // 5. Create and Trigger Download
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "syllogimous_history.csv");
+    link.style.visibility = 'hidden'; // Make the link invisible
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);  // Clean up
+    URL.revokeObjectURL(url);
+}
+
 document.addEventListener("keydown", handleKeyPress);
 
 registerEventHandlers();
