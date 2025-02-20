@@ -1004,8 +1004,21 @@ function exportHistoryToCSV() {
         const responseTime = question.timeElapsed !== undefined ? (question.timeElapsed / 1000).toFixed(2) : "";
         // Get timer status from timerRunning state
         const timerOn = question.timerWasRunning === true ? "TRUE" : "FALSE";
-        const timestamp = question.startedAt; // Unix timestamp
-        return `"${category}","${type}","${numPremises}","${premises}","${conclusion}","${userAnswer}","${correctAnswer}","${responseTime}","${timerOn}","${timestamp}"`;
+        
+        // Convert timestamp to human-readable format without milliseconds
+        let formattedTimestamp = "";
+        if (question.startedAt) {
+            const date = new Date(question.startedAt);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            formattedTimestamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        }
+        
+        return `"${category}","${type}","${numPremises}","${premises}","${conclusion}","${userAnswer}","${correctAnswer}","${responseTime}","${timerOn}","${formattedTimestamp}"`;
     });
     
     // 3. Combine Header and Rows
