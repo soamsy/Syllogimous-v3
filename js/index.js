@@ -625,9 +625,22 @@ function wowFeedback() {
     }
 }
 
+function getCurrentProfileName() {
+    try {
+        const profileInput = document.getElementById('profile-input');
+        if (profileInput && profileInput.value) {
+            return profileInput.value.trim() || "Default";
+        }
+    } catch (error) {
+    }
+    
+    // Default fallback
+    return "Default";
+}
+
 function storeQuestionAndSave() {
-    // Mark if the timer was running when this question was answered
     question.timerWasRunning = timerRunning;
+    question.profileName = getCurrentProfileName();
     
     appState.questions.push(question);
     if (timerToggle.checked) {
@@ -1034,7 +1047,6 @@ function cleanPremiseText(text) {
     return result;
 }
 
-// Update the exportHistoryToCSV function
 function exportHistoryToCSV() {
     // Combine current and archived questions for export
     const allQuestions = [...(appState.archivedQuestions || []), ...appState.questions];
@@ -1046,6 +1058,7 @@ function exportHistoryToCSV() {
     
     // 1. Prepare CSV Header
     const csvHeader = [
+        "Profile",
         "Category",
         "Type",
         "Number of Premises",
@@ -1060,6 +1073,9 @@ function exportHistoryToCSV() {
     
     // 2. Format Data to CSV
     const csvRows = allQuestions.map(question => {
+
+        const profileName = (question.profileName || "Default").replace(/"/g, '""');
+        
         const category = question.category.replace(/"/g, '""');
         const type = question.type;
         const numPremises = question.premises.length;
@@ -1076,8 +1092,6 @@ function exportHistoryToCSV() {
         const responseTime = question.timeElapsed !== undefined ? (question.timeElapsed / 1000).toFixed(2) : "";
         const timerOn = question.timerWasRunning === true ? "TRUE" : "FALSE";
         
-        // Removed the unused raw premises line
-        
         // Convert timestamp to human-readable format without milliseconds
         let formattedTimestamp = "";
         if (question.startedAt) {
@@ -1091,7 +1105,7 @@ function exportHistoryToCSV() {
             formattedTimestamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
         }
         
-        return `"${category}","${type}","${numPremises}","${cleanedPremises}","${cleanedConclusion}","${userAnswer}","${correctAnswer}","${responseTime}","${timerOn}","${formattedTimestamp}"`;
+        return `"${profileName}","${category}","${type}","${numPremises}","${cleanedPremises}","${cleanedConclusion}","${userAnswer}","${correctAnswer}","${responseTime}","${timerOn}","${formattedTimestamp}"`;
     });
     
     // 3. Combine Header and Rows
