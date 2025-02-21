@@ -270,7 +270,6 @@ button.export-csv-button:hover {
     z-index: -1;
     width: 100%;
     height: 100%;
-    background-image: repeating-conic-gradient(#000000 0% 25%, #202020 0% 50%);
     background-size: 2px 2px;
     opacity: 35%;
 }
