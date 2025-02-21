@@ -31,6 +31,15 @@ const COMMON_TYPES_TABLE = COMMON_TYPES.reduce((acc, types) => {
 
 const progressTracker = document.getElementById("progress-tracker");
 
+function findSuccessCriteria() {
+    return Math.max(50, Math.min(savedata.autoProgressionPercentSuccess, 100));
+}
+
+function findFailureCriteria() {
+    const failureCriteria = Math.max(0, Math.min(savedata.autoProgressionPercentFail, 99));
+    return Math.min(failureCriteria, findSuccessCriteria());
+}
+
 class ProgressStore {
     calculateKey(question) {
         return this.calculateKeyFromCustomType(question, question.type);
@@ -93,16 +102,15 @@ class ProgressStore {
         const averageTime = successes.map(s => s.timeElapsed / 1000).reduce((a, b) => a + b) / successes.length;
         if (averageTime <= savedata.autoProgressionGoal || newTimerValue <= savedata.autoProgressionGoal) {
             savedata[overridePremiseSetting] = q.premises + 1;
-            savedata[overrideTimerSetting] = savedata.autoProgressionGoal + 20;
+            savedata[overrideTimerSetting] = savedata.autoProgressionGoal + 15;
         } else {
             savedata[overrideTimerSetting] = newTimerValue;
         }
     }
 
     fail(q, trailingProgress, successes, type) {
-        const ratio = successes.length / trailingProgress.length;
         const [overridePremiseSetting, overrideTimerSetting] = TYPE_TO_OVERRIDES[type];
-        const newTimerValue = q.countdown + (ratio <= 0.5 ? 10 : 5);
+        const newTimerValue = q.countdown + 5;
         if (newTimerValue > savedata.autoProgressionGoal + 25) {
             if (q.premises > 2) {
                 savedata[overridePremiseSetting] = q.premises - 1;
@@ -116,14 +124,15 @@ class ProgressStore {
     }
 
     async determineLevelChange(q) {
-        let trailingProgress = await getTopRRTProgress(this.calculateCommonKeys(q), 19);
+        let trailingProgress = await getTopRRTProgress(this.calculateCommonKeys(q), savedata.autoProgressionTrailing - 1);
         trailingProgress.push(q);
         trailingProgress.sort((a, b) => a.timeElapsed - b.timeElapsed);
         const successes = trailingProgress.filter(p => p.correctness === 'right');
         const commonTypes = COMMON_TYPES_TABLE[q.type] || [q.type];
-        if (trailingProgress.length < 20) {
+        if (trailingProgress.length < savedata.autoProgressionTrailing) {
             const numFailures = trailingProgress.length - successes.length;
-            if (numFailures >= 7) {
+            const bestPercentagePossible = 100 * (savedata.autoProgressionTrailing - numFailures) / savedata.autoProgressionTrailing;
+            if (bestPercentagePossible <= findFailureCriteria()) {
                 for (const type of commonTypes) {
                     this.fail(q, trailingProgress, successes, type);
                 }
@@ -132,12 +141,11 @@ class ProgressStore {
             return;
         }
         for (const type of commonTypes) {
-            if (18 <= successes.length) {
+            const percentageRight = 100 * successes.length / savedata.autoProgressionTrailing;
+            if (percentageRight >= findSuccessCriteria()) {
                 this.success(q, trailingProgress, successes, type);
                 q.didTriggerProgress = true;
-            } else if (14 <= successes.length) {
-                continue;
-            } else {
+            } else if (percentageRight <= findFailureCriteria()) {
                 this.fail(q, trailingProgress, successes, type);
                 q.didTriggerProgress = true;
             }
@@ -147,17 +155,19 @@ class ProgressStore {
 
     async renderCurrentProgress(question) {
         const q = this.convertForDatabase(question);
-        let trailingProgress = await getTopRRTProgress(this.calculateCommonKeys(q), 20);
+        let trailingProgress = await getTopRRTProgress(this.calculateCommonKeys(q), savedata.autoProgressionTrailing);
         progressTracker.innerHTML = '';
         if (!savedata.autoProgression) {
             progressTracker.classList.remove('visible');
             return;
         } 
         progressTracker.classList.add('visible');
+        const width = 100 / savedata.autoProgressionTrailing;
         trailingProgress.forEach(q => {
             const isSuccess = q.correctness === 'right';
             const span = document.createElement('span');
             span.classList.add('trailing-dot');
+            span.style.width = `${width.toFixed(2)}%`;
             span.classList.add(isSuccess ? 'success' : 'fail');
             progressTracker.appendChild(span);
         });
