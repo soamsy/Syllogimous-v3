@@ -199,27 +199,41 @@ function displayInit() {
 function defaultBackgroundImage() {
     const fileInput = document.getElementById('image-upload');
     fileInput.value = '';
+
+    // Remove solid background settings
+    delete appState.useSolidBackground;
+    delete appState.solidBackgroundColor;
     delete appState.backgroundImage;
-    imageChanged = true;
+
+    // Reset the inline styles on backgroundDiv
+    backgroundDiv.style.backgroundImage = '';  // Clear inline style
+    backgroundDiv.style.backgroundColor = '';  // Clear inline style
+
     save();
-    imagePromise = imagePromise.then(() => deleteImage(imageKey));
-    imagePromise = imagePromise.then(() => updateCustomStyles());
+	updateCustomStyles();
 }
 
 function resetBackgroundColor() {
-    appState.gameAreaColor = "#1A1A1AFF"; 
+    appState.gameAreaColor = "#1A1A1AFF"; // Reset to the default game area color
     document.getElementById('color-input').value = appState.gameAreaColor;
     save();
-    imagePromise = imagePromise.then(() => updateCustomStyles());
+    updateCustomStyles(); // Only updateCustomStyles is needed here, not init()
 }
 
 function removeImage() {
     const fileInput = document.getElementById('image-upload');
     fileInput.value = '';
-    delete appState.backgroundImage; //Remove the image from memory
-    save();
-    imagePromise = imagePromise.then(() => deleteImage(imageKey)).then(() => updateCustomStyles());
-    imageChanged = true; //Ensure the change takes effect immediately.
+    delete appState.backgroundImage; // Remove the image URL
+
+    // Set a flag to indicate we want a solid color.  We'll use a dedicated flag
+    // rather than relying on the absence of backgroundImage.
+    appState.useSolidBackground = true;
+    appState.solidBackgroundColor = '#000000'; // Or any default color
+
+    backgroundDiv.style.backgroundImage = 'none'; // Remove existing image
+    backgroundDiv.style.backgroundColor = appState.solidBackgroundColor; // Apply the color
+
+    save(); // Persist the changes
 }
 
 function getDefaultBackgroundColor() {
@@ -285,9 +299,13 @@ function handleFastUiChange(event) {
 
 async function updateCustomStyles() {
     let styles = '';
-    //if (imageChanged) { // Removed this check
-    if (appState.backgroundImage) {
-        //Only do the background load if backgroundImage is not null
+
+    if (appState.useSolidBackground) {
+        // If the flag is set, use the solid color.
+        backgroundDiv.style.backgroundImage = 'none';
+        backgroundDiv.style.backgroundColor = appState.solidBackgroundColor;
+    } else if (appState.backgroundImage) {
+        // If there's an image key, load it.
         const base64String = await getImage(imageKey);
         if (base64String) {
             const [prefix, base64Data] = base64String.split(',');
@@ -307,8 +325,7 @@ async function updateCustomStyles() {
     } else {
         backgroundDiv.style.backgroundImage = ``;
     }
-//   imageChanged = false; // No longer needed here
-    //} //Removed this bracket
+
     if (liveStyles.innerHTML !== styles) {
         liveStyles.innerHTML = styles;
     }
