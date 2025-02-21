@@ -206,6 +206,38 @@ function clearBackgroundImage() {
     imagePromise = imagePromise.then(() => updateCustomStyles());
 }
 
+function resetBackgroundColor() {
+    appState.gameAreaColor = "#1A1A1AFF"; // Or whatever your initial default is
+    document.getElementById('color-input').value = appState.gameAreaColor;
+    save();
+    imagePromise = imagePromise.then(() => updateCustomStyles());
+}
+
+function removeImage() {
+    const fileInput = document.getElementById('image-upload');
+    fileInput.value = '';
+    delete appState.backgroundImage; //Remove the image from memory
+    save();
+    imagePromise = imagePromise.then(() => deleteImage(imageKey)).then(() => updateCustomStyles());
+    imageChanged = true; //Ensure the change takes effect immediately.
+}
+
+function getDefaultBackgroundColor() {
+    // Create a temporary element to apply the CSS class
+    const tempElement = document.createElement('div');
+    tempElement.className = 'background-image';
+    tempElement.style.display = 'none'; // Hide it from view
+    document.body.appendChild(tempElement); // Required for getComputedStyle
+
+    // Get the computed background-color style
+    const defaultColor = window.getComputedStyle(tempElement).backgroundColor;
+
+    // Remove the temporary element
+    document.body.removeChild(tempElement);
+
+    return defaultColor;
+}
+
 function handleImageChange(event) {
     const file = event.target.files[0];
     if (file) {

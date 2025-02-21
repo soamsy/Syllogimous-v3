@@ -421,7 +421,10 @@
 								  <input type="file" id="image-upload" onchange="handleImageChange(event)" accept="image/*">
 								</span>
 							</div>
-							<button onclick="clearBackgroundImage()" style="float:right;">Clear Image</button>
+							<div style="float:right;">
+								<button onclick="clearBackgroundImage()">Clear Image</button>
+								<button onclick="removeImage()">Remove Image</button> <!-- New button -->
+							</div>
 						</div>
 						<div class="mb-1">
 							<div class="inline-input__outer">
@@ -430,6 +433,7 @@
 								  <input type="text" id="color-input" placeholder="Enter color (e.g. #ff0000)" value="#161F30CC" oninput="handleColorChange(event)"></input>
 								</span>
 							</div>
+							<button onclick="resetBackgroundColor()">Reset Color</button> <!-- Renamed button -->
 						</div>
 						<div class="mb-2 ux-customize">
 							<div class="ctrl__inner">
