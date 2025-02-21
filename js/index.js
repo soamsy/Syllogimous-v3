@@ -196,7 +196,7 @@ function displayInit() {
     imagePromise = imagePromise.then(() => updateCustomStyles());
 }
 
-function clearBackgroundImage() {
+function defaultBackgroundImage() {
     const fileInput = document.getElementById('image-upload');
     fileInput.value = '';
     delete appState.backgroundImage;
@@ -207,7 +207,7 @@ function clearBackgroundImage() {
 }
 
 function resetBackgroundColor() {
-    appState.gameAreaColor = "#1A1A1AFF"; // Or whatever your initial default is
+    appState.gameAreaColor = "#1A1A1AFF"; 
     document.getElementById('color-input').value = appState.gameAreaColor;
     save();
     imagePromise = imagePromise.then(() => updateCustomStyles());
