@@ -281,7 +281,8 @@ button.export-csv-button:hover {
     z-index: -2;
     width: 100%;
     height: 100%;
-    background-color: #000c;
+    background-color: #000c; /* Keep this for fallback */
+    background-image: url('../img/default-background.jpg'); /* Add this line!  Use the correct path */
     background-size: cover;
     background-position: center;
     filter: brightness(0.50);

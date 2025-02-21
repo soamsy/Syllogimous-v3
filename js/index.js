@@ -253,29 +253,30 @@ function handleFastUiChange(event) {
 
 async function updateCustomStyles() {
     let styles = '';
-    if (imageChanged) {
-        if (appState.backgroundImage) {
-            const base64String = await getImage(imageKey);
-            if (base64String) {
-                const [prefix, base64Data] = base64String.split(',');
-                const mimeType = prefix.match(/data:(.*?);base64/)[1];
-                const binary = atob(base64Data);
-                const len = binary.length;
-                const bytes = new Uint8Array(len);
-                for (let i = 0; i < len; i++) {
-                    bytes[i] = binary.charCodeAt(i);
-                }
-
-                const blob = new Blob([bytes], { type: mimeType });
-                const objectURL = URL.createObjectURL(blob);
-
-                backgroundDiv.style.backgroundImage = `url(${objectURL})`;
+    //if (imageChanged) { // Removed this check
+    if (appState.backgroundImage) {
+        //Only do the background load if backgroundImage is not null
+        const base64String = await getImage(imageKey);
+        if (base64String) {
+            const [prefix, base64Data] = base64String.split(',');
+            const mimeType = prefix.match(/data:(.*?);base64/)[1];
+            const binary = atob(base64Data);
+            const len = binary.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binary.charCodeAt(i);
             }
-        } else {
-            backgroundDiv.style.backgroundImage = ``;
+
+            const blob = new Blob([bytes], { type: mimeType });
+            const objectURL = URL.createObjectURL(blob);
+
+            backgroundDiv.style.backgroundImage = `url(${objectURL})`;
         }
-        imageChanged = false;
+    } else {
+        backgroundDiv.style.backgroundImage = ``;
     }
+//   imageChanged = false; // No longer needed here
+    //} //Removed this bracket
     if (liveStyles.innerHTML !== styles) {
         liveStyles.innerHTML = styles;
     }
