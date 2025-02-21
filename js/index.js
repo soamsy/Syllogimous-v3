@@ -203,14 +203,14 @@ function defaultBackgroundImage() {
     // Remove solid background settings
     delete appState.useSolidBackground;
     delete appState.solidBackgroundColor;
-    delete appState.backgroundImage;
+    delete appState.backgroundImage; // Correctly remove image
 
     // Reset the inline styles on backgroundDiv
     backgroundDiv.style.backgroundImage = '';  // Clear inline style
     backgroundDiv.style.backgroundColor = '';  // Clear inline style
 
     save();
-	updateCustomStyles();
+	updateCustomStyles();  // Call this to apply the changes
 }
 
 function resetBackgroundColor() {
@@ -234,6 +234,7 @@ function removeImage() {
     backgroundDiv.style.backgroundColor = appState.solidBackgroundColor; // Apply the color
 
     save(); // Persist the changes
+    updateCustomStyles(); // Update to reflect changes
 }
 
 function getDefaultBackgroundColor() {
@@ -255,18 +256,23 @@ function getDefaultBackgroundColor() {
 function handleImageChange(event) {
     const file = event.target.files[0];
     if (file) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            const base64String = event.target.result;
-            appState.backgroundImage = imageKey;
-            imagePromise = imagePromise.then(() => storeImage(imageKey, base64String));
-            imageChanged = true;
-            save();
-            init();
-        };
-        reader.readAsDataURL(file);
+      // 1. Reset the flag: We're now using an image, not a solid color.
+      appState.useSolidBackground = false;
+      delete appState.solidBackgroundColor; // Also remove this
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const base64String = event.target.result;
+        appState.backgroundImage = imageKey; // Keep storing in appState
+        imagePromise = storeImage(imageKey, base64String).then(() => {
+          // 2. Update styles *after* the image is stored (using await ensures this).
+          imageChanged = true;
+          updateCustomStyles();
+          save();
+        });
+      };
+      reader.readAsDataURL(file);
     }
-}
+  }
 
 function populateAppearanceSettings() {
     document.getElementById('color-input').value = appState.gameAreaColor;
@@ -299,39 +305,32 @@ function handleFastUiChange(event) {
 
 async function updateCustomStyles() {
     let styles = '';
-
     if (appState.useSolidBackground) {
-        // If the flag is set, use the solid color.
         backgroundDiv.style.backgroundImage = 'none';
         backgroundDiv.style.backgroundColor = appState.solidBackgroundColor;
-    } else if (appState.backgroundImage) {
-        // If there's an image key, load it.
-        const base64String = await getImage(imageKey);
-        if (base64String) {
-            const [prefix, base64Data] = base64String.split(',');
-            const mimeType = prefix.match(/data:(.*?);base64/)[1];
-            const binary = atob(base64Data);
-            const len = binary.length;
-            const bytes = new Uint8Array(len);
-            for (let i = 0; i < len; i++) {
-                bytes[i] = binary.charCodeAt(i);
+    }
+    else if (appState.backgroundImage) {
+        // Only load the image if not using a solid background.
+        try {
+            const base64String = await getImage(appState.backgroundImage);
+            if (base64String) {
+                backgroundDiv.style.backgroundImage = `url(${base64String})`;
+                backgroundDiv.style.backgroundColor = ''; // Clear any previous solid color
+            } else {
+                defaultBackgroundImage(); // Handles the case where image might be deleted from DB
             }
-
-            const blob = new Blob([bytes], { type: mimeType });
-            const objectURL = URL.createObjectURL(blob);
-
-            backgroundDiv.style.backgroundImage = `url(${objectURL})`;
+        } catch (error) {
+            console.error("Error loading image:", error);
+            defaultBackgroundImage(); // Fallback if loading fails.
         }
     } else {
-        backgroundDiv.style.backgroundImage = ``;
-    }
-
-    if (liveStyles.innerHTML !== styles) {
-        liveStyles.innerHTML = styles;
+        // Reset to default background
+        backgroundDiv.style.backgroundImage = '';
+        backgroundDiv.style.backgroundColor = '';
     }
 
     const gameAreaColor = appState.gameAreaColor;
-    const gameAreaImage = `${gameAreaColor}`
+    const gameAreaImage = `linear-gradient(0deg, ${gameAreaColor}, ${gameAreaColor})`
     if (gameArea.style.background !== gameAreaImage) {
         gameArea.style.background = '';
         gameArea.style.background = gameAreaImage;
@@ -549,26 +548,31 @@ function generateQuestion() {
 function init() {
     stopCountDown();
     question = generateQuestion();
-    console.log("Correct answer:", question.isValid); 
+    console.log("Correct answer:", question.isValid);
     if (!question) {
         return;
     }
+
     // Initialize the timer status property
     question.timerWasRunning = false;
-    
+
     if (coinFlip()) {
         switchButtons();
     }
+
     stopCountDown();
     if (timerToggled) {
         startCountDown();
     } else {
         renderTimerBar();
     }
+
     carouselInit();
     displayInit();
     PROGRESS_STORE.renderCurrentProgress(question);
     renderConclusionSpoiler();
+    // No need to call updateCustomStyles() here, init() is not async.
+    // imagePromise = imagePromise.then(() => updateCustomStyles());  REMOVE THIS
 }
 
 function renderConclusionSpoiler() {
@@ -1182,3 +1186,4 @@ registerEventHandlers();
 load();
 switchButtons();
 init();
+updateCustomStyles();

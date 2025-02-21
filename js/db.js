@@ -41,6 +41,8 @@ const storeImage = async (id, image) => {
     });
 };
 
+// js/db.js (Modified - Only the `getImage` function needs change)
+
 const getImage = async (id) => {
     const db = await initDB();
 
@@ -50,7 +52,17 @@ const getImage = async (id) => {
 
         const request = store.get(id);
 
-        request.onsuccess = (event) => resolve(event.target.result?.value);
+        request.onsuccess = (event) => {
+            // The key change here is in onsuccess
+            const result = event.target.result;
+            if (result && result.value) {
+                // Return the base64 string directly; don't create a blob here
+                resolve(result.value);
+            } else {
+                resolve(null); // Resolve with null if no image is found
+            }
+        };
+
         request.onerror = (event) => reject(event.target.error);
     });
 };
