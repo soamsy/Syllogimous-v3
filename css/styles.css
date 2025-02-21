@@ -538,14 +538,14 @@ input[type="number"]::-moz-inner-spin-button {
 }
 
 .confirmation-true {
-    background-color: #090!important;
+    background-color: rgba(37, 203, 37, 0.753)!important;
 }
 .confirmation-true:hover {
     box-shadow: 0 3px 5px 0 #0908!important;
 }
 
 .confirmation-false {
-    background-color: #900!important;
+    background-color: rgba(216, 32, 32, 0.788)!important;
 }
 .confirmation-false:hover {
     box-shadow: 0 3px 5px 0 #9008!important;
