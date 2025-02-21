@@ -285,7 +285,7 @@ button.export-csv-button:hover {
     background-image: url('../img/default-background.jpg'); /* Add this line!  Use the correct path */
     background-size: cover;
     background-position: center;
-    filter: brightness(0.50);
+    filter: brightness(0.50) blur(4px); /* Added blur filter here! */
 }
 
 .metal-gear {
