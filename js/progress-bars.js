@@ -99,70 +99,56 @@ class ProgressTracker {
     this.createWeeklyProgressBar();
   }
 
-  // Create the daily progress bar element
-  createDailyProgressBar() {
+// Update the container creation functions to append to main-view instead of body
+createDailyProgressBar() {
     const container = document.createElement('div');
     container.className = 'progress-container daily-progress-container';
     container.innerHTML = `
-      <div class="progress-label">Daily</div>
       <div class="progress-bar-vertical">
+        <div class="progress-content">
+          <div class="progress-label">DAILY</div>
+          <div class="progress-value">0/${this.settings.dailyTarget}</div>
+        </div>
         <div class="progress-fill"></div>
       </div>
-      <div class="progress-value">0/${this.settings.dailyTarget}m</div>
     `;
-    document.body.appendChild(container);
-
-    // Position between SETTINGS and INFO
-    container.style.position = 'fixed';
-    container.style.left = '10px';
-    container.style.top = '50%';
-    container.style.transform = 'translateY(-50%)';
-    container.style.zIndex = '100';
+    document.querySelector('.main-view').appendChild(container);
     
     this.dailyProgressElement = container.querySelector('.progress-fill');
     this.dailyProgressValueElement = container.querySelector('.progress-value');
     
-    // Update display
     this.updateDailyProgressDisplay();
   }
-
-  // Create the weekly progress bar element
+  
   createWeeklyProgressBar() {
     const container = document.createElement('div');
     container.className = 'progress-container weekly-progress-container';
     container.innerHTML = `
-      <div class="progress-label">Weekly</div>
       <div class="progress-bar-vertical">
+        <div class="progress-content">
+          <div class="progress-label">WEEKLY</div>
+          <div class="progress-value">0/${this.settings.weeklyTarget}</div>
+        </div>
         <div class="progress-fill"></div>
       </div>
-      <div class="progress-value">0/${this.settings.weeklyTarget}m</div>
     `;
-    document.body.appendChild(container);
-
-    // Position between HISTORY and GRAPH
-    container.style.position = 'fixed';
-    container.style.right = '10px';
-    container.style.top = '50%';
-    container.style.transform = 'translateY(-50%)';
-    container.style.zIndex = '100';
+    document.querySelector('.main-view').appendChild(container);
     
     this.weeklyProgressElement = container.querySelector('.progress-fill');
     this.weeklyProgressValueElement = container.querySelector('.progress-value');
     
-    // Update display
     this.updateWeeklyProgressDisplay();
   }
-
-  // Update the daily progress bar display
+  
+  // Update the display functions to remove 'm' since space is tighter
   updateDailyProgressDisplay() {
     const today = this.getDateString();
     const minutes = this.dailyProgress[today] || 0;
     const percentage = Math.min(100, (minutes / this.settings.dailyTarget) * 100);
     
     this.dailyProgressElement.style.height = `${percentage}%`;
-    this.dailyProgressValueElement.textContent = `${Math.round(minutes)}/${this.settings.dailyTarget}m`;
+    this.dailyProgressValueElement.textContent = `${Math.round(minutes)}/${this.settings.dailyTarget}`;
     
-    // Add color class based on progress
     this.dailyProgressElement.className = 'progress-fill';
     if (percentage >= 100) {
       this.dailyProgressElement.classList.add('complete');
@@ -170,17 +156,15 @@ class ProgressTracker {
       this.dailyProgressElement.classList.add('halfway');
     }
   }
-
-  // Update the weekly progress bar display
+  
   updateWeeklyProgressDisplay() {
     const currentWeek = this.getWeekString();
     const minutes = this.weeklyProgress[currentWeek] || 0;
     const percentage = Math.min(100, (minutes / this.settings.weeklyTarget) * 100);
     
     this.weeklyProgressElement.style.height = `${percentage}%`;
-    this.weeklyProgressValueElement.textContent = `${Math.round(minutes)}/${this.settings.weeklyTarget}m`;
+    this.weeklyProgressValueElement.textContent = `${Math.round(minutes)}/${this.settings.weeklyTarget}`;
     
-    // Add color class based on progress
     this.weeklyProgressElement.className = 'progress-fill';
     if (percentage >= 100) {
       this.weeklyProgressElement.classList.add('complete');
@@ -226,60 +210,110 @@ class ProgressTracker {
 
 // Create CSS for progress bars
 function setupProgressBarStyles() {
-  const style = document.createElement('style');
-  style.textContent = `
-    .progress-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      color: #eddb7e;
-      font-family: "Espionage", sans-serif;
-      text-shadow: 0 0 10px rgba(237, 219, 126, 0.7);
-    }
-    
-    .progress-label {
-      margin-bottom: 5px;
-      font-size: 14px;
-      letter-spacing: 1px;
-    }
-    
-    .progress-bar-vertical {
-      height: 200px;
-      width: 20px;
-      background: rgba(0, 0, 0, 0.5);
-      border: 2px solid #3c6c64;
-      border-radius: 4px;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .progress-fill {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      background-color: #2bdef9;
-      box-shadow: 0 0 10px rgba(43, 222, 249, 0.7);
-      transition: height 0.5s ease;
-    }
-    
-    .progress-fill.halfway {
-      background-color: #4aa39a;
-      box-shadow: 0 0 10px rgba(74, 163, 154, 0.7);
-    }
-    
-    .progress-fill.complete {
-      background-color: #eddb7e;
-      box-shadow: 0 0 10px rgba(237, 219, 126, 0.7);
-    }
-    
-    .progress-value {
-      margin-top: 5px;
-      font-size: 12px;
-      font-family: monospace;
-    }
-  `;
-  document.head.appendChild(style);
-}
+    const style = document.createElement('style');
+    style.textContent = `
+      .progress-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 100;
+        font-family: "Espionage", sans-serif;
+      }
+  
+      .main-view .progress-container.daily-progress-container {
+        left: 0;
+      }
+  
+      .main-view .progress-container.weekly-progress-container {
+        right: 0;
+      }
+      
+      .progress-bar-vertical {
+        height: 400px;
+        width: 24px;
+        background: rgba(0, 0, 0, 0.5);
+        border: 2px solid #3c6c64;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .progress-fill {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        background-color: #2bdef9;
+        box-shadow: 0 0 10px rgba(43, 222, 249, 0.7);
+        transition: height 0.5s ease;
+      }
+      
+      .progress-fill.halfway {
+        background-color: #4aa39a;
+        box-shadow: 0 0 10px rgba(74, 163, 154, 0.7);
+      }
+      
+      .progress-fill.complete {
+        background-color: #eddb7e;
+        box-shadow: 0 0 10px rgba(237, 219, 126, 0.7);
+      }
+  
+      .progress-content {
+        writing-mode: vertical-lr;
+        transform: rotate(180deg);
+        position: absolute;
+        z-index: 1;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 0;
+        pointer-events: none;
+        color: rgba(255, 255, 255, 0.8);
+        text-shadow: 0 0 3px rgba(0, 0, 0, 0.7);
+      }
+  
+      .progress-label {
+        font-size: 14px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+      
+      .progress-value {
+        font-family: "Lato", sans-serif;
+        font-size: 13px;
+        white-space: nowrap;
+        color: rgba(255, 255, 255, 0.9);
+        text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+      }
+  
+      @media (max-width: 768px) {
+        .progress-bar-vertical {
+          height: 300px;
+          width: 20px;
+        }
+  
+        .progress-content {
+          padding: 8px 0;
+        }
+  
+        .progress-label {
+          font-size: 12px;
+        }
+  
+        .progress-value {
+          font-size: 11px;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
 
 // Initialize progress tracking when the window loads
 window.addEventListener('load', () => {
