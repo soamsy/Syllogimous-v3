@@ -9,6 +9,7 @@ const PROGRESS_SETTINGS_KEY = 'sllgms-v3-progress-settings';
 const DEFAULT_SETTINGS = {
   dailyTarget: 30, // in minutes
   weeklyTarget: 90, // in minutes
+  includeUntimed: true
 };
 
 class ProgressTracker {
@@ -35,12 +36,12 @@ class ProgressTracker {
     const today = this.getDateString();
     const stored = localStorage.getItem(DAILY_PROGRESS_KEY);
     const progress = stored ? JSON.parse(stored) : {};
-    
+
     // Initialize today's progress if not present
     if (!progress[today]) {
       progress[today] = 0;
     }
-    
+
     return progress;
   }
 
@@ -54,12 +55,12 @@ class ProgressTracker {
     const currentWeek = this.getWeekString();
     const stored = localStorage.getItem(WEEKLY_PROGRESS_KEY);
     const progress = stored ? JSON.parse(stored) : {};
-    
+
     // Initialize current week's progress if not present
     if (!progress[currentWeek]) {
       progress[currentWeek] = 0;
     }
-    
+
     return progress;
   }
 
@@ -79,17 +80,17 @@ class ProgressTracker {
     const now = new Date();
     const dateString = now.toISOString().slice(0, 10);
     const date = new Date(dateString);
-    
+
     // Find the previous Sunday
     const day = date.getDay();
     const diff = date.getDate() - day;
     const sunday = new Date(date);
     sunday.setDate(diff);
-    
+
     // Get week number (1-53)
     const startOfYear = new Date(sunday.getFullYear(), 0, 1);
     const weekNumber = Math.ceil(((sunday - startOfYear) / 86400000 + 1) / 7);
-    
+
     return `${sunday.getFullYear()}-${String(weekNumber).padStart(2, '0')}`;
   }
 
@@ -99,8 +100,8 @@ class ProgressTracker {
     this.createWeeklyProgressBar();
   }
 
-// Update the container creation functions to append to main-view instead of body
-createDailyProgressBar() {
+  // Update the container creation functions to append to main-view instead of body
+  createDailyProgressBar() {
     const container = document.createElement('div');
     container.className = 'progress-container daily-progress-container';
     container.innerHTML = `
@@ -113,13 +114,13 @@ createDailyProgressBar() {
       </div>
     `;
     document.querySelector('.main-view').appendChild(container);
-    
+
     this.dailyProgressElement = container.querySelector('.progress-fill');
     this.dailyProgressValueElement = container.querySelector('.progress-value');
-    
+
     this.updateDailyProgressDisplay();
   }
-  
+
   createWeeklyProgressBar() {
     const container = document.createElement('div');
     container.className = 'progress-container weekly-progress-container';
@@ -133,22 +134,22 @@ createDailyProgressBar() {
       </div>
     `;
     document.querySelector('.main-view').appendChild(container);
-    
+
     this.weeklyProgressElement = container.querySelector('.progress-fill');
     this.weeklyProgressValueElement = container.querySelector('.progress-value');
-    
+
     this.updateWeeklyProgressDisplay();
   }
-  
+
   // Update the display functions to remove 'm' since space is tighter
   updateDailyProgressDisplay() {
     const today = this.getDateString();
     const minutes = this.dailyProgress[today] || 0;
     const percentage = Math.min(100, (minutes / this.settings.dailyTarget) * 100);
-    
+
     this.dailyProgressElement.style.height = `${percentage}%`;
     this.dailyProgressValueElement.textContent = `${Math.round(minutes)}/${this.settings.dailyTarget}`;
-    
+
     this.dailyProgressElement.className = 'progress-fill';
     if (percentage >= 100) {
       this.dailyProgressElement.classList.add('complete');
@@ -156,15 +157,15 @@ createDailyProgressBar() {
       this.dailyProgressElement.classList.add('halfway');
     }
   }
-  
+
   updateWeeklyProgressDisplay() {
     const currentWeek = this.getWeekString();
     const minutes = this.weeklyProgress[currentWeek] || 0;
     const percentage = Math.min(100, (minutes / this.settings.weeklyTarget) * 100);
-    
+
     this.weeklyProgressElement.style.height = `${percentage}%`;
     this.weeklyProgressValueElement.textContent = `${Math.round(minutes)}/${this.settings.weeklyTarget}`;
-    
+
     this.weeklyProgressElement.className = 'progress-fill';
     if (percentage >= 100) {
       this.weeklyProgressElement.classList.add('complete');
@@ -174,26 +175,31 @@ createDailyProgressBar() {
   }
 
   // Add time spent to the progress trackers
-  addTimeSpent(minutes) {
+  addTimeSpent(minutes, wasTimedQuestion = true) {
+    // Skip if question was untimed and setting is disabled
+    if (!wasTimedQuestion && !this.settings.includeUntimed) {
+      return;
+    }
+
     const today = this.getDateString();
     const currentWeek = this.getWeekString();
-    
+
     // Update daily progress
     if (!this.dailyProgress[today]) {
       this.dailyProgress[today] = 0;
     }
     this.dailyProgress[today] += minutes;
-    
+
     // Update weekly progress
     if (!this.weeklyProgress[currentWeek]) {
       this.weeklyProgress[currentWeek] = 0;
     }
     this.weeklyProgress[currentWeek] += minutes;
-    
+
     // Save to localStorage
     this.saveDailyProgress();
     this.saveWeeklyProgress();
-    
+
     // Update displays
     this.updateDailyProgressDisplay();
     this.updateWeeklyProgressDisplay();
@@ -210,8 +216,8 @@ createDailyProgressBar() {
 
 // Create CSS for progress bars
 function setupProgressBarStyles() {
-    const style = document.createElement('style');
-    style.textContent = `
+  const style = document.createElement('style');
+  style.textContent = `
       .progress-container {
         display: flex;
         flex-direction: column;
@@ -222,15 +228,15 @@ function setupProgressBarStyles() {
         z-index: 100;
         font-family: "Espionage", sans-serif;
       }
-  
+
       .main-view .progress-container.daily-progress-container {
         left: 0;
       }
-  
+
       .main-view .progress-container.weekly-progress-container {
         right: 0;
       }
-      
+
       .progress-bar-vertical {
         height: 400px;
         width: 24px;
@@ -242,7 +248,7 @@ function setupProgressBarStyles() {
         align-items: center;
         justify-content: center;
       }
-      
+
       .progress-fill {
         position: absolute;
         bottom: 0;
@@ -251,17 +257,17 @@ function setupProgressBarStyles() {
         box-shadow: 0 0 10px rgba(43, 222, 249, 0.7);
         transition: height 0.5s ease;
       }
-      
+
       .progress-fill.halfway {
         background-color: #4aa39a;
         box-shadow: 0 0 10px rgba(74, 163, 154, 0.7);
       }
-      
+
       .progress-fill.complete {
         background-color: #eddb7e;
         box-shadow: 0 0 10px rgba(237, 219, 126, 0.7);
       }
-  
+
       .progress-content {
         writing-mode: vertical-lr;
         transform: rotate(180deg);
@@ -278,13 +284,13 @@ function setupProgressBarStyles() {
         color: rgba(255, 255, 255, 0.8);
         text-shadow: 0 0 3px rgba(0, 0, 0, 0.7);
       }
-  
+
       .progress-label {
         font-size: 14px;
         letter-spacing: 1px;
         text-transform: uppercase;
       }
-      
+
       .progress-value {
         font-family: "Lato", sans-serif;
         font-size: 13px;
@@ -292,44 +298,89 @@ function setupProgressBarStyles() {
         color: rgba(255, 255, 255, 0.9);
         text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
       }
-  
+
       @media (max-width: 768px) {
         .progress-bar-vertical {
           height: 300px;
           width: 20px;
         }
-  
+
         .progress-content {
           padding: 8px 0;
         }
-  
+
         .progress-label {
           font-size: 12px;
         }
-  
+
         .progress-value {
           font-size: 11px;
         }
       }
     `;
-    document.head.appendChild(style);
-  }
+  document.head.appendChild(style);
+}
 
 // Initialize progress tracking when the window loads
 window.addEventListener('load', () => {
   setupProgressBarStyles();
   window.progressTracker = new ProgressTracker();
-  
+
   // Hook into the existing game logic to track time spent
   const originalStoreQuestionAndSave = storeQuestionAndSave;
   window.storeQuestionAndSave = function() {
     // Call original function
     originalStoreQuestionAndSave.apply(this, arguments);
-    
+
     // Add time spent to progress tracker
     if (question && question.timeElapsed) {
       const minutesSpent = question.timeElapsed / (1000 * 60);
-      window.progressTracker.addTimeSpent(minutesSpent);
+      const wasTimedQuestion = question.timerWasRunning;
+      window.progressTracker.addTimeSpent(minutesSpent, wasTimedQuestion);
     }
   };
+});
+
+// Update the settings UI handler in your script
+document.addEventListener('DOMContentLoaded', function() {
+  const dailyTargetInput = document.getElementById('daily-target');
+  const weeklyTargetInput = document.getElementById('weekly-target');
+  const includeUntimedCheckbox = document.getElementById('include-untimed');
+
+  if (dailyTargetInput && weeklyTargetInput && includeUntimedCheckbox) {
+    // Load saved values when available
+    const loadSettings = function() {
+      const settings = localStorage.getItem(PROGRESS_SETTINGS_KEY);
+      if (settings) {
+        const parsed = JSON.parse(settings);
+        dailyTargetInput.value = parsed.dailyTarget || 30;
+        weeklyTargetInput.value = parsed.weeklyTarget || 90;
+        includeUntimedCheckbox.checked = parsed.includeUntimed ?? true;
+      }
+    };
+
+    // Set up change handlers
+    const updateSettings = function() {
+      if (window.progressTracker) {
+        window.progressTracker.updateSettings({
+          dailyTarget: parseInt(dailyTargetInput.value) || 30,
+          weeklyTarget: parseInt(weeklyTargetInput.value) || 90,
+          includeUntimed: includeUntimedCheckbox.checked
+        });
+      }
+    };
+
+    dailyTargetInput.addEventListener('change', updateSettings);
+    weeklyTargetInput.addEventListener('change', updateSettings);
+    includeUntimedCheckbox.addEventListener('change', updateSettings);
+
+    loadSettings();
+
+    const checkTracker = setInterval(function() {
+      if (window.progressTracker) {
+        updateSettings();
+        clearInterval(checkTracker);
+      }
+    }, 500);
+  }
 });
