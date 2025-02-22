@@ -236,6 +236,9 @@ function pickBaseWord(neighbors, branchesAllowed, bannedFromBranching=[]) {
     if (savedata.enableConnectionBranching === false) {
         branchesAllowed = false;
     }
+    if (Object.values(neighbors).filter(list => list.length == 3).length >= 2) {
+        branchesAllowed = false;
+    }
     const options = Object.keys(neighbors);
     const neighborLimit = (!branchesAllowed || options.length <= 3) ? 1 : 2;
     let pool = [];
@@ -254,6 +257,13 @@ function pickBaseWord(neighbors, branchesAllowed, bannedFromBranching=[]) {
         if (neighbors[word] && neighbors[word].length == 1) {
             pool.push(word);
             pool.push(word);
+            if (options.length >= 6) {
+                pool.push(word);
+                pool.push(word);
+                pool.push(word);
+                pool.push(word);
+                pool.push(word);
+            }
         }
     }
     const baseWord = pickRandomItems(pool, 1).picked[0];
