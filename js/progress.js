@@ -1,5 +1,5 @@
 const TYPE_TO_OVERRIDES = {
-    "distinction"  : [ "overrideLinearPremises"     , "overrideLinearTime" ],
+    "distinction"  : [ "overrideDistinctionPremises", "overrideDistinctionTime" ],
     "comparison"   : [ "overrideLinearPremises"     , "overrideLinearTime" ],
     "linear"       : [ "overrideLinearPremises"     , "overrideLinearTime" ],
     "temporal"     : [ "overrideTemporalPremises"   , "overrideTemporalTime" ],
@@ -53,8 +53,16 @@ class ProgressStore {
         return key;
     }
 
+    findCommonTypes(question) {
+        if (savedata.autoProgressionGrouping === 'simple') {
+            return COMMON_TYPES_TABLE[question.type] || [question.type];
+        } else {
+            return [question.type];
+        }
+    }
+
     calculateCommonKeys(question) {
-        const types = COMMON_TYPES_TABLE[question.type] || [question.type];
+        const types = this.findCommonTypes(question);
         types.sort();
         return types.map(type => this.calculateKeyFromCustomType(question, type));
     }
@@ -126,7 +134,7 @@ class ProgressStore {
         trailingProgress.push(q);
         trailingProgress.sort((a, b) => a.timeElapsed - b.timeElapsed);
         const successes = trailingProgress.filter(p => p.correctness === 'right');
-        const commonTypes = COMMON_TYPES_TABLE[q.type] || [q.type];
+        const commonTypes = this.findCommonTypes(question);
         if (trailingProgress.length < savedata.autoProgressionTrailing) {
             const numFailures = trailingProgress.length - successes.length;
             const bestPercentagePossible = 100 * (savedata.autoProgressionTrailing - numFailures) / savedata.autoProgressionTrailing;
@@ -136,6 +144,7 @@ class ProgressStore {
                 }
                 q.didTriggerProgress = true;
             }
+            populateSettings();
             return;
         }
         for (const type of commonTypes) {

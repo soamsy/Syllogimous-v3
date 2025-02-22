@@ -107,6 +107,14 @@ function registerEventHandlers() {
                 init();
             });
         }
+
+        if (input.type === "select-one") {
+            input.addEventListener("change", evt => {
+                savedata[value] = input.value;
+                save();
+                init();
+            })
+        }
     }
 }
 
@@ -152,6 +160,8 @@ function populateSettings() {
             }
         }
         else if (input.type === "text") {
+            input.value = value;
+        } else if (input.type === "select-one") {
             input.value = value;
         }
     }

@@ -1540,6 +1540,29 @@ table.distinction {
     gap: 6px;
 }
 
+.form-select {
+    background-color: #191919;
+    color: white;
+    border: 1px solid #AAA;
+    padding: 5px;
+    padding-right: 30px;
+    font-size: 16px;
+    border-radius: 2px;
+    appearance: none;
+    cursor: pointer;
+    width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 5px center;
+    background-size: 20px;
+}
+
+.form-select:hover, .form-select:focus {
+    border-color: #666;
+}
+
 .settings-gear {
     cursor: pointer;
     display: flex;

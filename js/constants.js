@@ -82,6 +82,7 @@ let savedata = {
     "autoProgressionTrailing": 20,
     "autoProgressionPercentSuccess": 90,
     "autoProgressionPercentFail": 65,
+    "autoProgressionGrouping": 'simple',
     "spoilerConclusion": false,
     "enableBacktrackingLinear": false,
     "minimalMode": false,
@@ -153,6 +154,7 @@ const compressedSettings = {
     "autoProgressionTrailing": "autoT",
     "autoProgressionPercentSuccess": "autoS",
     "autoProgressionPercentFail": "autoF",
+    "autoProgressionGrouping": 'autoG',
     "spoilerConclusion": "spoiler",
     "enableBacktrackingComparison": "backC",
     "enableBacktrackingTemporal": "backT",
@@ -229,6 +231,7 @@ const keySettingMap = {
     "p-49": "autoProgressionTrailing",
     "p-50": "autoProgressionPercentSuccess",
     "p-51": "autoProgressionPercentFail",
+    "p-52": "autoProgressionGrouping",
 };
 
 const meaningfulWords = {
