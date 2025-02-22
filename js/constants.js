@@ -13,7 +13,7 @@ let appState = {
     "isExperimentalOpen": false,
     "isLegacyOpen": false,
     "sfx": "none",
-    "fastUi": false,
+    "fastUi": true,
     "staticButtons": false,
 };
 
