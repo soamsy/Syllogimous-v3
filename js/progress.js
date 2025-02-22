@@ -38,6 +38,10 @@ function findFailureCriteria() {
     return Math.min(failureCriteria, findSuccessCriteria());
 }
 
+function findAutoProgressionTrailing() {
+    return Math.max(5, Math.min(savedata.autoProgressionTrailing, 50));
+}
+
 class ProgressStore {
     calculateKey(question) {
         return this.calculateKeyFromCustomType(question, question.type);
@@ -130,14 +134,14 @@ class ProgressStore {
     }
 
     async determineLevelChange(q) {
-        let trailingProgress = await getTopRRTProgress(this.calculateCommonKeys(q), savedata.autoProgressionTrailing - 1);
+        let trailingProgress = await getTopRRTProgress(this.calculateCommonKeys(q), findAutoProgressionTrailing() - 1);
         trailingProgress.push(q);
         trailingProgress.sort((a, b) => a.timeElapsed - b.timeElapsed);
         const successes = trailingProgress.filter(p => p.correctness === 'right');
         const commonTypes = this.findCommonTypes(question);
-        if (trailingProgress.length < savedata.autoProgressionTrailing) {
+        if (trailingProgress.length < findAutoProgressionTrailing()) {
             const numFailures = trailingProgress.length - successes.length;
-            const bestPercentagePossible = 100 * (savedata.autoProgressionTrailing - numFailures) / savedata.autoProgressionTrailing;
+            const bestPercentagePossible = 100 * (findAutoProgressionTrailing() - numFailures) / findAutoProgressionTrailing();
             if (bestPercentagePossible <= findFailureCriteria()) {
                 for (const type of commonTypes) {
                     this.fail(q, trailingProgress, successes, type);
@@ -148,7 +152,7 @@ class ProgressStore {
             return;
         }
         for (const type of commonTypes) {
-            const percentageRight = 100 * successes.length / savedata.autoProgressionTrailing;
+            const percentageRight = 100 * successes.length / findAutoProgressionTrailing();
             if (percentageRight >= findSuccessCriteria()) {
                 this.success(q, trailingProgress, successes, type);
                 q.didTriggerProgress = true;
@@ -162,14 +166,14 @@ class ProgressStore {
 
     async renderCurrentProgress(question) {
         const q = this.convertForDatabase(question);
-        let trailingProgress = await getTopRRTProgress(this.calculateCommonKeys(q), savedata.autoProgressionTrailing);
+        let trailingProgress = await getTopRRTProgress(this.calculateCommonKeys(q), findAutoProgressionTrailing());
         progressTracker.innerHTML = '';
         if (!savedata.autoProgression) {
             progressTracker.classList.remove('visible');
             return;
         } 
         progressTracker.classList.add('visible');
-        const width = 100 / savedata.autoProgressionTrailing;
+        const width = 100 / findAutoProgressionTrailing();
         trailingProgress.forEach(q => {
             const isSuccess = q.correctness === 'right';
             const span = document.createElement('span');
