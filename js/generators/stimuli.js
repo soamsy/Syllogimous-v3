@@ -113,8 +113,14 @@ function createStimuli(numberOfStimuli, usedStimuli) {
     if (savedata.meaningfulWordAdjectives) partsOfSpeech.add('adjectives');
     if (!partsOfSpeech.size) partsOfSpeech.add('nouns');
 
+    let lastStimulusType;
     for (; numberOfStimuli > 0 && stimulusTypes.size; numberOfStimuli -= 1) {
-        const randomStimulusType = Array.from(stimulusTypes)[Math.floor(Math.random() * stimulusTypes.size)];
+        let pool = Array.from(stimulusTypes);
+        if (lastStimulusType && pool.length > 1) {
+            pool = pool.filter(type => type !== lastStimulusType);
+        }
+        const randomStimulusType = pool[Math.floor(Math.random() * pool.length)];
+        lastStimulusType = randomStimulusType;
 
         if (randomStimulusType == 'nonsenseWords') {
             while (true) {
