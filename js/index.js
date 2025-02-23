@@ -489,9 +489,12 @@ function generateQuestion() {
     if (savedata.enableDistinction && !banNormalModes)
         generators.push(() => createSameOpposite(getPremisesFor('overrideDistinctionPremises', quota)));
     if (savedata.enableLinear && !banNormalModes) {
-        for (let i = 0; i < getLinearQuestionsCount(); i++) {
-            generators.push(() => createBasicLinear(getPremisesFor('overrideLinearPremises', quota)));
-        }
+        // Add all linear questions together as a single generator option
+        generators.push(() => {
+            const options = getEnabledLinearWordings().map(type => type);
+            const randomType = options[Math.floor(Math.random() * options.length)];
+            return createBasicLinear(getPremisesFor('overrideLinearPremises', quota));
+        });
     }
     if (savedata.enableSyllogism && !banNormalModes)
         generators.push(() => createSyllogism(getPremisesFor('overrideSyllogismPremises', quota)));
