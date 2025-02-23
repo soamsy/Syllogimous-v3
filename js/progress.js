@@ -1,8 +1,6 @@
 const TYPE_TO_OVERRIDES = {
     "distinction"  : [ "overrideDistinctionPremises", "overrideDistinctionTime" ],
-    "comparison"   : [ "overrideLinearPremises"     , "overrideLinearTime" ],
     "linear"       : [ "overrideLinearPremises"     , "overrideLinearTime" ],
-    "temporal"     : [ "overrideTemporalPremises"   , "overrideTemporalTime" ],
     "syllogism"    : [ "overrideSyllogismPremises"  , "overrideSyllogismTime" ],
     "binary"       : [ "overrideBinaryPremises"     , "overrideBinaryTime" ],
     "space-two-d"  : [ "overrideDirectionPremises"  , "overrideDirectionTime" ],
@@ -11,7 +9,7 @@ const TYPE_TO_OVERRIDES = {
 };
 
 const COMMON_TYPES = [
-    ["comparison", "temporal", "linear", "distinction", "syllogism"],
+    ["linear", "distinction", "syllogism"],
 ]
 
 const COMMON_TYPES_TABLE = COMMON_TYPES.reduce((acc, types) => {
