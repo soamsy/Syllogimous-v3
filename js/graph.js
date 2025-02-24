@@ -25,7 +25,7 @@ class ProgressGraph {
             const isRight = question.correctness === 'right';
             const timeElapsed = question.timeElapsed;
 
-            let type = question.type + (groupByPremises ? ('-' + question.premises) : '');
+            let type = question.type + (groupByPremises ? (' p' + question.premises) : '');
             if (question.modifiers && question.modifiers.length > 0) {
                 type += ` ${question.modifiers.join('-')}`;
             }
