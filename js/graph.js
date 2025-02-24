@@ -16,7 +16,7 @@ class ProgressGraph {
         return `${year}-${month}-${day}`;
     }
 
-    calculateTypeData(data) {
+    calculateTypeData(data, groupByPremises) {
         const groupedByType = {};
 
         data.forEach((question) => {
@@ -24,15 +24,8 @@ class ProgressGraph {
 
             const isRight = question.correctness === 'right';
             const timeElapsed = question.timeElapsed;
-            let bonus = 0;
-            if (isRight) {
-                bonus = Math.max(0, (-timeElapsed / 1000 + 30) / 20);
-            } else {
-                bonus = -0.5;
-            }
-            const score = question.premises + bonus;
 
-            let type = question.type;
+            let type = question.type + (groupByPremises ? ('-' + question.premises) : '');
             if (question.modifiers && question.modifiers.length > 0) {
                 type += ` ${question.modifiers.join('-')}`;
             }
@@ -45,10 +38,10 @@ class ProgressGraph {
             }
 
             if (!groupedByType[type][day]) {
-                groupedByType[type][day] = { totalScore: 0, count: 0 };
+                groupedByType[type][day] = { totalTime: 0, count: 0 };
             }
 
-            groupedByType[type][day].totalScore += score;
+            groupedByType[type][day].totalTime += timeElapsed;
             groupedByType[type][day].count += 1;
         });
 
@@ -57,10 +50,8 @@ class ProgressGraph {
             result[type] = [];
             for (const day in groupedByType[type]) {
                 const count = groupedByType[type][day].count;
-                const averageScore = groupedByType[type][day].totalScore / count;
-                result[type].push({ day, count, score: averageScore });
-            }
-            for (const day in groupedByType[type]) {
+                const averageTime = groupedByType[type][day].totalTime / count;
+                result[type].push({ day, count, averageTime: averageTime / 1000 });
             }
             result[type].sort((a, b) => new Date(a.day) - new Date(b.day));
         }
@@ -110,14 +101,16 @@ class ProgressGraph {
         if (!data || data.length === 0) {
             return;
         }
-        const typeData = this.calculateTypeData(data);
+        const typeData = this.calculateTypeData(data, false);
+        const premiseLevelData = this.calculateTypeData(data, true);
 
         const labels = Object.values(typeData)[0].map((entry) => entry.day);
+        const premiseLevelLabels = Object.values(premiseLevelData)[0].map((entry) => entry.day);
 
-        const scoreDatasets = Object.keys(typeData).map((type) => {
+        const scoreDatasets = Object.keys(premiseLevelData).map((type) => {
             return {
                 label: type,
-                data: typeData[type].map((entry) => ({ x: entry.day, y: entry.score })),
+                data: premiseLevelData[type].map((entry) => ({ x: entry.day, y: entry.averageTime })),
                 borderColor: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
                 fill: false,
             };
@@ -141,7 +134,7 @@ class ProgressGraph {
         }];
 
         const scoreCtx = canvasScore.getContext('2d');
-        this.scoreChart = this.createChart(scoreCtx, labels, scoreDatasets, 'Score');
+        this.scoreChart = this.createChart(scoreCtx, premiseLevelLabels, scoreDatasets, 'Average Time');
         const countCtx = canvasCount.getContext('2d');
         this.countChart = this.createChart(countCtx, labels, countDatasets, 'Count', 0, 0);
         const timeCtx = canvasTime.getContext('2d');
