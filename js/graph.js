@@ -134,14 +134,14 @@ class ProgressGraph {
         }];
 
         const scoreCtx = canvasScore.getContext('2d');
-        this.scoreChart = this.createChart(scoreCtx, premiseLevelLabels, scoreDatasets, 'Average Time');
+        this.scoreChart = this.createChart(scoreCtx, premiseLevelLabels, scoreDatasets, 'Average Time (s)', 1, 2, 's');
         const countCtx = canvasCount.getContext('2d');
         this.countChart = this.createChart(countCtx, labels, countDatasets, 'Count', 0, 0);
         const timeCtx = canvasTime.getContext('2d');
         this.timeChart = this.createChart(timeCtx, labels, timeDatasets, 'Time Spent');
     }
 
-    createChart(ctx, labels, datasets, yAxisTitle, tickDecimals = 1, tooltipDecimals = 2) {
+    createChart(ctx, labels, datasets, yAxisTitle, tickDecimals = 1, tooltipDecimals = 2, unit='') {
         return new Chart(ctx, {
             type: 'line',
             data: {
@@ -183,7 +183,7 @@ class ProgressGraph {
                         callbacks: {
                             label: function(tooltipItem) {
                                 let value = tooltipItem.raw;
-                                return `${tooltipItem.dataset.label}: ${value.y.toFixed(2)}`;
+                                return `${tooltipItem.dataset.label}: ${value.y.toFixed(2)}${unit}`;
                             }
                         }
                     }
