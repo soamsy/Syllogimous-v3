@@ -23,6 +23,9 @@ class ProgressGraph {
             const day = this.findDay(question);
 
             const isRight = question.correctness === 'right';
+            if (groupByPremises && !isRight) {
+                return;
+            }
             const timeElapsed = question.timeElapsed;
 
             let type = question.type + (groupByPremises ? (' p' + question.premises) : '');
@@ -134,7 +137,7 @@ class ProgressGraph {
         }];
 
         const scoreCtx = canvasScore.getContext('2d');
-        this.scoreChart = this.createChart(scoreCtx, premiseLevelLabels, scoreDatasets, 'Average Time (s)', 1, 2, 's');
+        this.scoreChart = this.createChart(scoreCtx, premiseLevelLabels, scoreDatasets, 'Average Correct Time (s)', 1, 2, 's');
         const countCtx = canvasCount.getContext('2d');
         this.countChart = this.createChart(countCtx, labels, countDatasets, 'Count', 0, 0);
         const timeCtx = canvasTime.getContext('2d');
