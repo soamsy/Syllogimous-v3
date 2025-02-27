@@ -1535,9 +1535,13 @@ table.distinction {
 
 #progression-dropdown {
     font-size: var(--step--2);
-    right: -4rem;
+    right: -2.5rem;
     width: 15rem;
     gap: 6px;
+}
+
+#linear-dropdown {
+    left: -2.5rem;
 }
 
 .form-select {
