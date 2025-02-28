@@ -14,7 +14,7 @@ let appState = {
     "isLegacyOpen": false,
     "sfx": "none",
     "fastUi": true,
-    "staticButtons": false,
+    "staticButtons": true,
 };
 
 let savedata = {
