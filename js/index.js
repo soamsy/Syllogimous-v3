@@ -430,7 +430,8 @@ function generateQuestion() {
         savedata.enableLinear,
         savedata.enableDirection,
         savedata.enableDirection3D,
-        savedata.enableDirection4D
+        savedata.enableDirection4D,
+        savedata.enableAnchorSpace
     ].reduce((a, c) => a + +c, 0) > 0;
 
     const binaryEnable = [
@@ -447,29 +448,28 @@ function generateQuestion() {
     quota = Math.min(quota, maxStimuliAllowed());
 
     const banNormalModes = savedata.onlyAnalogy || savedata.onlyBinary;
-    if (savedata.enableDistinction && !banNormalModes)
-        generators.push(() => createSameOpposite(getPremisesFor('overrideDistinctionPremises', quota)));
-    if (savedata.enableLinear && !banNormalModes) {
-        for (let i = 0; i < getLinearQuestionsCount(); i++) {
-            generators.push(() => createBasicLinear(getPremisesFor('overrideLinearPremises', quota)));
-        }
+    if (!banNormalModes) {
+        if (savedata.enableDistinction)
+            generators.push(createDistinctionGenerator(quota));
+        if (savedata.enableLinear)
+            generators.push(...createLinearGenerators(quota));
+        if (savedata.enableSyllogism)
+            generators.push(createSyllogismGenerator(quota));
+        if (savedata.enableDirection)
+            generators.push(createDirectionGenerator(quota));
+        if (savedata.enableDirection3D)
+            generators.push(createDirection3DGenerator(quota));
+        if (savedata.enableDirection4D)
+            generators.push(createDirection4DGenerator(quota));
+        if (savedata.enableAnchorSpace)
+            generators.push(createAnchorSpaceGenerator(quota));
     }
-    if (savedata.enableSyllogism && !banNormalModes)
-        generators.push(() => createSyllogism(getPremisesFor('overrideSyllogismPremises', quota)));
-    if (savedata.enableDirection && !banNormalModes)
-        generators.push(() => createDirectionQuestion(getPremisesFor('overrideDirectionPremises', quota)));
-    if (savedata.enableDirection3D && !banNormalModes)
-        generators.push(() => createDirectionQuestion3D(getPremisesFor('overrideDirection3DPremises', quota)));
-    if (savedata.enableDirection4D && !banNormalModes)
-        generators.push(() => createDirectionQuestion4D(getPremisesFor('overrideDirection4DPremises', quota)));
-    if (savedata.enableAnchorSpace && !banNormalModes)
-        generators.push(() => createDirectionQuestionAnchor(getPremisesFor('overrideAnchorSpacePremises', quota)));
     if (
      savedata.enableAnalogy
      && !savedata.onlyBinary
      && analogyEnable
     ) {
-        generators.push(() => createSameDifferent(quota));
+        generators.push(createAnalogyGenerator(quota));
     }
 
     const binaryQuota = getPremisesFor('overrideBinaryPremises', quota);
@@ -479,9 +479,9 @@ function generateQuestion() {
      && binaryEnable
     ) {
         if ((savedata.maxNestedBinaryDepth ?? 1) <= 1)
-            generators.push(() => createBinaryQuestion(binaryQuota));
+            generators.push(createBinaryGenerator(quota));
         else
-            generators.push(() => createNestedBinaryQuestion(binaryQuota));
+            generators.push(createNestedBinaryGenerator(quota));
     }
 
     if (savedata.enableAnalogy && !analogyEnable) {
@@ -498,7 +498,17 @@ function generateQuestion() {
     if (generators.length === 0)
         return;
 
-    let q = generators[Math.floor(Math.random() * generators.length)]();
+    const totalWeight = generators.reduce((sum, item) => sum + item.weight, 0);
+    const randomValue = Math.random() * totalWeight;
+    let cumulativeWeight = 0;
+    let q;
+    for (let generator of generators) {
+        cumulativeWeight += generator.weight;
+        if (randomValue < cumulativeWeight) {
+            q = generator.question.create(generator.premiseCount);
+            break;
+        }
+    }
 
     if (!savedata.removeNegationExplainer && /is-negated/.test(JSON.stringify(q)))
         q.premises.unshift('<span class="negation-explainer">Invert the <span class="is-negated">Red</span> text</span>');

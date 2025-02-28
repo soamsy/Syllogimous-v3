@@ -165,7 +165,7 @@ class DistinctionQuestion {
         };
     }
 
-    createQuestion(length) {
+    create(length) {
         this.generate(length);
 
         let [startWord, endWord] = new DirectionPairChooser().pickTwoDistantWords(this.neighbors);
@@ -195,6 +195,10 @@ class DistinctionQuestion {
     }
 }
 
-function createSameOpposite(length) {
-    return new DistinctionQuestion().createQuestion(length);
+function createDistinctionGenerator(length) {
+    return {
+        question: new DistinctionQuestion(),
+        premiseCount: getPremisesFor('overrideDistinctionPremises', length),
+        weight: savedata.overrideDistinctionWeight,
+    };
 }

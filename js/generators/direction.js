@@ -277,7 +277,7 @@ class DirectionQuestion {
         this.incorrectDirections = new IncorrectDirections();
     }
 
-    createQuestion(length) {
+    create(length) {
         let startWord;
         let endWord;
 
@@ -588,18 +588,34 @@ class DirectionQuestion {
     }
 }
 
-function createDirectionQuestion(length) {
-    return new DirectionQuestion(new Direction2D()).createQuestion(length);
+function createDirectionGenerator(length) {
+    return {
+        question: new DirectionQuestion(new Direction2D()),
+        premiseCount: getPremisesFor('overrideDirectionPremises', length),
+        weight: savedata.overrideDirectionWeight,
+    };
 }
 
-function createDirectionQuestion3D(length) {
-    return new DirectionQuestion(new Direction3D()).createQuestion(length);
+function createDirection3DGenerator(length) {
+    return {
+        question: new DirectionQuestion(new Direction3D()),
+        premiseCount: getPremisesFor('overrideDirection3DPremises', length),
+        weight: savedata.overrideDirection3DWeight,
+    };
 }
 
-function createDirectionQuestion4D(length) {
-    return new DirectionQuestion(new Direction4D()).createQuestion(length);
+function createDirection4DGenerator(length) {
+    return {
+        question: new DirectionQuestion(new Direction4D()),
+        premiseCount: getPremisesFor('overrideDirection4DPremises', length),
+        weight: savedata.overrideDirection4DWeight,
+    };
 }
 
-function createDirectionQuestionAnchor(length) {
-    return new DirectionQuestion(new Direction2D(false, true)).createQuestion(length);
+function createAnchorSpaceGenerator(length) {
+    return {
+        question: new DirectionQuestion(new Direction2D(false, true)),
+        premiseCount: getPremisesFor('overrideAnchorSpacePremises', length),
+        weight: savedata.overrideAnchorSpaceWeight,
+    };
 }
