@@ -4082,7 +4082,7 @@ function twoDToArrow(coord) {
         "-1,-1": `<i class="ci-Arrow_Up_Right_LG"></i>`,
     };
 
-    return arrowMap[coord.slice(0, 2).join(",")] || "";
+    return arrowMap[coord.slice(0, 2).join(",")] || '<i class="ci-Wifi_None"></i>';
 }
 
 function threeDToTriangle(coord) {
@@ -4095,7 +4095,7 @@ function threeDToTriangle(coord) {
     } else if (coord[2] === -1) {
         return '▲';
     } else {
-        return '';
+        return '<i class="ci-Wifi_None"></i>';
     }
 }
 
@@ -4109,7 +4109,7 @@ function fourDToArrow(coord) {
     } else if (coord[3] === -1) {
         return '▶';
     } else {
-        return '';
+        return '<i class="ci-Wifi_None"></i>';
     }
 }
 

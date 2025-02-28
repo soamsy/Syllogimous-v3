@@ -636,6 +636,10 @@ input[type="number"]::-moz-inner-spin-button {
     justify-self: start;
 }
 
+.ci-Wifi_None {
+    visibility: hidden;
+}
+
 .hqli-preamble,
 .hqli-postamble,
 .hqli-transform-header {
