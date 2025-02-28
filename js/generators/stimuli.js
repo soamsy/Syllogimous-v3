@@ -8,7 +8,7 @@ function maxStimuliAllowed() {
             quota = Math.min(quota, (21 ** (savedata.nonsenseWordLength / 2)) * (5 ** (savedata.nonsenseWordLength / 2)));
     }
     if (savedata.useGarbageWords) {
-        quota = Math.min(quota, 20 ** (savedata.garbageWordLength))
+        quota = Math.min(quota, 19 ** (savedata.garbageWordLength))
     }
     if (savedata.useMeaningfulWords) {
         if (savedata.meaningfulWordNouns) quota = Math.min(quota, meaningfulWords.nouns.length);
@@ -40,10 +40,10 @@ function createNonsenseWord() {
 }
 
 function createGarbageWord() {
-    const consonants = ['B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z'];
+    const consonants = ['B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Z'];
     let string = '';
     while (string.length < savedata.garbageWordLength) {
-        const c = consonants[Math.floor(Math.random() * 21)]
+        const c = consonants[Math.floor(Math.random() * consonants.length)]
         if (string.length > 0 && string.endsWith(c)) {
             continue;
         }
