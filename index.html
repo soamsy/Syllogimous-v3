@@ -482,11 +482,12 @@
 						</div>
 						<div class="mb-2 ux-customize">
 							<div class="ctrl__inner">
-								<div>
-									<input hidden id="p-sfx" type="checkbox" onchange="handleSfxChange(event)">
-									<label class="switch" for="p-sfx"></label>
-								</div>
-								<span>Enable SFX</span>
+								<span>SFX</span>
+								<select id="p-sfx" class='select-item' onchange="handleSfxChange(event)">
+							    <option value="none">None</option>
+							    <option value="sfx1">Game-like</option>
+							    <option value="sfx2">Zen</option>
+								</select>
 							</div>
 							<div class="ctrl__inner">
 								<div>

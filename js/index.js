@@ -234,7 +234,7 @@ function handleImageChange(event) {
 
 function populateAppearanceSettings() {
     document.getElementById('color-input').value = appState.gameAreaColor;
-    document.getElementById('p-sfx').checked = appState.sfx === 'sfx1';
+    document.getElementById('p-sfx').value = appState.sfx;
     document.getElementById('p-fast-ui').checked = appState.fastUi;
 }
 
@@ -246,8 +246,7 @@ function handleColorChange(event) {
 }
 
 function handleSfxChange(event) {
-    const isEnabled = event.target.checked;
-    appState.sfx = isEnabled ? 'sfx1' : 'none';
+    appState.sfx = event.target.value;
     save();
     init();
 }
@@ -548,9 +547,17 @@ function renderConclusionSpoiler() {
     }
 }
 
-const successSound = new Audio('sounds/success.mp3');
-const failureSound = new Audio('sounds/failure.mp3');
-const missedSound = new Audio('sounds/missed.mp3');
+const DEFAULT_SOUNDS = {
+    success: { audio: new Audio('sounds/default/success.mp3'), time: 2000},
+    failure: { audio: new Audio('sounds/default/failure.mp3'), time: 1400},
+    missed: { audio: new Audio('sounds/default/missed.mp3'), time: 1400},
+}
+
+const ZEN_SOUNDS = {
+    success: { audio: new Audio('sounds/zen/success.mp3'), time: 2000 },
+    failure: { audio: new Audio('sounds/zen/failure.mp3'), time: 1400 },
+    missed: { audio: new Audio('sounds/zen/missed.mp3'), time: 1400 },
+}
 
 function playSoundFor(sound, duration) {
     sound.currentTime = 0;
@@ -558,9 +565,33 @@ function playSoundFor(sound, duration) {
     sound.play();
 
     setTimeout(() => {
-        sound.pause();
-        sound.currentTime = 0;
-    }, duration);
+        let fadeOut = setInterval(() => {
+            if (sound.volume > 0.10) {
+                sound.volume -= 0.10;
+            } else {
+                clearInterval(fadeOut);
+                sound.pause();
+                sound.currentTime = 0;
+                sound.volume = 0.6;
+            }
+        }, 100);
+    }, duration - 600);
+}
+
+function getCurrentSoundPack() {
+    if (appState.sfx === 'sfx1') {
+        return DEFAULT_SOUNDS;
+    } else if (appState.sfx === 'sfx2') {
+        return ZEN_SOUNDS;
+    }
+    return null;
+}
+
+function playSound(property) {
+    const sounds = getCurrentSoundPack();
+    if (sounds) {
+        playSoundFor(sounds[property].audio, sounds[property].time);
+    }
 }
 
 function removeFastFeedback() {
@@ -587,9 +618,7 @@ function fastFeedback(cb, className) {
 }
 
 function wowFeedbackRight(cb) {
-    if (appState.sfx === 'sfx1') {
-        playSoundFor(successSound, 1400);
-    }
+    playSound('success');
     if (appState.fastUi) {
         fastFeedback(cb, 'right');
     } else {
@@ -603,9 +632,7 @@ function wowFeedbackRight(cb) {
 }
 
 function wowFeedbackWrong(cb) {
-    if (appState.sfx === 'sfx1') {
-        playSoundFor(failureSound, 1400);
-    }
+    playSound('failure');
     if (appState.fastUi) {
         fastFeedback(cb, 'wrong');
     } else {
@@ -619,9 +646,7 @@ function wowFeedbackWrong(cb) {
 }
 
 function wowFeedbackMissed(cb) {
-    if (appState.sfx === 'sfx1') {
-        playSoundFor(missedSound, 1400);
-    }
+    playSound('missed');
     if (appState.fastUi) {
         fastFeedback(cb, 'missed');
     } else {

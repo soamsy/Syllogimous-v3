@@ -430,6 +430,26 @@ input[type="number"]::-moz-inner-spin-button {
     flex-shrink: 1;
 }
 
+.select-item {
+    background-color: #222;
+    color: white;
+    border: 1px solid #444;
+    padding: 8px 10px;
+    border-radius: 2px;
+    cursor: pointer;
+    appearance: none;
+}
+
+.select-item:focus {
+    outline: none;
+    border-color: #888;
+}
+
+.ux-customize {
+    display: flex;
+    justify-content: space-around;
+}
+
 .divider {
     height: 1px; /* Line thickness */
     background-color: #ddd; /* Light gray color */
