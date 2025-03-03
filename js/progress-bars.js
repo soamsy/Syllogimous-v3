@@ -9,7 +9,8 @@ const PROGRESS_SETTINGS_KEY = 'sllgms-v3-progress-settings';
 const DEFAULT_SETTINGS = {
   dailyTarget: 30, // in minutes
   weeklyTarget: 90, // in minutes
-  includeUntimed: true
+  includeUntimed: true,
+  showProgressBars: true // New setting to control progress bar visibility
 };
 
 class ProgressTracker {
@@ -98,6 +99,7 @@ class ProgressTracker {
   setupElements() {
     this.createDailyProgressBar();
     this.createWeeklyProgressBar();
+    this.updateProgressBarVisibility();
   }
 
   // Update the container creation functions to append to main-view instead of body
@@ -117,6 +119,7 @@ class ProgressTracker {
 
     this.dailyProgressElement = container.querySelector('.progress-fill');
     this.dailyProgressValueElement = container.querySelector('.progress-value');
+    this.dailyProgressContainer = container;
 
     this.updateDailyProgressDisplay();
   }
@@ -137,6 +140,7 @@ class ProgressTracker {
 
     this.weeklyProgressElement = container.querySelector('.progress-fill');
     this.weeklyProgressValueElement = container.querySelector('.progress-value');
+    this.weeklyProgressContainer = container;
 
     this.updateWeeklyProgressDisplay();
   }
@@ -205,12 +209,22 @@ class ProgressTracker {
     this.updateWeeklyProgressDisplay();
   }
 
+  // Add a new method to update progress bar visibility
+  updateProgressBarVisibility() {
+    if (this.dailyProgressContainer && this.weeklyProgressContainer) {
+      const display = this.settings.showProgressBars ? 'flex' : 'none';
+      this.dailyProgressContainer.style.display = display;
+      this.weeklyProgressContainer.style.display = display;
+    }
+  }
+
   // Update progress tracker settings
   updateSettings(settings) {
     this.settings = { ...this.settings, ...settings };
     this.saveSettings();
     this.updateDailyProgressDisplay();
     this.updateWeeklyProgressDisplay();
+    this.updateProgressBarVisibility();
   }
 }
 
@@ -346,8 +360,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const dailyTargetInput = document.getElementById('daily-target');
   const weeklyTargetInput = document.getElementById('weekly-target');
   const includeUntimedCheckbox = document.getElementById('include-untimed');
+  const showProgressBarsCheckbox = document.getElementById('show-progress-bars');
 
-  if (dailyTargetInput && weeklyTargetInput && includeUntimedCheckbox) {
+  if (dailyTargetInput && weeklyTargetInput && includeUntimedCheckbox && showProgressBarsCheckbox) {
     // Load saved values when available
     const loadSettings = function() {
       const settings = localStorage.getItem(PROGRESS_SETTINGS_KEY);
@@ -356,6 +371,7 @@ document.addEventListener('DOMContentLoaded', function() {
         dailyTargetInput.value = parsed.dailyTarget || 30;
         weeklyTargetInput.value = parsed.weeklyTarget || 90;
         includeUntimedCheckbox.checked = parsed.includeUntimed ?? true;
+        showProgressBarsCheckbox.checked = parsed.showProgressBars ?? true;
       }
     };
 
@@ -365,7 +381,8 @@ document.addEventListener('DOMContentLoaded', function() {
         window.progressTracker.updateSettings({
           dailyTarget: parseInt(dailyTargetInput.value) || 30,
           weeklyTarget: parseInt(weeklyTargetInput.value) || 90,
-          includeUntimed: includeUntimedCheckbox.checked
+          includeUntimed: includeUntimedCheckbox.checked,
+          showProgressBars: showProgressBarsCheckbox.checked
         });
       }
     };
@@ -373,6 +390,7 @@ document.addEventListener('DOMContentLoaded', function() {
     dailyTargetInput.addEventListener('change', updateSettings);
     weeklyTargetInput.addEventListener('change', updateSettings);
     includeUntimedCheckbox.addEventListener('change', updateSettings);
+    showProgressBarsCheckbox.addEventListener('change', updateSettings);
 
     loadSettings();
 
