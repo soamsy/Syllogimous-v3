@@ -7,8 +7,8 @@ const PROGRESS_SETTINGS_KEY = 'sllgms-v3-progress-settings';
 
 // Default settings
 const DEFAULT_SETTINGS = {
-  dailyTarget: 30, // in minutes
-  weeklyTarget: 90, // in minutes
+  dailyTarget: 35, // in minutes
+  weeklyTarget: 105, // in minutes
   includeUntimed: true,
   showProgressBars: true // New setting to control progress bar visibility
 };
