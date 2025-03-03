@@ -215,17 +215,6 @@ class ProgressTracker {
       const display = this.settings.showProgressBars ? 'flex' : 'none';
       this.dailyProgressContainer.style.display = display;
       this.weeklyProgressContainer.style.display = display;
-      
-      // Get the main question area
-      const mainView = document.querySelector('.main-view');
-      if (mainView) {
-        // Toggle the class based on visibility
-        if (this.settings.showProgressBars) {
-          mainView.classList.remove('no-progress-bars');
-        } else {
-          mainView.classList.add('no-progress-bars');
-        }
-      }
     }
   }
 
@@ -260,12 +249,6 @@ function setupProgressBarStyles() {
 
       .main-view .progress-container.weekly-progress-container {
         right: 0;
-      }
-
-      /* Add a new class for when progress bars are hidden */
-      .main-view.no-progress-bars {
-        padding-left: 0 !important;
-        padding-right: 0 !important;
       }
 
       .progress-bar-vertical {
