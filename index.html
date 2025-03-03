@@ -89,9 +89,6 @@
 										<br>
 										Only applies when the<br>
 										timer is active.<br>
-										<br>
-										Space questions are tracked<br>
-										separately from normal questions.<br>
 									</div>
 								</div>
 								<span class="dropdown-settings">
@@ -120,6 +117,12 @@
 											<span class="inline-premise-spinner">
 												<input id="p-51" type="number" placeholder="" value="65" min="0" max="99" style="width: 5ch">%
 											</span>
+										</div>
+										<div class="dropdown-item">
+											<select id="p-52" name="progression-grouping" class="form-select ffmono">
+											  <option value="simple">Progress all simple questions together</option>
+											  <option value="separate">Only progress linear questions together</option>
+											</select>
 										</div>
 									</div>
 								</span>
@@ -296,6 +299,10 @@
 									Time
 									<span class="inline-premise-spinner"><input id="p-1-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">sec</span>
 								</span>
+								<span class="single-input">
+									Priority
+									<span class="inline-premise-spinner"><input id="p-53" type="number" placeholder="" min="1" max="9999" value="100" style="width: 6ch">%</span>
+								</span>
 							</div>
 						</div>
 						<div class="mb-1">
@@ -308,25 +315,32 @@
 								<span class="dropdown-settings">
 									<a id="linear-settings-button" class="settings-gear"><img src="img/gear-solid.svg" alt="Settings Icon" width="20" height="20"></a>
 									<div id="linear-dropdown" class="dropdown">
+										<div class="dropdown-item" style="flex-direction: row-reverse; padding: 0 1rem;">
+											<span>Priority</span>
+										</div>
 										<div class="dropdown-item">
 											<input hidden id="p-leftright" type="checkbox">
 											<label class="switch" for="p-leftright"></label>
 											Left/Right
+											<span class="inline-premise-spinner"><input id="p-54" type="number" placeholder="" min="1" max="9999" value="100" style="width: 6ch">%</span>
 										</div>
 										<div class="dropdown-item">
 											<input hidden id="p-topunder" type="checkbox">
 											<label class="switch" for="p-topunder"></label>
 											Top/Under
+											<span class="inline-premise-spinner"><input id="p-55" type="number" placeholder="" min="1" max="9999" value="100" style="width: 6ch">%</span>
 										</div>
 										<div class="dropdown-item">
 											<input hidden id="p-comparison" type="checkbox">
 											<label class="switch" for="p-comparison"></label>
 											Comparison
+											<span class="inline-premise-spinner"><input id="p-56" type="number" placeholder="" min="1" max="9999" value="100" style="width: 6ch">%</span>
 										</div>
 										<div class="dropdown-item">
 											<input hidden id="p-temporal" type="checkbox">
 											<label class="switch" for="p-temporal"></label>
 											Temporal
+											<span class="inline-premise-spinner"><input id="p-57" type="number" placeholder="" min="1" max="9999" value="100" style="width: 6ch">%</span>
 										</div>
 									</div>
 								</span>
@@ -389,6 +403,10 @@
 									Time
 									<span class="inline-premise-spinner"><input id="p-3-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">sec</span>
 								</span>
+								<span class="single-input">
+									Priority
+									<span class="inline-premise-spinner"><input id="p-58" type="number" placeholder="" min="1" max="9999" value="100" style="width: 6ch">%</span>
+								</span>
 							</div>
 						</div>
 						<hr class="divider"/>
@@ -412,6 +430,10 @@
 									Time
 									<span class="inline-premise-spinner"><input id="p-6-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">sec</span>
 								</span>
+								<span class="single-input">
+									Priority
+									<span class="inline-premise-spinner"><input id="p-59" type="number" placeholder="" min="1" max="9999" value="100" style="width: 6ch">%</span>
+								</span>
 							</div>
 						</div>
 						<div class="mb-1">
@@ -433,6 +455,10 @@
 								<span class="single-input">
 									Time
 									<span class="inline-premise-spinner"><input id="p-12-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">sec</span>
+								</span>
+								<span class="single-input">
+									Priority
+									<span class="inline-premise-spinner"><input id="p-60" type="number" placeholder="" min="1" max="9999" value="100" style="width: 6ch">%</span>
 								</span>
 							</div>
 						</div>
@@ -460,11 +486,12 @@
 						</div>
 						<div class="mb-2 ux-customize">
 							<div class="ctrl__inner">
-								<div>
-									<input hidden id="p-sfx" type="checkbox" onchange="handleSfxChange(event)">
-									<label class="switch" for="p-sfx"></label>
-								</div>
-								<span>Enable SFX</span>
+								<span>SFX</span>
+								<select id="p-sfx" class='select-item' onchange="handleSfxChange(event)">
+							    <option value="none">None</option>
+							    <option value="sfx1">Game-like</option>
+							    <option value="sfx2">Zen</option>
+								</select>
 							</div>
 							<div class="ctrl__inner">
 								<div>
@@ -492,39 +519,6 @@
 										<label class="switch" for="p-48"></label>
 									</div>
 									<span>Minimal Mode</span>
-								</div>
-							</div>
-							<div class="mb-1">
-								<div class="ctrl__inner mb-05">
-									<div>
-										<input hidden id="p-43" type="checkbox">
-										<label class="switch" for="p-43"></label>
-									</div>
-									<span>Enable Anchor Space</span>
-									<span class="tooltip-container" tabindex="0">?
-										<div class="tooltip-text right">
-											Space 2D, but a diamond space<br>
-											starts out filled in with:<br>
-											<div class='anchor-explanation'>
-												<span id='svg-0'></span>
-												<span id='svg-2'></span><span id='svg-1'></span>
-												<span id='svg-3'></span>
-											</div>
-											This is called the anchor,<br>
-											and all relations are built<br>
-											off it.
-										</div>
-									</span>
-								</div>
-								<div class="multi-input">
-									<span class="single-input">
-										Premises
-										<span class="inline-premise-spinner"><input id="p-44-premises" type="number" placeholder="" min="2" max="100" value="" style="width: 5ch">ps</span>
-									</span>
-									<span class="single-input">
-										Time
-										<span class="inline-premise-spinner"><input id="p-45-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">sec</span>
-									</span>
 								</div>
 							</div>
 						</div>
@@ -606,6 +600,43 @@
 								</ul>
 							</div>
 							<div class="mb-1">
+								<div class="ctrl__inner mb-05">
+									<div>
+										<input hidden id="p-43" type="checkbox">
+										<label class="switch" for="p-43"></label>
+									</div>
+									<span>Enable Anchor Space</span>
+									<span class="tooltip-container" tabindex="0">?
+										<div class="tooltip-text right">
+											Space 2D, but a diamond space<br>
+											starts out filled in with:<br>
+											<div class='anchor-explanation'>
+												<span id='svg-0'></span>
+												<span id='svg-2'></span><span id='svg-1'></span>
+												<span id='svg-3'></span>
+											</div>
+											This is called the anchor,<br>
+											and all relations are built<br>
+											off it.
+										</div>
+									</span>
+								</div>
+								<div class="multi-input">
+									<span class="single-input">
+										Premises
+										<span class="inline-premise-spinner"><input id="p-44-premises" type="number" placeholder="" min="2" max="100" value="" style="width: 5ch">ps</span>
+									</span>
+									<span class="single-input">
+										Time
+										<span class="inline-premise-spinner"><input id="p-45-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">sec</span>
+									</span>
+									<span class="single-input">
+										Priority
+										<span class="inline-premise-spinner"><input id="p-62" type="number" placeholder="" min="1" max="9999" value="100" style="width: 6ch">%</span>
+									</span>
+								</div>
+							</div>
+							<div class="mb-1">
 								<div class="ctrl__inner">
 									<div>
 										<input hidden id="p-13" type="checkbox">
@@ -626,8 +657,8 @@
 										<span class="inline-premise-spinner"><input id="p-13-time" type="number" placeholder="" min="1" max="600" value="" style="width: 5ch">sec</span>
 									</span>
 									<span class="single-input">
-										Transforms
-										<span class="inline-premise-spinner"><input id="p-33" type="number" placeholder="" min="0" max="10" value="" style="width: 5ch">lvl</span>
+										Priority
+										<span class="inline-premise-spinner"><input id="p-61" type="number" placeholder="" min="1" max="9999" value="100" style="width: 6ch">%</span>
 									</span>
 								</div>
 							</div>
@@ -635,12 +666,16 @@
 							<div class="mb-1">
 								<div class="multi-input">
 									<span class="single-input">
-										2D Transforms
+										2D
 										<span class="inline-premise-spinner"><input id="p-29" type="number" placeholder="" min="0" max="10" value="" style="width: 5ch">lvl</span>
 									</span>
 									<span class="single-input">
-										3D Transforms
+										3D
 										<span class="inline-premise-spinner"><input id="p-30" type="number" placeholder="" min="0" max="10" value="" style="width: 5ch">lvl</span>
+									</span>
+									<span class="single-input">
+										Space-Time
+										<span class="inline-premise-spinner"><input id="p-33" type="number" placeholder="" min="0" max="10" value="" style="width: 5ch">lvl</span>
 									</span>
 								</div>
 							</div>
@@ -982,8 +1017,8 @@
 		<div id="graph-popup" class="graph-popup">
 			<div class="graph-controls">
 				<button id="graph-select-time" class="graph-select selected">Time Spent (Minutes)</button>
+				<button id="graph-select-score" class="graph-select">Average Correct Times</button>
 				<button id="graph-select-count" class="graph-select">Total Problems Answered</button>
-				<button id="graph-select-score" class="graph-select">Scores</button>
 			</div>
 			<div id="graph-popup-time" class="graph-popup-content visible"><canvas id="graph-canvas-time"></canvas></div>
 			<div id="graph-popup-count" class="graph-popup-content"><canvas id="graph-canvas-count"></canvas></div>

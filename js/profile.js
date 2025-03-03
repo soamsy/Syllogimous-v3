@@ -188,6 +188,11 @@ class ProfileStore {
                 delete savedata[setting];
             }
         }
+        for (const [setting, value] of Object.entries(savedata)) {
+            if (typeof value === "boolean") {
+                savedata[setting] = value ? 1 : 0;
+            }
+        }
         const savedataString = JSON.stringify(savedata);
         const encodedSaveData = encodeURIComponent(savedataString);
         const encodedId = encodeURIComponent(this.generateShortId(10));
@@ -238,6 +243,12 @@ class ProfileStore {
         const savedataObj = JSON.parse(savedataString);
         if (!savedataObj) {
             return;
+        }
+
+        for (const [setting, value] of Object.entries(savedataObj)) {
+            if ((typeof defaultSavedata[setting] === 'boolean') && (typeof value === 'number')) {
+                savedataObj[setting] = value === 1 ? true : false;
+            }
         }
 
         for (const [setting, compressed] of Object.entries(compressedSettings)) {

@@ -77,8 +77,16 @@ class DistinctionQuestion {
         let bucketMap = { [first]: 0 };
         let neighbors = { [first]: [] };
 
+        const chanceOfBranching = {
+            5: 0.60,
+            6: 0.55,
+            7: 0.50,
+            8: 0.45,
+            9: 0.40,
+            10: 0.35,
+        }[words.length] ?? (words.length > 10 ? 0.3 : 0.6);
         for (let i = 1; i < words.length; i++) {
-            const source = pickBaseWord(neighbors, Math.random() < 0.6);
+            const source = pickBaseWord(neighbors, Math.random() < chanceOfBranching);
             const target = words[i];
 
             const key = premiseKey(source, target);
@@ -157,7 +165,7 @@ class DistinctionQuestion {
         };
     }
 
-    createQuestion(length) {
+    create(length) {
         this.generate(length);
 
         let [startWord, endWord] = new DirectionPairChooser().pickTwoDistantWords(this.neighbors);
@@ -187,6 +195,10 @@ class DistinctionQuestion {
     }
 }
 
-function createSameOpposite(length) {
-    return new DistinctionQuestion().createQuestion(length);
+function createDistinctionGenerator(length) {
+    return {
+        question: new DistinctionQuestion(),
+        premiseCount: getPremisesFor('overrideDistinctionPremises', length),
+        weight: savedata.overrideDistinctionWeight,
+    };
 }

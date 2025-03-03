@@ -443,6 +443,26 @@ input[type="number"]::-moz-inner-spin-button {
     flex-shrink: 1;
 }
 
+.select-item {
+    background-color: #222;
+    color: white;
+    border: 1px solid #444;
+    padding: 8px 10px;
+    border-radius: 2px;
+    cursor: pointer;
+    appearance: none;
+}
+
+.select-item:focus {
+    outline: none;
+    border-color: #888;
+}
+
+.ux-customize {
+    display: flex;
+    justify-content: space-around;
+}
+
 .divider {
     height: 1px; /* Line thickness */
     background-color: #ddd; /* Light gray color */
@@ -645,6 +665,10 @@ input[type="number"]::-moz-inner-spin-button {
 .display_text.minimal .formatted-operation > span:nth-child(3),
 .display_text.minimal:not(.complicated-conclusion) .formatted-conclusion > span:nth-child(3) {
     justify-self: start;
+}
+
+.ci-Wifi_None {
+    visibility: hidden;
 }
 
 .hqli-preamble,
@@ -1546,9 +1570,36 @@ table.distinction {
 
 #progression-dropdown {
     font-size: var(--step--2);
-    right: -4rem;
+    right: -2.5rem;
     width: 15rem;
     gap: 6px;
+}
+
+#linear-dropdown {
+    left: -8rem;
+}
+
+.form-select {
+    background-color: #191919;
+    color: white;
+    border: 1px solid #AAA;
+    padding: 5px;
+    padding-right: 30px;
+    font-size: 16px;
+    border-radius: 2px;
+    appearance: none;
+    cursor: pointer;
+    width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 5px center;
+    background-size: 20px;
+}
+
+.form-select:hover, .form-select:focus {
+    border-color: #666;
 }
 
 .settings-gear {

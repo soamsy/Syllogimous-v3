@@ -107,6 +107,14 @@ function registerEventHandlers() {
                 init();
             });
         }
+
+        if (input.type === "select-one") {
+            input.addEventListener("change", evt => {
+                savedata[value] = input.value;
+                save();
+                init();
+            })
+        }
     }
 }
 
@@ -152,6 +160,8 @@ function populateSettings() {
             }
         }
         else if (input.type === "text") {
+            input.value = value;
+        } else if (input.type === "select-one") {
             input.value = value;
         }
     }
@@ -276,7 +286,7 @@ function handleImageChange(event) {
 
 function populateAppearanceSettings() {
     document.getElementById('color-input').value = appState.gameAreaColor;
-    document.getElementById('p-sfx').checked = appState.sfx === 'sfx1';
+    document.getElementById('p-sfx').value = appState.sfx;
     document.getElementById('p-fast-ui').checked = appState.fastUi;
 }
 
@@ -288,8 +298,7 @@ function handleColorChange(event) {
 }
 
 function handleSfxChange(event) {
-    const isEnabled = event.target.checked;
-    appState.sfx = isEnabled ? 'sfx1' : 'none';
+    appState.sfx = event.target.value;
     save();
     init();
 }
@@ -469,7 +478,8 @@ function generateQuestion() {
         savedata.enableLinear,
         savedata.enableDirection,
         savedata.enableDirection3D,
-        savedata.enableDirection4D
+        savedata.enableDirection4D,
+        savedata.enableAnchorSpace
     ].reduce((a, c) => a + +c, 0) > 0;
 
     const binaryEnable = [
@@ -486,32 +496,28 @@ function generateQuestion() {
     quota = Math.min(quota, maxStimuliAllowed());
 
     const banNormalModes = savedata.onlyAnalogy || savedata.onlyBinary;
-    if (savedata.enableDistinction && !banNormalModes)
-        generators.push(() => createSameOpposite(getPremisesFor('overrideDistinctionPremises', quota)));
-    if (savedata.enableLinear && !banNormalModes) {
-        // Add all linear questions together as a single generator option
-        generators.push(() => {
-            const options = getEnabledLinearWordings().map(type => type);
-            const randomType = options[Math.floor(Math.random() * options.length)];
-            return createBasicLinear(getPremisesFor('overrideLinearPremises', quota));
-        });
+    if (!banNormalModes) {
+        if (savedata.enableDistinction)
+            generators.push(createDistinctionGenerator(quota));
+        if (savedata.enableLinear)
+            generators.push(...createLinearGenerators(quota));
+        if (savedata.enableSyllogism)
+            generators.push(createSyllogismGenerator(quota));
+        if (savedata.enableDirection)
+            generators.push(createDirectionGenerator(quota));
+        if (savedata.enableDirection3D)
+            generators.push(createDirection3DGenerator(quota));
+        if (savedata.enableDirection4D)
+            generators.push(createDirection4DGenerator(quota));
+        if (savedata.enableAnchorSpace)
+            generators.push(createAnchorSpaceGenerator(quota));
     }
-    if (savedata.enableSyllogism && !banNormalModes)
-        generators.push(() => createSyllogism(getPremisesFor('overrideSyllogismPremises', quota)));
-    if (savedata.enableDirection && !banNormalModes)
-        generators.push(() => createDirectionQuestion(getPremisesFor('overrideDirectionPremises', quota)));
-    if (savedata.enableDirection3D && !banNormalModes)
-        generators.push(() => createDirectionQuestion3D(getPremisesFor('overrideDirection3DPremises', quota)));
-    if (savedata.enableDirection4D && !banNormalModes)
-        generators.push(() => createDirectionQuestion4D(getPremisesFor('overrideDirection4DPremises', quota)));
-    if (savedata.enableAnchorSpace && !banNormalModes)
-        generators.push(() => createDirectionQuestionAnchor(getPremisesFor('overrideAnchorSpacePremises', quota)));
     if (
      savedata.enableAnalogy
      && !savedata.onlyBinary
      && analogyEnable
     ) {
-        generators.push(() => createSameDifferent(quota));
+        generators.push(createAnalogyGenerator(quota));
     }
 
     const binaryQuota = getPremisesFor('overrideBinaryPremises', quota);
@@ -521,9 +527,9 @@ function generateQuestion() {
      && binaryEnable
     ) {
         if ((savedata.maxNestedBinaryDepth ?? 1) <= 1)
-            generators.push(() => createBinaryQuestion(binaryQuota));
+            generators.push(createBinaryGenerator(quota));
         else
-            generators.push(() => createNestedBinaryQuestion(binaryQuota));
+            generators.push(createNestedBinaryGenerator(quota));
     }
 
     if (savedata.enableAnalogy && !analogyEnable) {
@@ -540,7 +546,17 @@ function generateQuestion() {
     if (generators.length === 0)
         return;
 
-    let q = generators[Math.floor(Math.random() * generators.length)]();
+    const totalWeight = generators.reduce((sum, item) => sum + item.weight, 0);
+    const randomValue = Math.random() * totalWeight;
+    let cumulativeWeight = 0;
+    let q;
+    for (let generator of generators) {
+        cumulativeWeight += generator.weight;
+        if (randomValue < cumulativeWeight) {
+            q = generator.question.create(generator.premiseCount);
+            break;
+        }
+    }
 
     if (!savedata.removeNegationExplainer && /is-negated/.test(JSON.stringify(q)))
         q.premises.unshift('<span class="negation-explainer">Invert the <span class="is-negated">Red</span> text</span>');
@@ -586,9 +602,17 @@ function renderConclusionSpoiler() {
     }
 }
 
-const successSound = new Audio('sounds/success.mp3');
-const failureSound = new Audio('sounds/failure.mp3');
-const missedSound = new Audio('sounds/missed.mp3');
+const DEFAULT_SOUNDS = {
+    success: { audio: new Audio('sounds/default/success.mp3'), time: 2000},
+    failure: { audio: new Audio('sounds/default/failure.mp3'), time: 1400},
+    missed: { audio: new Audio('sounds/default/missed.mp3'), time: 1400},
+}
+
+const ZEN_SOUNDS = {
+    success: { audio: new Audio('sounds/zen/success.mp3'), time: 2000 },
+    failure: { audio: new Audio('sounds/zen/failure.mp3'), time: 1400 },
+    missed: { audio: new Audio('sounds/zen/missed.mp3'), time: 1400 },
+}
 
 function playSoundFor(sound, duration) {
     sound.currentTime = 0;
@@ -596,9 +620,33 @@ function playSoundFor(sound, duration) {
     sound.play();
 
     setTimeout(() => {
-        sound.pause();
-        sound.currentTime = 0;
-    }, duration);
+        let fadeOut = setInterval(() => {
+            if (sound.volume > 0.10) {
+                sound.volume -= 0.10;
+            } else {
+                clearInterval(fadeOut);
+                sound.pause();
+                sound.currentTime = 0;
+                sound.volume = 0.6;
+            }
+        }, 100);
+    }, duration - 600);
+}
+
+function getCurrentSoundPack() {
+    if (appState.sfx === 'sfx1') {
+        return DEFAULT_SOUNDS;
+    } else if (appState.sfx === 'sfx2') {
+        return ZEN_SOUNDS;
+    }
+    return null;
+}
+
+function playSound(property) {
+    const sounds = getCurrentSoundPack();
+    if (sounds) {
+        playSoundFor(sounds[property].audio, sounds[property].time);
+    }
 }
 
 function removeFastFeedback() {
@@ -625,9 +673,7 @@ function fastFeedback(cb, className) {
 }
 
 function wowFeedbackRight(cb) {
-    if (appState.sfx === 'sfx1') {
-        playSoundFor(successSound, 1400);
-    }
+    playSound('success');
     if (appState.fastUi) {
         fastFeedback(cb, 'right');
     } else {
@@ -641,9 +687,7 @@ function wowFeedbackRight(cb) {
 }
 
 function wowFeedbackWrong(cb) {
-    if (appState.sfx === 'sfx1') {
-        playSoundFor(failureSound, 1400);
-    }
+    playSound('failure');
     if (appState.fastUi) {
         fastFeedback(cb, 'wrong');
     } else {
@@ -657,9 +701,7 @@ function wowFeedbackWrong(cb) {
 }
 
 function wowFeedbackMissed(cb) {
-    if (appState.sfx === 'sfx1') {
-        playSoundFor(missedSound, 1400);
-    }
+    playSound('missed');
     if (appState.fastUi) {
         fastFeedback(cb, 'missed');
     } else {

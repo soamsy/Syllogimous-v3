@@ -191,8 +191,16 @@ class LinearQuestion {
         let bucketMap = { [first]: 0 };
         let neighbors = { [first]: [] };
 
+        const chanceOfBranching = {
+            5: 0.60,
+            6: 0.55,
+            7: 0.50,
+            8: 0.45,
+            9: 0.40,
+            10: 0.35,
+        }[words.length] ?? (words.length > 10 ? 0.3 : 0.6);
         for (let i = 1; i < words.length; i++) {
-            const source = pickBaseWord(neighbors, Math.random() < 0.6);
+            const source = pickBaseWord(neighbors, Math.random() < chanceOfBranching);
             const target = words[i];
             const key = premiseKey(source, target);
 
@@ -308,7 +316,7 @@ class LinearQuestion {
         }
     }
 
-    createQuestion(length) {
+    create(length) {
         this.generate(length);
         const countdown = this.getCountdown();
         return {
@@ -333,32 +341,38 @@ class LinearQuestion {
     }
 }
 
-function createLinearQuestion() {
-    const options = getEnabledLinearWordings();
-    if (options.length === 0) {
-        return new LinearQuestion(new LeftRight());
-    }
-
-    const picked = pickRandomItems(options, 1).picked[0];
-    if (picked === 'comparison') {
+function createLinearQuestion(wording) {
+    if (wording === 'comparison') {
         return new LinearQuestion(new MoreLess());
-    } else if (picked === 'temporal') {
+    } else if (wording === 'temporal') {
         return new LinearQuestion(new BeforeAfter());
-    } else if (picked === 'topunder') {
+    } else if (wording === 'topunder') {
         return new LinearQuestion(new TopUnder());
     } else {
         return new LinearQuestion(new LeftRight());
     }
 }
 
-function createBasicLinear(length) {
-    return createLinearQuestion().createQuestion(length);
-}
-
 function getEnabledLinearWordings() {
     return savedata.linearWording.split(',').filter(wording => wording && wording.length > 0);
 }
 
-function getLinearQuestionsCount() {
-    return Math.min(Math.max(1, getEnabledLinearWordings().length), 2);
+function getEnabledLinearWeights() {
+    const wordings = getEnabledLinearWordings();
+    const weights = [
+        [ 'leftright', savedata.overrideLeftRightWeight ],
+        [ 'topunder', savedata.overrideTopUnderWeight ],
+        [ 'comparison', savedata.overrideComparisonWeight ],
+        [ 'temporal', savedata.overrideTemporalWeight ],
+    ].filter(w => wordings.includes(w[0]));
+    return weights;
+}
+
+function createLinearGenerators(length) {
+    length = getPremisesFor("overrideLinearPremises", length);
+    let generators = [];
+    for (const [wording, weight] of getEnabledLinearWeights()) {
+        generators.push({ question: createLinearQuestion(wording), premiseCount: length, weight: weight });
+    }
+    return generators;
 }

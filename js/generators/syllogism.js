@@ -69,7 +69,7 @@ class SyllogismQuestion {
     constructor() {
     }
 
-    createQuestion(length) {
+    create(length) {
         let bucket;
         let isValid;
         let rule;
@@ -132,6 +132,10 @@ class SyllogismQuestion {
     }
 }
 
-function createSyllogism(length) {
-    return new SyllogismQuestion().createQuestion(length);
+function createSyllogismGenerator(length) {
+    return {
+        question: new SyllogismQuestion(),
+        premiseCount: getPremisesFor('overrideSyllogismPremises', length),
+        weight: savedata.overrideSyllogismWeight,
+    };
 }

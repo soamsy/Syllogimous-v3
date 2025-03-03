@@ -13,8 +13,8 @@ let appState = {
     "isExperimentalOpen": false,
     "isLegacyOpen": false,
     "sfx": "none",
-    "fastUi": false,
-    "staticButtons": false,
+    "fastUi": true,
+    "staticButtons": true,
 };
 
 let savedata = {
@@ -64,6 +64,16 @@ let savedata = {
     "overrideDirection3DTime": null,
     "overrideDirection4DTime": null,
     "overrideAnchorSpaceTime": null,
+    "overrideDistinctionWeight": 100,
+    "overrideLeftRightWeight": 100,
+    "overrideTopUnderWeight": 100,
+    "overrideComparisonWeight": 100,
+    "overrideTemporalWeight": 100,
+    "overrideSyllogismWeight": 100,
+    "overrideDirectionWeight": 100,
+    "overrideDirection3DWeight": 100,
+    "overrideDirection4DWeight": 100,
+    "overrideAnchorSpaceWeight": 100,
     "useJunkEmoji": false,
     "useVisualNoise": false,
     "visualNoiseSplits": 5,
@@ -82,6 +92,7 @@ let savedata = {
     "autoProgressionTrailing": 20,
     "autoProgressionPercentSuccess": 90,
     "autoProgressionPercentFail": 65,
+    "autoProgressionGrouping": 'separate',
     "spoilerConclusion": false,
     "enableBacktrackingLinear": false,
     "minimalMode": false,
@@ -135,6 +146,16 @@ const compressedSettings = {
     "overrideDirection3DTime": "dir3DT",
     "overrideDirection4DTime": "dir4DT",
     "overrideAnchorSpaceTime": "ancT",
+    "overrideDistinctionWeight": "distW",
+    "overrideLeftRightWeight": "lrW",
+    "overrideTopUnderWeight": "tuW",
+    "overrideComparisonWeight": "compW",
+    "overrideTemporalWeight": "tempW",
+    "overrideSyllogismWeight": "syllW",
+    "overrideDirectionWeight": "dir2DW",
+    "overrideDirection3DWeight": "dir3DW",
+    "overrideDirection4DWeight": "dir4DW",
+    "overrideAnchorSpaceWeight": "ancW",
     "useJunkEmoji": "junk",
     "useVisualNoise": "vnoise",
     "visualNoiseSplits": "vsplits",
@@ -153,6 +174,7 @@ const compressedSettings = {
     "autoProgressionTrailing": "autoT",
     "autoProgressionPercentSuccess": "autoS",
     "autoProgressionPercentFail": "autoF",
+    "autoProgressionGrouping": 'autoG',
     "spoilerConclusion": "spoiler",
     "enableBacktrackingComparison": "backC",
     "enableBacktrackingTemporal": "backT",
@@ -229,6 +251,17 @@ const keySettingMap = {
     "p-49": "autoProgressionTrailing",
     "p-50": "autoProgressionPercentSuccess",
     "p-51": "autoProgressionPercentFail",
+    "p-52": "autoProgressionGrouping",
+    "p-53": "overrideDistinctionWeight",
+    "p-54": "overrideLeftRightWeight",
+    "p-55": "overrideTopUnderWeight",
+    "p-56": "overrideComparisonWeight",
+    "p-57": "overrideTemporalWeight",
+    "p-58": "overrideSyllogismWeight",
+    "p-59": "overrideDirectionWeight",
+    "p-60": "overrideDirection3DWeight",
+    "p-61": "overrideDirection4DWeight",
+    "p-62": "overrideAnchorSpaceWeight",
 };
 
 const meaningfulWords = {
@@ -4049,7 +4082,7 @@ function twoDToArrow(coord) {
         "-1,-1": `<i class="ci-Arrow_Up_Right_LG"></i>`,
     };
 
-    return arrowMap[coord.slice(0, 2).join(",")] || "";
+    return arrowMap[coord.slice(0, 2).join(",")] || '<i class="ci-Wifi_None"></i>';
 }
 
 function threeDToTriangle(coord) {
@@ -4062,7 +4095,7 @@ function threeDToTriangle(coord) {
     } else if (coord[2] === -1) {
         return '▲';
     } else {
-        return '';
+        return '<i class="ci-Wifi_None"></i>';
     }
 }
 
@@ -4076,7 +4109,7 @@ function fourDToArrow(coord) {
     } else if (coord[3] === -1) {
         return '▶';
     } else {
-        return '';
+        return '<i class="ci-Wifi_None"></i>';
     }
 }
 

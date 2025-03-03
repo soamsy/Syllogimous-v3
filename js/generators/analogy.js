@@ -30,53 +30,56 @@ function analogyTo(a, b) {
     return `<span class="subject">${a}</span> to <span class="subject">${b}</span>`;
 }
 
-function createSameDifferent(length) {
-    const timeOffset = savedata.offsetAnalogyTime;
-    const premiseOffset = getPremisesFor('offsetAnalogyPremises', 0);
-    const choiceIndices = [];
+class AnalogyQuestion {
+     create(length) {
+        const timeOffset = savedata.offsetAnalogyTime;
+        const premiseOffset = getPremisesFor('offsetAnalogyPremises', 0);
+        const choiceIndices = [];
 
-    if (savedata.enableDistinction)
-        choiceIndices.push(0);
-    if (savedata.enableLinear) {
-        for (let i = 0; i < getLinearQuestionsCount(); i++) {
-            choiceIndices.push(1);
+        let generators = [];
+        if (savedata.enableDistinction)
+            generators.push(createDistinctionGenerator(length));
+        if (savedata.enableLinear)
+            generators.push(...createLinearGenerators(length));
+        if (savedata.enableDirection)
+            generators.push(createDirectionGenerator(length));
+        if (savedata.enableDirection3D)
+            generators.push(createDirection3DGenerator(length));
+        if (savedata.enableDirection4D)
+            generators.push(createDirection4DGenerator(length));
+        if (savedata.enableAnchorSpace)
+            generators.push(createAnchorSpaceGenerator(length));
+
+        const totalWeight = generators.reduce((sum, item) => sum + item.weight, 0);
+        const randomValue = Math.random() * totalWeight;
+        let cumulativeWeight = 0;
+        let g;
+        for (let generator of generators) {
+            cumulativeWeight += generator.weight;
+            if (randomValue < cumulativeWeight) {
+                g = generator;
+                break;
+            }
         }
-    }
-    if (savedata.enableDirection)
-        choiceIndices.push(2);
-    if (savedata.enableDirection3D)
-        choiceIndices.push(3);
-    if (savedata.enableDirection4D)
-        choiceIndices.push(4);
 
-    const choiceIndex = pickRandomItems(choiceIndices, 1).picked[0];
-    let question;
-    let origLength;
-    if (choiceIndex === 0) {
-        origLength = getPremisesFor("overrideDistinctionPremises", length);
-        question = new DistinctionQuestion().createAnalogy(Math.max(origLength + premiseOffset, 3));
-    } else if (choiceIndex === 1) {
-        origLength = getPremisesFor("overrideLinearPremises", length);
-        question = createLinearQuestion().createAnalogy(Math.max(origLength + premiseOffset, 3));
-    } else if (choiceIndex === 2) {
-        origLength = getPremisesFor("overrideDirectionPremises", length);
-        question = new DirectionQuestion(new Direction2D()).createAnalogy(Math.max(origLength + premiseOffset, 3));
-    } else if (choiceIndex === 3) {
-        origLength = getPremisesFor("overrideDirection3DPremises", length);
-        question = new DirectionQuestion(new Direction3D()).createAnalogy(Math.max(origLength + premiseOffset, 3));
-    } else {
-        origLength = getPremisesFor("overrideDirection4DPremises", length);
-        question = new DirectionQuestion(new Direction4D()).createAnalogy(Math.max(origLength + premiseOffset, 3));
-    }
+        let question = g.question.createAnalogy(Math.max(g.premiseCount + premiseOffset, 3));
+        question.plen = g.premiseCount;
+        question.tlen = question.countdown || savedata.timer;
+        question.tags = ['analogy'];
+        if (question.countdown) {
+            question.countdown += timeOffset;
+        } else {
+            question.timeOffset = timeOffset;
+        }
 
-    question.plen = origLength;
-    question.tlen = question.countdown || savedata.timer;
-    question.tags = ['analogy'];
-    if (question.countdown) {
-        question.countdown += timeOffset;
-    } else {
-        question.timeOffset = timeOffset;
+        return question;
     }
+}
 
-    return question;
+function createAnalogyGenerator(length) {
+    return {
+        question: new AnalogyQuestion(),
+        premiseCount: length,
+        weight: 100,
+    };
 }
