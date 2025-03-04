@@ -454,6 +454,9 @@ function stopCountDown() {
     clearTimeout(timerInstance);
 }
 
+// Make stopCountDown available to other JS files
+window.stopCountDown = stopCountDown;
+
 function renderTimerBar() {
     const [mode, startingTimerCount] = findStartingTimerState();
     if (mode === 'override') {
