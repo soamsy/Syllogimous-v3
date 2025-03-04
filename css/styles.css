@@ -1871,17 +1871,90 @@ table.distinction {
 /* Blur Island Feature */
 .game-area.blurred .blur-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  /* Extended padding to allow room for the gradient fade */
+  top: -20px;
+  left: -20px;
+  width: calc(100% + 40px);
+  height: calc(100% + 40px);
+  /* Darker background for the blur effect */
   background-color: rgba(0, 0, 0, 0.4);
+  /* Primary blur effect */
   backdrop-filter: blur(5px);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 100;
+  /* Clip path to maintain proper shape */
+  border-radius: 0;
+  /* Subtle shadow for depth */
+  box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.15);
+  /* Use clip-path for precise control instead of border-radius */
+  overflow: visible;
+}
+
+/* Remove the radial gradient overlay which was creating uneven fading */
+.game-area.blurred .blur-overlay::after {
+  display: none;
+}
+
+/* Create a very precise mask for the blur effect */
+.game-area.blurred .blur-overlay {
+  /* Custom mask with hard edge at island boundaries and gradient only at the outside */
+  -webkit-mask-image: 
+    /* Create a hard-edged mask for the main content area (100% opacity) */
+    linear-gradient(
+      to right,
+      transparent 0px,                  /* Outside left edge */
+      black 20px,                       /* Just inside left edge */
+      black calc(100% - 20px),          /* Just inside right edge */
+      transparent 100%                  /* Outside right edge */
+    ),
+    linear-gradient(
+      to bottom,
+      transparent 0px,                  /* Outside top edge */
+      black 20px,                       /* Just inside top edge */
+      black calc(100% - 20px),          /* Just inside bottom edge */
+      transparent 100%                  /* Outside bottom edge */
+    );
+  
+  mask-image: 
+    linear-gradient(
+      to right,
+      transparent 0px,
+      black 20px,
+      black calc(100% - 20px),
+      transparent 100%
+    ),
+    linear-gradient(
+      to bottom,
+      transparent 0px,
+      black 20px,
+      black calc(100% - 20px),
+      transparent 100%
+    );
+  
+  /* Force the correct composite mode for the masks */
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+/* Apply a custom gradient at the exact edges */
+.game-area.blurred::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  z-index: 99;
+  pointer-events: none;
+  background: transparent;
   border-radius: inherit;
+  /* Create a very thin gradient border effect */
+  box-shadow: 
+    0 0 0 3px rgba(0, 0, 0, 0.05),
+    0 0 0 2px rgba(0, 0, 0, 0.05),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
 }
 
 .game-area .blur-overlay {
@@ -1890,26 +1963,30 @@ table.distinction {
 
 .start-button {
   font-family: 'Cascadia Code', monospace;
-  font-size: 2rem;
-  background-color: rgba(60, 60, 60, 0.7);
-  color: white;
-  border: 2px solid rgba(255, 255, 255, 0.7);
-  border-radius: 10px;
-  padding: 1rem 3rem;
+  font-size: var(--step-2);
+  background-color: #3c6c64;
+  color: #dfe9ec;
+  border: 2px solid rgba(74, 163, 154, 0.5);
+  border-radius: 6px;
+  padding: 0.6rem 2.5rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
   position: relative;
   backdrop-filter: blur(3px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: bold;
 }
 
 .start-button:hover {
-  background-color: rgba(80, 80, 80, 0.9);
+  background-color: #4aa39a;
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 10px rgba(74, 163, 154, 0.4);
+  border-color: rgba(223, 233, 236, 0.8);
 }
 
 .start-button:active {
   transform: translateY(1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
 }
