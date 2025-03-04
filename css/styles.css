@@ -126,14 +126,14 @@ button.delete:hover {
 
 /* Style for Export to CSV button */
 button.export-csv-button {
-    background-color: #e7c04d; /* Example: Gold color */
-    color: white; /* Example: White text color for contrast */
-    border: 1px solid #e7c04d; /* Optional: Add a border to match the theme */
+    background-color: #e7c04d;
+    color: white;
+    border: 1px solid #e7c04d;
 }
 
 button.export-csv-button:hover {
-    background-color: #e7c04d; /* Example: Lighter Gold on hover */
-    box-shadow: 0 2px 4px #e7c04d; /* Optional: Adjust hover effect to match the color */
+    background-color: #e7c04d;
+    box-shadow: 0 2px 4px #e7c04d;
 }
 
 
@@ -1866,4 +1866,50 @@ table.distinction {
     background-position: center;
     vertical-align: middle;
     margin-right: 8px;
+}
+
+/* Blur Island Feature */
+.game-area.blurred .blur-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  border-radius: inherit;
+}
+
+.game-area .blur-overlay {
+  display: none;
+}
+
+.start-button {
+  font-family: 'Cascadia Code', monospace;
+  font-size: 2rem;
+  background-color: rgba(60, 60, 60, 0.7);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  border-radius: 10px;
+  padding: 1rem 3rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  backdrop-filter: blur(3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.start-button:hover {
+  background-color: rgba(80, 80, 80, 0.9);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.start-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }

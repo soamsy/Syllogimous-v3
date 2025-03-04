@@ -507,6 +507,21 @@
 									</div>
 								</span>
 							</div>
+							<div class="ctrl__inner">
+								<div>
+									<input hidden id="p-blur-island" type="checkbox" checked onchange="handleBlurIslandChange(event)">
+									<label class="switch" for="p-blur-island"></label>
+								</div>
+								<span>Blur Island</span>
+								<span class="tooltip-container" tabindex="0">?
+									<div class="tooltip-text right">
+										Blurs the game area until<br>
+										you press the Start button.<br>
+										Timer only starts after<br>
+										pressing Start.<br>
+									</div>
+								</span>
+							</div>
 						</div>
 						<div class="folder" onclick="toggleExperimentalFolder()">
 							<span id="experimental-folder-arrow" class="folder-arrow">▶</span><span>Experimental</span>
@@ -944,6 +959,9 @@
 			<div class="overlay"></div>
 
 			<div id="game-area" class="game-area">
+				<div class="blur-overlay">
+					<button id="start-button" class="start-button">START</button>
+				</div>
 				<div class="timer-wrap">
 					<div class="timer">
 						<div class="custom-time-info"></div>

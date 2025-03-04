@@ -25,6 +25,7 @@ let timerCount = 30;
 let timerInstance;
 let timerRunning = false;
 let processingAnswer = false;
+let blurIslandEnabled = true; // Default to true for the blur island feature
 
 const historyList = document.getElementById("history-list");
 const historyButton = document.querySelector(`label.open[for="offcanvas-history"]`);
@@ -171,6 +172,26 @@ function populateSettings() {
 
     timerInput.value = savedata.timer;
     timerTime = timerInput.value;
+    
+    // Load blur island setting if it exists
+    if (savedata.blurIslandEnabled !== undefined) {
+        blurIslandEnabled = savedata.blurIslandEnabled;
+        document.getElementById('p-blur-island').checked = blurIslandEnabled;
+    } else {
+        // Set default in savedata
+        savedata.blurIslandEnabled = blurIslandEnabled;
+    }
+    
+    // Set timerToggle from savedata - but only if blur island is enabled
+    if (blurIslandEnabled && savedata.timerToggled !== undefined) {
+        timerToggle.checked = savedata.timerToggled;
+        timerToggled = savedata.timerToggled;
+    } else {
+        // When blur island is disabled, always start with timer off
+        timerToggle.checked = false;
+        timerToggled = false;
+        savedata.timerToggled = false;
+    }
 }
 
 function carouselInit() {
@@ -419,9 +440,16 @@ function switchButtons() {
 
 function startCountDown() {
     timerRunning = true;
-    question.startedAt = new Date().getTime();
+    question.startTime = Date.now();
     timerCount = findStartingTimerCount();
     animateTimerBar();
+    
+    // Make sure this is registered
+    question.timerWasRunning = true;
+    
+    console.log("Timer started at", new Date(question.startTime).toLocaleTimeString(), 
+               "timerRunning:", timerRunning, 
+               "timerWasRunning:", question.timerWasRunning);
 }
 
 function stopCountDown() {
@@ -564,7 +592,11 @@ function generateQuestion() {
     return q;
 }
 
-function init() {
+function init(skipBlur = false) {
+    // Store the previous timer state before stopping
+    const wasTimerRunning = timerRunning;
+    const wasTimerToggled = timerToggled;
+    
     stopCountDown();
     question = generateQuestion();
     console.log("Correct answer:", question.isValid);
@@ -575,13 +607,37 @@ function init() {
     // Initialize the timer status property
     question.timerWasRunning = false;
 
+    // Apply blur based on conditions
+    const gameArea = document.getElementById('game-area');
+    
+    // Only apply blur on initial load or when requested, not after every answer
+    if (!skipBlur && blurIslandEnabled) {
+        gameArea.classList.add('blurred');
+        // Reset question start time - will be set when Start button is clicked or timer starts
+        question.startTime = null;
+    } else {
+        // When not blurred, set start time immediately
+        question.startTime = Date.now();
+        gameArea.classList.remove('blurred');
+    }
+
     if (coinFlip()) {
         switchButtons();
     }
 
-    stopCountDown();
+    // For non-blurred mode or after answering with blur disabled,
+    // preserve the timer toggle state instead of resetting it
+    if (skipBlur && !blurIslandEnabled) {
+        // Restore timer toggle state when answering questions with blur disabled
+        timerToggled = wasTimerToggled;
+        timerToggle.checked = wasTimerToggled;
+    }
+
     if (timerToggled) {
-        startCountDown();
+        // Only start timer if not blurred
+        if (!blurIslandEnabled || !gameArea.classList.contains('blurred')) {
+            startCountDown();
+        }
     } else {
         renderTimerBar();
     }
@@ -590,8 +646,6 @@ function init() {
     displayInit();
     PROGRESS_STORE.renderCurrentProgress(question);
     renderConclusionSpoiler();
-    // No need to call updateCustomStyles() here, init() is not async.
-    // imagePromise = imagePromise.then(() => updateCustomStyles());  REMOVE THIS
 }
 
 function renderConclusionSpoiler() {
@@ -716,11 +770,11 @@ function wowFeedbackMissed(cb) {
 
 function wowFeedback() {
     if (question.correctness === 'right') {
-        wowFeedbackRight(init);
+        wowFeedbackRight(() => init(true));
     } else if (question.correctness === 'wrong') {
-        wowFeedbackWrong(init);
+        wowFeedbackWrong(() => init(true));
     } else {
-        wowFeedbackMissed(init);
+        wowFeedbackMissed(() => init(true));
     }
 }
 
@@ -738,6 +792,10 @@ function getCurrentProfileName() {
 }
 
 function storeQuestionAndSave() {
+    console.log("Storing question with startTime:", question.startTime);
+    console.log("Question answeredAt:", question.answeredAt);
+    console.log("Question timeElapsed:", question.timeElapsed);
+    
     question.timerWasRunning = timerRunning;
     question.profileName = getCurrentProfileName();
     
@@ -762,8 +820,16 @@ function checkIfTrue() {
         question.correctness = 'wrong';
     }
     question.answeredAt = new Date().getTime();
-    question.timeElapsed = question.answeredAt - question.startedAt;
-    console.log("checkIfTrue Question before store:", question); // ADDED CONSOLE LOG
+    
+    // Only calculate timeElapsed if we have a valid startTime
+    if (question.startTime) {
+        question.timeElapsed = question.answeredAt - question.startTime;
+    } else {
+        console.log("WARNING: Missing start time in checkIfTrue, timeElapsed will be undefined");
+        question.timeElapsed = undefined; // Explicitly set to undefined to indicate missing data
+    }
+    
+    console.log("checkIfTrue Question before store:", question);
     storeQuestionAndSave();
     renderHQL(true);
     wowFeedback();
@@ -783,8 +849,16 @@ function checkIfFalse() {
         question.correctness = 'wrong';
     }
     question.answeredAt = new Date().getTime();
-    question.timeElapsed = question.answeredAt - question.startedAt;
-    console.log("checkIfFalse Question before store:", question); // ADDED CONSOLE LOG
+    
+    // Only calculate timeElapsed if we have a valid startTime
+    if (question.startTime) {
+        question.timeElapsed = question.answeredAt - question.startTime;
+    } else {
+        console.log("WARNING: Missing start time in checkIfFalse, timeElapsed will be undefined");
+        question.timeElapsed = undefined; // Explicitly set to undefined to indicate missing data
+    }
+    
+    console.log("checkIfFalse Question before store:", question);
     storeQuestionAndSave();
     renderHQL(true);
     wowFeedback();
@@ -799,8 +873,16 @@ function timeElapsed() {
     question.correctness = 'missed';
     question.answerUser = undefined;
     question.answeredAt = new Date().getTime();
-    question.timeElapsed = question.answeredAt - question.startedAt;
-    console.log("timeElapsed Question before store:", question); // ADDED CONSOLE LOG
+    
+    // Only calculate timeElapsed if we have a valid startTime
+    if (question.startTime) {
+        question.timeElapsed = question.answeredAt - question.startTime;
+    } else {
+        console.log("WARNING: Missing start time in timeElapsed, timeElapsed will be undefined");
+        question.timeElapsed = undefined; // Explicitly set to undefined to indicate missing data
+    }
+    
+    console.log("timeElapsed Question before store:", question);
     storeQuestionAndSave();
     renderHQL(true);
     wowFeedback();
@@ -855,8 +937,8 @@ function renderHQL(didAddSingleQuestion=false) {
 }
 
 function updateAverage(reverseChronological) {
-    let questions = reverseChronological.filter(q => q.answeredAt && q.startedAt);
-    let times = questions.map(q => (q.answeredAt - q.startedAt) / 1000);
+    let questions = reverseChronological.filter(q => q.answeredAt && q.startTime);
+    let times = questions.map(q => (q.answeredAt - q.startTime) / 1000);
     if (times.length == 0) {
         return;
     }
@@ -871,7 +953,7 @@ function updateAverage(reverseChronological) {
     const correctQuestions = questions.filter(q => q.correctness == 'right');
     const percentCorrect = 100 * correctQuestions.length / questions.length;
     percentCorrectDisplay.innerHTML = percentCorrect.toFixed(1) + '%';
-    const correctTimes = correctQuestions.map(q => (q.answeredAt - q.startedAt) / 1000);
+    const correctTimes = correctQuestions.map(q => (q.answeredAt - q.startTime) / 1000);
     if (correctTimes.length == 0) {
         averageCorrectDisplay.innerHTML = 'None yet';
         return;
@@ -913,10 +995,10 @@ function createHQLI(question, i) {
     const htmlOperations = q.operations ? q.operations.map(o => `<div class="hqli-operation">${o}</div>`).join("\n") : '';
 
     let responseTimeHtml = '';
-    if (q.startedAt && q.answeredAt)
+    if (q.startTime && q.answeredAt)
         responseTimeHtml =
 `
-        <div class="hqli-response-time">${Math.round((q.answeredAt - q.startedAt) / 1000)} sec</div>
+        <div class="hqli-response-time">${Math.round((q.answeredAt - q.startTime) / 1000)} sec</div>
 `;
     
     const html =
@@ -1010,7 +1092,24 @@ function handleCountDown() {
 }
 
 timerToggle.addEventListener("click", evt => {
-    handleCountDown();
+    timerToggled = timerToggle.checked;
+    
+    if (timerToggled) {
+        // Only start the timer if the game area is not blurred
+        const gameArea = document.getElementById('game-area');
+        if (!blurIslandEnabled || !gameArea.classList.contains('blurred')) {
+            startCountDown();
+        }
+        // Otherwise, just wait for the Start button click
+    } else {
+        timerRunning = false;
+        timerCount = findStartingTimerCount();
+        timerBar.style.width = '100%';
+        clearTimeout(timerInstance);
+    }
+    
+    savedata.timerToggled = timerToggled;
+    save();
 });
 
 let dehoverQueue = [];
@@ -1193,8 +1292,8 @@ function exportHistoryToCSV() {
         
         // Convert timestamp to human-readable format without milliseconds
         let formattedTimestamp = "";
-        if (question.startedAt) {
-            const date = new Date(question.startedAt);
+        if (question.startTime) {
+            const date = new Date(question.startTime);
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const day = String(date.getDate()).padStart(2, '0');
@@ -1232,3 +1331,123 @@ load();
 switchButtons();
 init();
 updateCustomStyles();
+
+// Add event listener for the start button
+document.addEventListener("DOMContentLoaded", function() {
+    const startButton = document.getElementById('start-button');
+    
+    startButton.addEventListener('click', function() {
+        const gameArea = document.getElementById('game-area');
+        if (!gameArea.classList.contains('blurred')) return;
+        
+        // Remove blur
+        gameArea.classList.remove('blurred');
+        
+        console.log("Start button clicked");
+        
+        // Start the timer if it's enabled 
+        if (timerToggle.checked) {
+            console.log("Starting timer because timer toggle is checked");
+            startCountDown();
+        } else {
+            // Just set the start time for untimed questions
+            console.log("Setting start time without starting timer");
+            question.startTime = Date.now();
+        }
+    });
+    
+    // Add event listeners for all offcanvas menu toggles to blur the island when opened
+    const menuToggles = [
+        document.getElementById('offcanvas-settings'), 
+        document.getElementById('offcanvas-history'),
+        document.getElementById('offcanvas-credits'),
+        document.getElementById('offcanvas-graph')
+    ];
+    
+    let anyMenuOpen = false;
+    
+    menuToggles.forEach(toggle => {
+        if (toggle) {
+            toggle.addEventListener('change', function(e) {
+                if (this.checked && blurIslandEnabled) {
+                    // Menu was opened, blur the island
+                    document.getElementById('game-area').classList.add('blurred');
+                    anyMenuOpen = true;
+                    
+                    // Stop timer if it's running
+                    if (timerRunning) {
+                        timerRunning = false;
+                        clearTimeout(timerInstance);
+                    }
+                } else {
+                    // Menu was closed, check if all menus are closed
+                    const allClosed = menuToggles.every(t => t && !t.checked);
+                    if (allClosed) {
+                        anyMenuOpen = false;
+                        
+                        // If all menus are closed and blur island is enabled,
+                        // we need to check if we should maintain the blur or remove it
+                        if (blurIslandEnabled) {
+                            // For now, keep the blur active since Blur Island is enabled
+                            // The blur will be removed when the user clicks the Start button
+                        } else {
+                            // If Blur Island is disabled, we should always remove the blur
+                            document.getElementById('game-area').classList.remove('blurred');
+                        }
+                    }
+                }
+            });
+        }
+    });
+});
+
+// Add handler for blur island toggle
+function handleBlurIslandChange(event) {
+    blurIslandEnabled = event.target.checked;
+    
+    // Update savedata and save to localStorage
+    savedata.blurIslandEnabled = blurIslandEnabled;
+    
+    // Immediately apply setting
+    const gameArea = document.getElementById('game-area');
+    if (blurIslandEnabled) {
+        // When turning blur island on, blur the game area
+        gameArea.classList.add('blurred');
+        
+        // Stop any running timer when enabling blur
+        // The timer will start when Start button is clicked
+        if (timerRunning) {
+            timerRunning = false;
+            clearTimeout(timerInstance);
+            timerCount = findStartingTimerCount();
+            timerBar.style.width = '100%';
+        }
+        
+        // Note: We allow the saved timer toggle state to apply when blur island is enabled
+        //       The timer will only start after pressing the Start button
+    } else {
+        // When turning blur island off, unblur the game area
+        gameArea.classList.remove('blurred');
+        
+        // When blur island is disabled, always turn off the timer
+        // This ensures the user must explicitly enable the timer when blur island is off
+        timerToggle.checked = false;
+        timerToggled = false;
+        savedata.timerToggled = false;
+        
+        // Stop timer if it's running
+        if (timerRunning) {
+            timerRunning = false;
+            clearTimeout(timerInstance);
+            timerCount = findStartingTimerCount();
+            timerBar.style.width = '100%';
+        }
+        
+        // Make sure we have a start time for the question
+        if (!question.startTime) {
+            question.startTime = Date.now();
+        }
+    }
+    
+    save();
+}
