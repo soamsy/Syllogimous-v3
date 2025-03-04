@@ -25,7 +25,7 @@ let timerCount = 30;
 let timerInstance;
 let timerRunning = false;
 let processingAnswer = false;
-let blurIslandEnabled = true; // Default to true for the blur island feature
+let blurIslandEnabled = true; // Always true, Blur Island feature is now always enabled
 
 const historyList = document.getElementById("history-list");
 const historyButton = document.querySelector(`label.open[for="offcanvas-history"]`);
@@ -142,52 +142,47 @@ function load() {
 }
 
 function populateSettings() {
-    for (let key in savedata) {
-        if (!(key in keySettingMapInverse)) continue;
-        let value = savedata[key];
-        let id = keySettingMapInverse[key];
-        
-        const input = document.querySelector("#" + id);
-        if (input.type === "checkbox") {
-            if (value === true || value === false) {
-                input.checked = value;
+    // Populate selection checkboxes
+    for (const [id, prop] of Object.entries(keySettingMap)) {
+        const input = document.getElementById(id);
+        if (input) {
+            if (typeof savedata[prop] === 'boolean') {
+                input.checked = savedata[prop];
+            } else if (typeof savedata[prop] === 'string' || typeof savedata[prop] === 'number') {
+                input.value = savedata[prop];
             }
-        }
-        else if (input.type === "number") {
-            if (!value && isKeyNullable(id)) {
-                input.value = '';
-            } else if (typeof value === "number") {
-                input.value = +value;
-            }
-        }
-        else if (input.type === "text") {
-            input.value = value;
-        } else if (input.type === "select-one") {
-            input.value = value;
         }
     }
 
-    populateLinearDropdown();
-    populateAppearanceSettings();
+    // Set toggle states based on checkbox values
+    for (let i = 1; i <= 63; i++) {
+        const checkbox = document.getElementById(`p-${i}`);
+        if (checkbox && checkbox.type === 'checkbox') {
+            const toggleId = `p-${i}-toggle`;
+            const toggle = document.getElementById(toggleId);
+            if (toggle) {
+                toggle.style.display = checkbox.checked ? 'block' : 'none';
+            }
+        }
+    }
 
-    timerInput.value = savedata.timer;
-    timerTime = timerInput.value;
-    
+    // Blur Island is always enabled now - no need to load from savedata
+    /*
     // Load blur island setting if it exists
     if (savedata.blurIslandEnabled !== undefined) {
         blurIslandEnabled = savedata.blurIslandEnabled;
         document.getElementById('p-blur-island').checked = blurIslandEnabled;
     } else {
-        // Set default in savedata
         savedata.blurIslandEnabled = blurIslandEnabled;
     }
+    */
     
     // Set timerToggle from savedata - but only if blur island is enabled
-    if (blurIslandEnabled && savedata.timerToggled !== undefined) {
+    if (savedata.timerToggled !== undefined) {
         timerToggle.checked = savedata.timerToggled;
         timerToggled = savedata.timerToggled;
     } else {
-        // When blur island is disabled, always start with timer off
+        // When blur island is enabled, always start with timer off
         timerToggle.checked = false;
         timerToggled = false;
         savedata.timerToggled = false;
@@ -593,10 +588,6 @@ function generateQuestion() {
 }
 
 function init(skipBlur = false) {
-    // Store the previous timer state before stopping
-    const wasTimerRunning = timerRunning;
-    const wasTimerToggled = timerToggled;
-    
     stopCountDown();
     question = generateQuestion();
     console.log("Correct answer:", question.isValid);
@@ -610,32 +601,26 @@ function init(skipBlur = false) {
     // Apply blur based on conditions
     const gameArea = document.getElementById('game-area');
     
-    // Only apply blur on initial load or when requested, not after every answer
-    if (!skipBlur && blurIslandEnabled) {
+    // Apply blur on initial load or when requested, not after every answer
+    if (!skipBlur) {
         gameArea.classList.add('blurred');
         // Reset question start time - will be set when Start button is clicked or timer starts
         question.startTime = null;
     } else {
-        // When not blurred, set start time immediately
-        question.startTime = Date.now();
-        gameArea.classList.remove('blurred');
+        // When not blurring (after answering a question), start time should already be set
+        if (!question.startTime) {
+            question.startTime = Date.now();
+        }
     }
 
     if (coinFlip()) {
         switchButtons();
     }
 
-    // For non-blurred mode or after answering with blur disabled,
-    // preserve the timer toggle state instead of resetting it
-    if (skipBlur && !blurIslandEnabled) {
-        // Restore timer toggle state when answering questions with blur disabled
-        timerToggled = wasTimerToggled;
-        timerToggle.checked = wasTimerToggled;
-    }
-
+    stopCountDown();
     if (timerToggled) {
         // Only start timer if not blurred
-        if (!blurIslandEnabled || !gameArea.classList.contains('blurred')) {
+        if (!gameArea.classList.contains('blurred')) {
             startCountDown();
         }
     } else {
@@ -1097,7 +1082,7 @@ timerToggle.addEventListener("click", evt => {
     if (timerToggled) {
         // Only start the timer if the game area is not blurred
         const gameArea = document.getElementById('game-area');
-        if (!blurIslandEnabled || !gameArea.classList.contains('blurred')) {
+        if (!gameArea.classList.contains('blurred')) {
             startCountDown();
         }
         // Otherwise, just wait for the Start button click
@@ -1123,18 +1108,11 @@ function handleKeyPress(event) {
         case "KeyH":
             historyButton.click();
             if (historyCheckbox.checked) {
-                const firstEntry = historyList.firstElementChild;
-                if (firstEntry) {
-                    const explanationButton = firstEntry.querySelector(`button.explanation-button`);
-                    explanationButton.dispatchEvent(new Event("mouseenter"));
-                    dehoverQueue.push(() => {
-                        explanationButton.dispatchEvent(new Event("mouseleave"));
-                    });
-                }
-            } else {
-                dehoverQueue.forEach(callback => {
-                    callback();
-                });
+                renderHQL();
+                updateAverage([...appState.questions].reverse());
+                const infoDisplay = document.querySelector('.hql-frame');
+                if (!infoDisplay.scrollTop)
+                    infoDisplay.scrollTop = infoDisplay.scrollHeight;
             }
             break;
         case "KeyS":
@@ -1152,7 +1130,22 @@ function handleKeyPress(event) {
             break;
         case "Space":
             timerToggle.checked = !timerToggle.checked;
-            handleCountDown();
+            timerToggled = timerToggle.checked;
+            savedata.timerToggled = timerToggled;
+            
+            if (timerToggled) {
+                // Only start timer if the island is not blurred
+                const gameArea = document.getElementById('game-area');
+                if (!gameArea.classList.contains('blurred')) {
+                    startCountDown();
+                }
+            } else {
+                timerRunning = false;
+                clearTimeout(timerInstance);
+                renderTimerBar();
+            }
+            
+            save();
             break;
         default:
             break;
@@ -1369,7 +1362,7 @@ document.addEventListener("DOMContentLoaded", function() {
     menuToggles.forEach(toggle => {
         if (toggle) {
             toggle.addEventListener('change', function(e) {
-                if (this.checked && blurIslandEnabled) {
+                if (this.checked) {
                     // Menu was opened, blur the island
                     document.getElementById('game-area').classList.add('blurred');
                     anyMenuOpen = true;
@@ -1385,69 +1378,11 @@ document.addEventListener("DOMContentLoaded", function() {
                     if (allClosed) {
                         anyMenuOpen = false;
                         
-                        // If all menus are closed and blur island is enabled,
-                        // we need to check if we should maintain the blur or remove it
-                        if (blurIslandEnabled) {
-                            // For now, keep the blur active since Blur Island is enabled
-                            // The blur will be removed when the user clicks the Start button
-                        } else {
-                            // If Blur Island is disabled, we should always remove the blur
-                            document.getElementById('game-area').classList.remove('blurred');
-                        }
+                        // If all menus are closed, maintain the blur
+                        // For now, keep the blur active - will be removed when Start button is clicked
                     }
                 }
             });
         }
     });
 });
-
-// Add handler for blur island toggle
-function handleBlurIslandChange(event) {
-    blurIslandEnabled = event.target.checked;
-    
-    // Update savedata and save to localStorage
-    savedata.blurIslandEnabled = blurIslandEnabled;
-    
-    // Immediately apply setting
-    const gameArea = document.getElementById('game-area');
-    if (blurIslandEnabled) {
-        // When turning blur island on, blur the game area
-        gameArea.classList.add('blurred');
-        
-        // Stop any running timer when enabling blur
-        // The timer will start when Start button is clicked
-        if (timerRunning) {
-            timerRunning = false;
-            clearTimeout(timerInstance);
-            timerCount = findStartingTimerCount();
-            timerBar.style.width = '100%';
-        }
-        
-        // Note: We allow the saved timer toggle state to apply when blur island is enabled
-        //       The timer will only start after pressing the Start button
-    } else {
-        // When turning blur island off, unblur the game area
-        gameArea.classList.remove('blurred');
-        
-        // When blur island is disabled, always turn off the timer
-        // This ensures the user must explicitly enable the timer when blur island is off
-        timerToggle.checked = false;
-        timerToggled = false;
-        savedata.timerToggled = false;
-        
-        // Stop timer if it's running
-        if (timerRunning) {
-            timerRunning = false;
-            clearTimeout(timerInstance);
-            timerCount = findStartingTimerCount();
-            timerBar.style.width = '100%';
-        }
-        
-        // Make sure we have a start time for the question
-        if (!question.startTime) {
-            question.startTime = Date.now();
-        }
-    }
-    
-    save();
-}
