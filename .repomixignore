@@ -1,0 +1,12 @@
+./fonts
+./img
+# Removed Chart.js v4.4.7 from this xml to save on memory
+js/lib/chart.min.js
+# Removed date-fns from this xml to save on memory
+js/lib/date-fns.min.js
+# Removed this from the xml to save space:
+# chartjs-adapter-date-fns v3.0.0
+# https://www.chartjs.org
+# (c) 2022 chartjs-adapter-date-fns Contributors
+# Released under the MIT license
+ js/lib/chartjs-adapter-date-fns.min.js
