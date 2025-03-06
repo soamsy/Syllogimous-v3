@@ -522,11 +522,15 @@ function generateQuestion() {
     quota = Math.min(quota, maxStimuliAllowed());
 
     const banNormalModes = savedata.onlyAnalogy || savedata.onlyBinary;
+    
+    // Create a separate array for linear generators
+    let linearGenerators = [];
+    
     if (!banNormalModes) {
         if (savedata.enableDistinction)
             generators.push(createDistinctionGenerator(quota));
         if (savedata.enableLinear)
-            generators.push(...createLinearGenerators(quota));
+            linearGenerators = createLinearGenerators(quota);
         if (savedata.enableSyllogism)
             generators.push(createSyllogismGenerator(quota));
         if (savedata.enableDirection)
@@ -569,6 +573,20 @@ function generateQuestion() {
         if (savedata.onlyBinary)
             return;
     }
+    
+    // Add linear generators as a group if enabled
+    if (linearGenerators.length > 0) {
+        // Calculate total weight of linear generators
+        const linearTotalWeight = linearGenerators.reduce((sum, item) => sum + item.weight, 0);
+        
+        // Add a special "linear group" entry to generators
+        generators.push({
+            type: 'linear-group',
+            weight: linearTotalWeight,
+            linearGenerators: linearGenerators
+        });
+    }
+    
     if (generators.length === 0)
         return;
 
@@ -576,10 +594,26 @@ function generateQuestion() {
     const randomValue = Math.random() * totalWeight;
     let cumulativeWeight = 0;
     let q;
+    
     for (let generator of generators) {
         cumulativeWeight += generator.weight;
         if (randomValue < cumulativeWeight) {
-            q = generator.question.create(generator.premiseCount);
+            if (generator.type === 'linear-group') {
+                // If linear group is selected, choose from specific linear generators
+                const linearTotalWeight = generator.linearGenerators.reduce((sum, item) => sum + item.weight, 0);
+                const linearRandomValue = Math.random() * linearTotalWeight;
+                let linearCumulativeWeight = 0;
+                
+                for (let linearGenerator of generator.linearGenerators) {
+                    linearCumulativeWeight += linearGenerator.weight;
+                    if (linearRandomValue < linearCumulativeWeight) {
+                        q = linearGenerator.question.create(linearGenerator.premiseCount);
+                        break;
+                    }
+                }
+            } else {
+                q = generator.question.create(generator.premiseCount);
+            }
             break;
         }
     }
