@@ -26,6 +26,30 @@ let timerInstance;
 let timerRunning = false;
 let processingAnswer = false;
 let blurIslandEnabled = true; // Always true, Blur Island feature is now always enabled
+let wasPageVisible = true; // Track if the page was visible before a visibility change
+
+// Add visibility change event listener to handle when user leaves the page or phone turns off
+document.addEventListener('visibilitychange', handleVisibilityChange);
+
+// Function to handle visibility change events
+function handleVisibilityChange() {
+    const isVisible = document.visibilityState === 'visible';
+    
+    // If page becomes hidden and timer is running, blur the game and stop the timer
+    if (!isVisible) {
+        console.log("Page hidden while timer running - pausing game");
+        document.getElementById('game-area').classList.add('blurred');
+        stopCountDown();
+        wasPageVisible = false;
+    } 
+    // If page becomes visible again and was previously hidden
+    else if (isVisible && !wasPageVisible) {
+        console.log("Page visible again after being hidden");
+        wasPageVisible = true;
+        // Game will remain blurred until user clicks Start button
+        // This matches the existing behavior when entering menus
+    }
+}
 
 const historyList = document.getElementById("history-list");
 const historyButton = document.querySelector(`label.open[for="offcanvas-history"]`);
