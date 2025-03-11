@@ -35,11 +35,13 @@ document.addEventListener('visibilitychange', handleVisibilityChange);
 function handleVisibilityChange() {
     const isVisible = document.visibilityState === 'visible';
     
-    // If page becomes hidden and timer is running, blur the game and stop the timer
+    // If page becomes hidden, blur the game and stop the timer if running
     if (!isVisible) {
-        console.log("Page hidden while timer running - pausing game");
+        console.log("Page hidden - pausing game");
         document.getElementById('game-area').classList.add('blurred');
-        stopCountDown();
+        if (timerRunning) {
+            stopCountDown();
+        }
         wasPageVisible = false;
     } 
     // If page becomes visible again and was previously hidden
