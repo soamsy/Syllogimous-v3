@@ -27,6 +27,8 @@ const COMMON_TYPES_TABLE = COMMON_TYPES.reduce((acc, types) => {
 
 
 const progressTracker = document.getElementById("progress-tracker");
+const dailyProgressTracker = document.getElementById("daily-progress-container");
+const weeklyProgressTracker = document.getElementById("weekly-progress-container");
 
 function findSuccessCriteria() {
     return Math.max(50, Math.min(savedata.autoProgressionPercentSuccess, 100));
@@ -164,6 +166,12 @@ class ProgressStore {
     }
 
     async renderCurrentProgress(question) {
+        await this.renderAutoProgressionTrailing(question);
+        await this.renderDailyProgress();
+        await this.renderWeeklyProgress();
+    }
+
+    async renderAutoProgressionTrailing(question) {
         const q = this.convertForDatabase(question);
         let trailingProgress = await getTopRRTProgress(this.calculateCommonKeys(q), findAutoProgressionTrailing());
         progressTracker.innerHTML = '';
@@ -183,6 +191,43 @@ class ProgressStore {
         });
     }
 
+    async renderDailyProgress() {
+        if (!savedata.dailyProgressGoal) {
+            dailyProgressTracker.classList.remove('visible');
+            return;
+        }
+        dailyProgressTracker.classList.add('visible');
+        const progressToday = await getTodayRRTProgress();
+        const minutesSpent = progressToday.map(q => q.timeElapsed).reduce((a, b) => a + b, 0) / 1000 / 60;
+        this.fillProgressTracker(dailyProgressTracker, minutesSpent, savedata.dailyProgressGoal);
+    }
+
+    async renderWeeklyProgress() {
+        if (!savedata.weeklyProgressGoal) {
+            weeklyProgressTracker.classList.remove('visible');
+            return;
+        }
+        weeklyProgressTracker.classList.add('visible');
+        const progressWeek = await getWeekRRTProgress();
+        const minutesSpent = progressWeek.map(q => q.timeElapsed).reduce((a, b) => a + b, 0) / 1000 / 60;
+        this.fillProgressTracker(weeklyProgressTracker, minutesSpent, savedata.weeklyProgressGoal);
+    }
+
+    fillProgressTracker(tracker, minutesSpent, goal) {
+        const percentComplete = Math.max(0, Math.min(100 * minutesSpent / goal, 100));
+        tracker.querySelector('.progress-fill').style.height = `${percentComplete}%`;
+        tracker.querySelector('.progress-value').innerText = `${Math.floor(minutesSpent)} / ${goal}`;
+        if (percentComplete >= 100) {
+            tracker.querySelector('.progress-fill').classList.remove('halfway');
+            tracker.querySelector('.progress-fill').classList.add('complete');
+        } else if (percentComplete >= 50) {
+            tracker.querySelector('.progress-fill').classList.add('halfway');
+            tracker.querySelector('.progress-fill').classList.remove('complete');
+        } else {
+            tracker.querySelector('.progress-fill').classList.remove('halfway');
+            tracker.querySelector('.progress-fill').classList.remove('complete');
+        }
+    }
 }
 
 const PROGRESS_STORE = new ProgressStore();

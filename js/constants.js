@@ -96,6 +96,8 @@ let savedata = {
     "spoilerConclusion": false,
     "enableBacktrackingLinear": false,
     "minimalMode": false,
+    "dailyProgressGoal": null,
+    "weeklyProgressGoal": null,
 };
 
 const defaultSavedata = structuredClone(savedata);
@@ -184,6 +186,8 @@ const compressedSettings = {
     "overrideLinearTime": "linT",
     "enableBacktrackingLinear": "backL",
     "minimalMode": "min",
+    "dailyProgressGoal": "dGoal",
+    "weeklyProgressGoal": "wGoal",
 };
 
 const keySettingMap = {
@@ -262,6 +266,8 @@ const keySettingMap = {
     "p-60": "overrideDirection3DWeight",
     "p-61": "overrideDirection4DWeight",
     "p-62": "overrideAnchorSpaceWeight",
+    "p-63-optional": "dailyProgressGoal",
+    "p-64-optional": "weeklyProgressGoal",
 };
 
 const meaningfulWords = {

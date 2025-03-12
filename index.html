@@ -128,6 +128,36 @@
 								</span>
 							</div>
 						</div>
+
+						<div class="mb-2">
+						  <div class="inline-input__outer">
+								Progress Targets
+								<div class="tooltip-container" tabindex="0">
+								  ?
+								  <div class="tooltip-text right">
+										Set your daily and weekly<br>
+										time targets for training.<br>
+										Progress bars will show on<br>
+										the sides of the screen.<br>
+								  </div>
+								</div>
+						  </div>
+						  <div class="multi-input">
+								<span class="single-input">
+								  Daily Target
+								  <span class="inline-premise-spinner">
+										<input id="p-63-optional" type="number" placeholder="" min="1" max="360" value="" style="width: 5ch">min
+									</span>
+								</span>
+								<span class="single-input">
+								  Weekly Target
+								  <span class="inline-premise-spinner">
+										<input id="p-64-optional" type="number" placeholder="" min="1" max="2500" value="" style="width: 5ch">min
+									</span>
+								</span>
+						  </div>
+						</div>
+
 						<div class="mb-1">
 							<div class="ctrl__inner">
 								<div>
@@ -975,6 +1005,24 @@
 				</span>
 			</div>
 
+			<div id="daily-progress-container" class="progress-container">
+				<div class="progress-bar-vertical">
+					<div class="progress-content">
+						<div class="progress-label">DAILY</div>
+						<div class="progress-value"></div>
+					</div>
+				</div>
+				<div class="progress-fill" style="height: 0%;"></div>
+			</div>
+			<div id="weekly-progress-container" class="progress-container">
+				<div class="progress-bar-vertical">
+					<div class="progress-content">
+						<div class="progress-label">WEEKLY</div>
+						<div class="progress-value"></div>
+					</div>
+				</div>
+				<div class="progress-fill" style="height: 0%;"></div>
+			</div>
 		</div>
 
 		<div id="graph-popup" class="graph-popup">
