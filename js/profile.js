@@ -71,6 +71,7 @@ class ProfileStore {
 
     syncProfileChange() {
         for (const profile of this.profiles) {
+            this.uncompressSavedata(profile.savedata);
             this.settingsMigration.update(profile.savedata);
         }
         this.saveProfiles();
@@ -245,18 +246,7 @@ class ProfileStore {
             return;
         }
 
-        for (const [setting, value] of Object.entries(savedataObj)) {
-            if ((typeof defaultSavedata[setting] === 'boolean') && (typeof value === 'number')) {
-                savedataObj[setting] = value === 1 ? true : false;
-            }
-        }
-
-        for (const [setting, compressed] of Object.entries(compressedSettings)) {
-            if (savedataObj.hasOwnProperty(compressed)) {
-                savedataObj[setting] = savedataObj[compressed];
-                delete savedataObj[compressed];
-            }
-        }
+        this.uncompressSavedata(savedataObj);
 
         const unsafeKeys = Object.keys(savedataObj);
         for (const key in unsafeKeys) {
@@ -280,6 +270,21 @@ class ProfileStore {
         this.selectedProfile = this.profiles.length - 1;
         this.handleProfileChange();
         this.renderDropdown();
+    }
+
+    uncompressSavedata(savedataObj) {
+        for (const [setting, compressed] of Object.entries(compressedSettings)) {
+            if (savedataObj.hasOwnProperty(compressed)) {
+                savedataObj[setting] = savedataObj[compressed];
+                delete savedataObj[compressed];
+            }
+        }
+
+        for (const [setting, value] of Object.entries(savedataObj)) {
+            if ((typeof defaultSavedata[setting] === 'boolean') && (typeof value === 'number')) {
+                savedataObj[setting] = value === 1 ? true : false;
+            }
+        }
     }
 }
 
