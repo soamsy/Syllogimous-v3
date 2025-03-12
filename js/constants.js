@@ -9,7 +9,7 @@ let appState = {
     "score": 0,
     "questions": [],
     "backgroundImage": null,
-    "gameAreaColor": "#161F30CC",
+    "gameAreaColor": "#1A1A1AFF",
     "isExperimentalOpen": false,
     "isLegacyOpen": false,
     "sfx": "none",

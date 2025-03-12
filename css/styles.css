@@ -1,8 +1,8 @@
 @font-face {
-    font-family: "MGS2";
+    font-family: "Lato";
     font-style: normal;
     font-weight: normal;
-    src: url("../fonts/MGS2.ttf") format("ttf");
+    src: url("../fonts/Lato-Regular.ttf") format("truetype"); 
 }
 
 @font-face {
@@ -62,7 +62,7 @@ body {
     height: 100vh;
     margin: 0;
     padding: 0;
-    font-family: "MGS2", sans-serif;
+    font-family: "Lato";
     font-size: var(--step-0);
     color: #fffff1;
     background-color: #111;
@@ -123,6 +123,19 @@ button.delete {
 button.delete:hover {
     box-shadow: 0 2px 4px #bf3f65;
 }
+
+/* Style for Export to CSV button */
+button.export-csv-button {
+    background-color: #e7c04d;
+    color: white;
+    border: 1px solid #e7c04d;
+}
+
+button.export-csv-button:hover {
+    background-color: #e7c04d;
+    box-shadow: 0 2px 4px #e7c04d;
+}
+
 
 /* start of Utils */
 .mb-05 {
@@ -257,7 +270,6 @@ button.delete:hover {
     z-index: -1;
     width: 100%;
     height: 100%;
-    background-image: repeating-conic-gradient(#000000 0% 25%, #202020 0% 50%);
     background-size: 2px 2px;
     opacity: 35%;
 }
@@ -269,10 +281,11 @@ button.delete:hover {
     z-index: -2;
     width: 100%;
     height: 100%;
-    background-color: #000c;
+    background-color: #000c; /* Keep this for fallback */
+    background-image: url('../img/default-background.jpg'); /* Add this line!  Use the correct path */
     background-size: cover;
     background-position: center;
-    filter: brightness(0.50);
+    filter: brightness(0.50) blur(4px); /* Added blur filter here! */
 }
 
 .metal-gear {
@@ -350,7 +363,7 @@ button.delete:hover {
 }
 .inline-input__inner {
     background-color: #111a;
-    font-family: "MGS2", sans-serif;
+    font-family: "Lato", sans-serif;
     padding: .25rem;
     white-space: nowrap;
 }
@@ -393,7 +406,7 @@ input[type="number"]::-moz-inner-spin-button {
 
 .inline-premise-spinner {
     background-color: #111a;
-    font-family: "MGS2", sans-serif;
+    font-family: "Lato", sans-serif;
     padding: .25rem;
     display: flex;
     gap: 0.25rem;
@@ -473,7 +486,7 @@ input[type="number"]::-moz-inner-spin-button {
 
 .game-area:before {
     display: none;
-    font-family: "Espionage", sans-serif;
+    font-family: "Espionage ", sans-serif;
     position: absolute;
     bottom: 100%;
     width: calc(100% + 4px);
@@ -545,14 +558,14 @@ input[type="number"]::-moz-inner-spin-button {
 }
 
 .confirmation-true {
-    background-color: #090!important;
+    background-color: rgba(37, 203, 37, 0.753)!important;
 }
 .confirmation-true:hover {
     box-shadow: 0 3px 5px 0 #0908!important;
 }
 
 .confirmation-false {
-    background-color: #900!important;
+    background-color: rgba(216, 32, 32, 0.788)!important;
 }
 .confirmation-false:hover {
     box-shadow: 0 3px 5px 0 #9008!important;
@@ -561,7 +574,6 @@ input[type="number"]::-moz-inner-spin-button {
 .score {
     padding: 0 0.5rem;
     font-size: var(--step-1);
-    text-shadow: var(--text-outline);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -604,7 +616,6 @@ input[type="number"]::-moz-inner-spin-button {
     gap: 0.5rem;
     top: 0;
     left: 0;
-    text-shadow: var(--text-outline);
 }
 
 .carousel_display_label_progress, .display_label_level {
@@ -687,13 +698,14 @@ input[type="number"]::-moz-inner-spin-button {
 .postamble,
 .transform-header {
     user-select: none;
-    color: #aaa;
+    color: #ffffff;
     display: block;
-    font-size: var(--step--1);
+    font-size: var(--step--2);
     font-weight: bolder;
     line-height: 0.4rem;
     margin: 0.5rem 0 0.9rem 0;
     opacity: 0.6;
+    text-shadow: 0.02em 0.02em 0.04em #000000a9; /* Light, subtle white shadow */
 }
 
 .postamble, .transform-header {
@@ -728,7 +740,6 @@ input[type="number"]::-moz-inner-spin-button {
 .postamble,
 .transform-header {
     padding: 0 1px;
-    text-shadow: var(--text-outline);
 }
 
 .spoiler .formatted-conclusion::after {
@@ -1944,4 +1955,140 @@ table.distinction {
     label.open {
         padding: 0.4rem;
     }
+}
+
+
+.profile-share .icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+/* Blur Island Feature */
+.game-area.blurred .blur-overlay {
+  position: absolute;
+  /* Extended padding to allow room for the gradient fade */
+  top: -20px;
+  left: -20px;
+  width: calc(100% + 40px);
+  height: calc(100% + 40px);
+  /* Darker background for the blur effect */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Primary blur effect */
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  /* Clip path to maintain proper shape */
+  border-radius: 0;
+  /* Subtle shadow for depth */
+  box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.15);
+  /* Use clip-path for precise control instead of border-radius */
+  overflow: visible;
+}
+
+/* Remove the radial gradient overlay which was creating uneven fading */
+.game-area.blurred .blur-overlay::after {
+  display: none;
+}
+
+/* Create a very precise mask for the blur effect */
+.game-area.blurred .blur-overlay {
+  /* Custom mask with hard edge at island boundaries and gradient only at the outside */
+  -webkit-mask-image: 
+    /* Create a hard-edged mask for the main content area (100% opacity) */
+    linear-gradient(
+      to right,
+      transparent 0px,                  /* Outside left edge */
+      black 20px,                       /* Just inside left edge */
+      black calc(100% - 20px),          /* Just inside right edge */
+      transparent 100%                  /* Outside right edge */
+    ),
+    linear-gradient(
+      to bottom,
+      transparent 0px,                  /* Outside top edge */
+      black 20px,                       /* Just inside top edge */
+      black calc(100% - 20px),          /* Just inside bottom edge */
+      transparent 100%                  /* Outside bottom edge */
+    );
+  
+  mask-image: 
+    linear-gradient(
+      to right,
+      transparent 0px,
+      black 20px,
+      black calc(100% - 20px),
+      transparent 100%
+    ),
+    linear-gradient(
+      to bottom,
+      transparent 0px,
+      black 20px,
+      black calc(100% - 20px),
+      transparent 100%
+    );
+  
+  /* Force the correct composite mode for the masks */
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+/* Apply a custom gradient at the exact edges */
+.game-area.blurred::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  z-index: 99;
+  pointer-events: none;
+  background: transparent;
+  border-radius: inherit;
+  /* Create a very thin gradient border effect */
+  box-shadow: 
+    0 0 0 3px rgba(0, 0, 0, 0.05),
+    0 0 0 2px rgba(0, 0, 0, 0.05),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+.game-area .blur-overlay {
+  display: none;
+}
+
+.start-button {
+  font-family: 'Cascadia Code', monospace;
+  font-size: var(--step-2);
+  background-color: #3c6c64;
+  color: #dfe9ec;
+  border: 2px solid rgba(74, 163, 154, 0.5);
+  border-radius: 6px;
+  padding: 0.6rem 2.5rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  backdrop-filter: blur(3px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: bold;
+}
+
+.start-button:hover {
+  background-color: #4aa39a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(74, 163, 154, 0.4);
+  border-color: rgba(223, 233, 236, 0.8);
+}
+
+.start-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
 }

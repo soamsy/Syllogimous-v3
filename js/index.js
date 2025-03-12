@@ -25,6 +25,7 @@ let timerCount = 30;
 let timerInstance;
 let timerRunning = false;
 let processingAnswer = false;
+let blurIslandEnabled = true; // Always true, Blur Island feature is now always enabled
 
 const historyList = document.getElementById("history-list");
 const historyButton = document.querySelector(`label.open[for="offcanvas-history"]`);
@@ -141,36 +142,51 @@ function load() {
 }
 
 function populateSettings() {
-    for (let key in savedata) {
-        if (!(key in keySettingMapInverse)) continue;
-        let value = savedata[key];
-        let id = keySettingMapInverse[key];
-        
-        const input = document.querySelector("#" + id);
-        if (input.type === "checkbox") {
-            if (value === true || value === false) {
-                input.checked = value;
+    // Populate selection checkboxes
+    for (const [id, prop] of Object.entries(keySettingMap)) {
+        const input = document.getElementById(id);
+        if (input) {
+            if (typeof savedata[prop] === 'boolean') {
+                input.checked = savedata[prop];
+            } else if (typeof savedata[prop] === 'string' || typeof savedata[prop] === 'number') {
+                input.value = savedata[prop];
             }
-        }
-        else if (input.type === "number") {
-            if (!value && isKeyNullable(id)) {
-                input.value = '';
-            } else if (typeof value === "number") {
-                input.value = +value;
-            }
-        }
-        else if (input.type === "text") {
-            input.value = value;
-        } else if (input.type === "select-one") {
-            input.value = value;
         }
     }
 
-    populateLinearDropdown();
-    populateAppearanceSettings();
+    // Set toggle states based on checkbox values
+    for (let i = 1; i <= 63; i++) {
+        const checkbox = document.getElementById(`p-${i}`);
+        if (checkbox && checkbox.type === 'checkbox') {
+            const toggleId = `p-${i}-toggle`;
+            const toggle = document.getElementById(toggleId);
+            if (toggle) {
+                toggle.style.display = checkbox.checked ? 'block' : 'none';
+            }
+        }
+    }
 
-    timerInput.value = savedata.timer;
-    timerTime = timerInput.value;
+    // Blur Island is always enabled now - no need to load from savedata
+    /*
+    // Load blur island setting if it exists
+    if (savedata.blurIslandEnabled !== undefined) {
+        blurIslandEnabled = savedata.blurIslandEnabled;
+        document.getElementById('p-blur-island').checked = blurIslandEnabled;
+    } else {
+        savedata.blurIslandEnabled = blurIslandEnabled;
+    }
+    */
+    
+    // Set timerToggle from savedata - but only if blur island is enabled
+    if (savedata.timerToggled !== undefined) {
+        timerToggle.checked = savedata.timerToggled;
+        timerToggled = savedata.timerToggled;
+    } else {
+        // When blur island is enabled, always start with timer off
+        timerToggle.checked = false;
+        timerToggled = false;
+        savedata.timerToggled = false;
+    }
 }
 
 function carouselInit() {
@@ -213,31 +229,83 @@ function displayInit() {
     imagePromise = imagePromise.then(() => updateCustomStyles());
 }
 
-function clearBackgroundImage() {
+function defaultBackgroundImage() {
     const fileInput = document.getElementById('image-upload');
     fileInput.value = '';
-    delete appState.backgroundImage;
-    imageChanged = true;
+
+    // Remove solid background settings
+    delete appState.useSolidBackground;
+    delete appState.solidBackgroundColor;
+    delete appState.backgroundImage; // Correctly remove image
+
+    // Reset the inline styles on backgroundDiv
+    backgroundDiv.style.backgroundImage = '';  // Clear inline style
+    backgroundDiv.style.backgroundColor = '';  // Clear inline style
+
     save();
-    imagePromise = imagePromise.then(() => deleteImage(imageKey));
-    imagePromise = imagePromise.then(() => updateCustomStyles());
+	updateCustomStyles();  // Call this to apply the changes
+}
+
+function resetBackgroundColor() {
+    appState.gameAreaColor = "#1A1A1AFF"; // Reset to the default game area color
+    document.getElementById('color-input').value = appState.gameAreaColor;
+    save();
+    updateCustomStyles(); // Only updateCustomStyles is needed here, not init()
+}
+
+function removeImage() {
+    const fileInput = document.getElementById('image-upload');
+    fileInput.value = '';
+    delete appState.backgroundImage; // Remove the image URL
+
+    // Set a flag to indicate we want a solid color.  We'll use a dedicated flag
+    // rather than relying on the absence of backgroundImage.
+    appState.useSolidBackground = true;
+    appState.solidBackgroundColor = '#000000'; // Or any default color
+
+    backgroundDiv.style.backgroundImage = 'none'; // Remove existing image
+    backgroundDiv.style.backgroundColor = appState.solidBackgroundColor; // Apply the color
+
+    save(); // Persist the changes
+    updateCustomStyles(); // Update to reflect changes
+}
+
+function getDefaultBackgroundColor() {
+    // Create a temporary element to apply the CSS class
+    const tempElement = document.createElement('div');
+    tempElement.className = 'background-image';
+    tempElement.style.display = 'none'; // Hide it from view
+    document.body.appendChild(tempElement); // Required for getComputedStyle
+
+    // Get the computed background-color style
+    const defaultColor = window.getComputedStyle(tempElement).backgroundColor;
+
+    // Remove the temporary element
+    document.body.removeChild(tempElement);
+
+    return defaultColor;
 }
 
 function handleImageChange(event) {
     const file = event.target.files[0];
     if (file) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            const base64String = event.target.result;
-            appState.backgroundImage = imageKey;
-            imagePromise = imagePromise.then(() => storeImage(imageKey, base64String));
-            imageChanged = true;
-            save();
-            init();
-        };
-        reader.readAsDataURL(file);
+      // 1. Reset the flag: We're now using an image, not a solid color.
+      appState.useSolidBackground = false;
+      delete appState.solidBackgroundColor; // Also remove this
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const base64String = event.target.result;
+        appState.backgroundImage = imageKey; // Keep storing in appState
+        imagePromise = storeImage(imageKey, base64String).then(() => {
+          // 2. Update styles *after* the image is stored (using await ensures this).
+          imageChanged = true;
+          updateCustomStyles();
+          save();
+        });
+      };
+      reader.readAsDataURL(file);
     }
-}
+  }
 
 function populateAppearanceSettings() {
     document.getElementById('color-input').value = appState.gameAreaColor;
@@ -269,35 +337,32 @@ function handleFastUiChange(event) {
 
 async function updateCustomStyles() {
     let styles = '';
-    if (imageChanged) {
-        if (appState.backgroundImage) {
-            const base64String = await getImage(imageKey);
-            if (base64String) {
-                const [prefix, base64Data] = base64String.split(',');
-                const mimeType = prefix.match(/data:(.*?);base64/)[1];
-                const binary = atob(base64Data);
-                const len = binary.length;
-                const bytes = new Uint8Array(len);
-                for (let i = 0; i < len; i++) {
-                    bytes[i] = binary.charCodeAt(i);
-                }
-
-                const blob = new Blob([bytes], { type: mimeType });
-                const objectURL = URL.createObjectURL(blob);
-
-                backgroundDiv.style.backgroundImage = `url(${objectURL})`;
-            }
-        } else {
-            backgroundDiv.style.backgroundImage = ``;
-        }
-        imageChanged = false;
+    if (appState.useSolidBackground) {
+        backgroundDiv.style.backgroundImage = 'none';
+        backgroundDiv.style.backgroundColor = appState.solidBackgroundColor;
     }
-    if (liveStyles.innerHTML !== styles) {
-        liveStyles.innerHTML = styles;
+    else if (appState.backgroundImage) {
+        // Only load the image if not using a solid background.
+        try {
+            const base64String = await getImage(appState.backgroundImage);
+            if (base64String) {
+                backgroundDiv.style.backgroundImage = `url(${base64String})`;
+                backgroundDiv.style.backgroundColor = ''; // Clear any previous solid color
+            } else {
+                defaultBackgroundImage(); // Handles the case where image might be deleted from DB
+            }
+        } catch (error) {
+            console.error("Error loading image:", error);
+            defaultBackgroundImage(); // Fallback if loading fails.
+        }
+    } else {
+        // Reset to default background
+        backgroundDiv.style.backgroundImage = '';
+        backgroundDiv.style.backgroundColor = '';
     }
 
     const gameAreaColor = appState.gameAreaColor;
-    const gameAreaImage = `${gameAreaColor}`
+    const gameAreaImage = `linear-gradient(0deg, ${gameAreaColor}, ${gameAreaColor})`
     if (gameArea.style.background !== gameAreaImage) {
         gameArea.style.background = '';
         gameArea.style.background = gameAreaImage;
@@ -377,9 +442,16 @@ function switchButtons() {
 
 function startCountDown() {
     timerRunning = true;
-    question.startedAt = new Date().getTime();
+    question.startTime = Date.now();
     timerCount = findStartingTimerCount();
     animateTimerBar();
+    
+    // Make sure this is registered
+    question.timerWasRunning = true;
+    
+    console.log("Timer started at", new Date(question.startTime).toLocaleTimeString(), 
+               "timerRunning:", timerRunning, 
+               "timerWasRunning:", question.timerWasRunning);
 }
 
 function stopCountDown() {
@@ -388,6 +460,9 @@ function stopCountDown() {
     timerBar.style.width = '100%';
     clearTimeout(timerInstance);
 }
+
+// Make stopCountDown available to other JS files
+window.stopCountDown = stopCountDown;
 
 function renderTimerBar() {
     const [mode, startingTimerCount] = findStartingTimerState();
@@ -522,11 +597,30 @@ function generateQuestion() {
     return q;
 }
 
-function init() {
+function init(skipBlur = false) {
     stopCountDown();
     question = generateQuestion();
+    console.log("Correct answer:", question.isValid);
     if (!question) {
         return;
+    }
+
+    // Initialize the timer status property
+    question.timerWasRunning = false;
+
+    // Apply blur based on conditions
+    const gameArea = document.getElementById('game-area');
+    
+    // Apply blur on initial load or when requested, not after every answer
+    if (!skipBlur) {
+        gameArea.classList.add('blurred');
+        // Reset question start time - will be set when Start button is clicked or timer starts
+        question.startTime = null;
+    } else {
+        // When not blurring (after answering a question), start time should already be set
+        if (!question.startTime) {
+            question.startTime = Date.now();
+        }
     }
 
     if (coinFlip()) {
@@ -535,7 +629,10 @@ function init() {
 
     stopCountDown();
     if (timerToggled) {
-        startCountDown();
+        // Only start timer if not blurred
+        if (!gameArea.classList.contains('blurred')) {
+            startCountDown();
+        }
     } else {
         renderTimerBar();
     }
@@ -668,15 +765,35 @@ function wowFeedbackMissed(cb) {
 
 function wowFeedback() {
     if (question.correctness === 'right') {
-        wowFeedbackRight(init);
+        wowFeedbackRight(() => init(true));
     } else if (question.correctness === 'wrong') {
-        wowFeedbackWrong(init);
+        wowFeedbackWrong(() => init(true));
     } else {
-        wowFeedbackMissed(init);
+        wowFeedbackMissed(() => init(true));
     }
 }
 
+function getCurrentProfileName() {
+    try {
+        const profileInput = document.getElementById('profile-input');
+        if (profileInput && profileInput.value) {
+            return profileInput.value.trim() || "Default";
+        }
+    } catch (error) {
+    }
+    
+    // Default fallback
+    return "Default";
+}
+
 function storeQuestionAndSave() {
+    console.log("Storing question with startTime:", question.startTime);
+    console.log("Question answeredAt:", question.answeredAt);
+    console.log("Question timeElapsed:", question.timeElapsed);
+    
+    question.timerWasRunning = timerRunning;
+    question.profileName = getCurrentProfileName();
+    
     appState.questions.push(question);
     if (timerToggle.checked) {
         PROGRESS_STORE.storeCompletedQuestion(question)
@@ -698,6 +815,16 @@ function checkIfTrue() {
         question.correctness = 'wrong';
     }
     question.answeredAt = new Date().getTime();
+    
+    // Only calculate timeElapsed if we have a valid startTime
+    if (question.startTime) {
+        question.timeElapsed = question.answeredAt - question.startTime;
+    } else {
+        console.log("WARNING: Missing start time in checkIfTrue, timeElapsed will be undefined");
+        question.timeElapsed = undefined; // Explicitly set to undefined to indicate missing data
+    }
+    
+    console.log("checkIfTrue Question before store:", question);
     storeQuestionAndSave();
     renderHQL(true);
     wowFeedback();
@@ -717,6 +844,16 @@ function checkIfFalse() {
         question.correctness = 'wrong';
     }
     question.answeredAt = new Date().getTime();
+    
+    // Only calculate timeElapsed if we have a valid startTime
+    if (question.startTime) {
+        question.timeElapsed = question.answeredAt - question.startTime;
+    } else {
+        console.log("WARNING: Missing start time in checkIfFalse, timeElapsed will be undefined");
+        question.timeElapsed = undefined; // Explicitly set to undefined to indicate missing data
+    }
+    
+    console.log("checkIfFalse Question before store:", question);
     storeQuestionAndSave();
     renderHQL(true);
     wowFeedback();
@@ -731,6 +868,16 @@ function timeElapsed() {
     question.correctness = 'missed';
     question.answerUser = undefined;
     question.answeredAt = new Date().getTime();
+    
+    // Only calculate timeElapsed if we have a valid startTime
+    if (question.startTime) {
+        question.timeElapsed = question.answeredAt - question.startTime;
+    } else {
+        console.log("WARNING: Missing start time in timeElapsed, timeElapsed will be undefined");
+        question.timeElapsed = undefined; // Explicitly set to undefined to indicate missing data
+    }
+    
+    console.log("timeElapsed Question before store:", question);
     storeQuestionAndSave();
     renderHQL(true);
     wowFeedback();
@@ -751,15 +898,6 @@ function resetApp() {
     }
 }
 
-function clearHistory() {
-    const confirmed = confirm("Are you sure? (does not remove progress graph history)");
-    if (confirmed) {
-        appState.questions = [];
-        appState.score = 0;
-        save();
-        renderHQL();
-    }
-}
 
 function deleteQuestion(i, isRight) {
     appState.score += (isRight ? -1 : 1);
@@ -794,8 +932,8 @@ function renderHQL(didAddSingleQuestion=false) {
 }
 
 function updateAverage(reverseChronological) {
-    let questions = reverseChronological.filter(q => q.answeredAt && q.startedAt);
-    let times = questions.map(q => (q.answeredAt - q.startedAt) / 1000);
+    let questions = reverseChronological.filter(q => q.answeredAt && q.startTime);
+    let times = questions.map(q => (q.answeredAt - q.startTime) / 1000);
     if (times.length == 0) {
         return;
     }
@@ -810,7 +948,7 @@ function updateAverage(reverseChronological) {
     const correctQuestions = questions.filter(q => q.correctness == 'right');
     const percentCorrect = 100 * correctQuestions.length / questions.length;
     percentCorrectDisplay.innerHTML = percentCorrect.toFixed(1) + '%';
-    const correctTimes = correctQuestions.map(q => (q.answeredAt - q.startedAt) / 1000);
+    const correctTimes = correctQuestions.map(q => (q.answeredAt - q.startTime) / 1000);
     if (correctTimes.length == 0) {
         averageCorrectDisplay.innerHTML = 'None yet';
         return;
@@ -852,10 +990,10 @@ function createHQLI(question, i) {
     const htmlOperations = q.operations ? q.operations.map(o => `<div class="hqli-operation">${o}</div>`).join("\n") : '';
 
     let responseTimeHtml = '';
-    if (q.startedAt && q.answeredAt)
+    if (q.startTime && q.answeredAt)
         responseTimeHtml =
 `
-        <div class="hqli-response-time">${Math.round((q.answeredAt - q.startedAt) / 1000)} sec</div>
+        <div class="hqli-response-time">${Math.round((q.answeredAt - q.startTime) / 1000)} sec</div>
 `;
     
     const html =
@@ -949,7 +1087,24 @@ function handleCountDown() {
 }
 
 timerToggle.addEventListener("click", evt => {
-    handleCountDown();
+    timerToggled = timerToggle.checked;
+    
+    if (timerToggled) {
+        // Only start the timer if the game area is not blurred
+        const gameArea = document.getElementById('game-area');
+        if (!gameArea.classList.contains('blurred')) {
+            startCountDown();
+        }
+        // Otherwise, just wait for the Start button click
+    } else {
+        timerRunning = false;
+        timerCount = findStartingTimerCount();
+        timerBar.style.width = '100%';
+        clearTimeout(timerInstance);
+    }
+    
+    savedata.timerToggled = timerToggled;
+    save();
 });
 
 let dehoverQueue = [];
@@ -963,18 +1118,11 @@ function handleKeyPress(event) {
         case "KeyH":
             historyButton.click();
             if (historyCheckbox.checked) {
-                const firstEntry = historyList.firstElementChild;
-                if (firstEntry) {
-                    const explanationButton = firstEntry.querySelector(`button.explanation-button`);
-                    explanationButton.dispatchEvent(new Event("mouseenter"));
-                    dehoverQueue.push(() => {
-                        explanationButton.dispatchEvent(new Event("mouseleave"));
-                    });
-                }
-            } else {
-                dehoverQueue.forEach(callback => {
-                    callback();
-                });
+                renderHQL();
+                updateAverage([...appState.questions].reverse());
+                const infoDisplay = document.querySelector('.hql-frame');
+                if (!infoDisplay.scrollTop)
+                    infoDisplay.scrollTop = infoDisplay.scrollHeight;
             }
             break;
         case "KeyS":
@@ -992,11 +1140,191 @@ function handleKeyPress(event) {
             break;
         case "Space":
             timerToggle.checked = !timerToggle.checked;
-            handleCountDown();
+            timerToggled = timerToggle.checked;
+            savedata.timerToggled = timerToggled;
+            
+            if (timerToggled) {
+                // Only start timer if the island is not blurred
+                const gameArea = document.getElementById('game-area');
+                if (!gameArea.classList.contains('blurred')) {
+                    startCountDown();
+                }
+            } else {
+                timerRunning = false;
+                clearTimeout(timerInstance);
+                renderTimerBar();
+            }
+            
+            save();
             break;
         default:
             break;
     }
+}
+
+function clearHistory() {
+    const confirmed = confirm("Are you sure? (This will clear the displayed history but preserve data for CSV export)");
+    if (confirmed) {
+        // Store the questions in a separate array for CSV export
+        if (!appState.archivedQuestions) {
+            appState.archivedQuestions = [];
+        }
+        
+        // Move current questions to archive instead of deleting them
+        appState.archivedQuestions = [...appState.archivedQuestions, ...appState.questions];
+        
+        // Clear the visible questions and reset the score
+        appState.questions = [];
+        appState.score = 0;
+        
+        save();
+        renderHQL();
+    }
+}
+
+// Modify the exportHistoryToCSV function to include archived questions
+// Function to strip HTML tags and clean premise text
+function cleanPremiseText(text) {
+    // Remove all HTML tags
+    const withoutTags = text.replace(/<\/?[^>]+(>|$)/g, "");
+    
+    // Remove extra whitespace
+    const cleanedText = withoutTags.replace(/\s+/g, " ").trim();
+    
+    return cleanedText;
+}
+
+// Update the exportHistoryToCSV function to clean premises
+// Function to clean premise text while preserving negated elements
+function cleanPremiseText(text) {
+    // Replace negated spans with content in *asterisks* to show they're negated
+    let result = text.replace(/<span class="is-negated">(.*?)<\/span>/g, "*$1*");
+    
+    // Handle subject spans - just keep the content
+    result = result.replace(/<span class="subject">(.*?)<\/span>/g, "$1");
+    
+    // Handle relation spans - just keep the content
+    result = result.replace(/<span class="relation">(.*?)<\/span>/g, "$1");
+    
+    // Handle meta spans - just keep the content
+    result = result.replace(/<span class="is-meta">(.*?)<\/span>/g, "$1");
+    
+    // Remove negation explainer span entirely
+    result = result.replace(/<span class="negation-explainer">.*?<\/span>;?/g, "");
+    
+    // Remove any remaining HTML tags
+    result = result.replace(/<\/?[^>]+(>|$)/g, "");
+    
+    // Clean up multiple spaces and trim
+    result = result.replace(/\s+/g, " ").trim();
+    
+    return result;
+}
+
+// Update the exportHistoryToCSV function
+// Function to clean premise text while preserving negated elements
+function cleanPremiseText(text) {
+    // Replace negated spans with content in *asterisks* to show they're negated
+    let result = text.replace(/<span class="is-negated">(.*?)<\/span>/g, "*$1*");
+    
+    // Handle subject spans - just keep the content
+    result = result.replace(/<span class="subject">(.*?)<\/span>/g, "$1");
+    
+    // Handle relation spans - just keep the content
+    result = result.replace(/<span class="relation">(.*?)<\/span>/g, "$1");
+    
+    // Handle meta spans - just keep the content
+    result = result.replace(/<span class="is-meta">(.*?)<\/span>/g, "$1");
+    
+    // Remove negation explainer span entirely
+    result = result.replace(/<span class="negation-explainer">.*?<\/span>;?/g, "");
+    
+    // Remove any remaining HTML tags
+    result = result.replace(/<\/?[^>]+(>|$)/g, "");
+    
+    // Clean up multiple spaces and trim
+    result = result.replace(/\s+/g, " ").trim();
+    
+    return result;
+}
+
+function exportHistoryToCSV() {
+    // Combine current and archived questions for export
+    const allQuestions = [...(appState.archivedQuestions || []), ...appState.questions];
+    
+    if (allQuestions.length === 0) {
+        alert("No history to export.");
+        return;
+    }
+    
+    // 1. Prepare CSV Header
+    const csvHeader = [
+        "Profile",
+        "Category",
+        "Type",
+        "Number of Premises",
+        "Premises",
+        "Conclusion",
+        "User Answer",
+        "Correct Answer",
+        "Response Time (s)",
+        "Timer On",
+        "Timestamp"
+    ].join(",") + "\n";
+    
+    // 2. Format Data to CSV
+    const csvRows = allQuestions.map(question => {
+
+        const profileName = (question.profileName || "Default").replace(/"/g, '""');
+        
+        const category = question.category.replace(/"/g, '""');
+        const type = question.type;
+        const numPremises = question.premises.length;
+        
+        // Clean each premise but preserve negation with *asterisks*
+        const cleanedPremises = question.premises
+            .map(premise => cleanPremiseText(premise))
+            .join(" | ")
+            .replace(/"/g, '""');
+            
+        const cleanedConclusion = cleanPremiseText(question.conclusion).replace(/"/g, '""');
+        const userAnswer = question.answerUser === undefined ? "MISSED" : (question.answerUser ? "TRUE" : "FALSE");
+        const correctAnswer = question.isValid ? "TRUE" : "FALSE";
+        const responseTime = question.timeElapsed !== undefined ? (question.timeElapsed / 1000).toFixed(2) : "";
+        const timerOn = question.timerWasRunning === true ? "TRUE" : "FALSE";
+        
+        // Convert timestamp to human-readable format without milliseconds
+        let formattedTimestamp = "";
+        if (question.startTime) {
+            const date = new Date(question.startTime);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            formattedTimestamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        }
+        
+        return `"${profileName}","${category}","${type}","${numPremises}","${cleanedPremises}","${cleanedConclusion}","${userAnswer}","${correctAnswer}","${responseTime}","${timerOn}","${formattedTimestamp}"`;
+    });
+    
+    // 3. Combine Header and Rows
+    const csvContent = csvHeader + csvRows.join("\n");
+    
+    // 4. Create Download Link (Data URL)
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    
+    // 5. Create and Trigger Download
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "syllogimous_v3_history.csv");
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url); // release the object URL
 }
 
 document.addEventListener("keydown", handleKeyPress);
@@ -1005,3 +1333,66 @@ registerEventHandlers();
 load();
 switchButtons();
 init();
+updateCustomStyles();
+
+// Add event listener for the start button
+document.addEventListener("DOMContentLoaded", function() {
+    const startButton = document.getElementById('start-button');
+    
+    startButton.addEventListener('click', function() {
+        const gameArea = document.getElementById('game-area');
+        if (!gameArea.classList.contains('blurred')) return;
+        
+        // Remove blur
+        gameArea.classList.remove('blurred');
+        
+        console.log("Start button clicked");
+        
+        // Start the timer if it's enabled 
+        if (timerToggle.checked) {
+            console.log("Starting timer because timer toggle is checked");
+            startCountDown();
+        } else {
+            // Just set the start time for untimed questions
+            console.log("Setting start time without starting timer");
+            question.startTime = Date.now();
+        }
+    });
+    
+    // Add event listeners for all offcanvas menu toggles to blur the island when opened
+    const menuToggles = [
+        document.getElementById('offcanvas-settings'), 
+        document.getElementById('offcanvas-history'),
+        document.getElementById('offcanvas-credits'),
+        document.getElementById('offcanvas-graph')
+    ];
+    
+    let anyMenuOpen = false;
+    
+    menuToggles.forEach(toggle => {
+        if (toggle) {
+            toggle.addEventListener('change', function(e) {
+                if (this.checked) {
+                    // Menu was opened, blur the island
+                    document.getElementById('game-area').classList.add('blurred');
+                    anyMenuOpen = true;
+                    
+                    // Stop timer if it's running
+                    if (timerRunning) {
+                        timerRunning = false;
+                        clearTimeout(timerInstance);
+                    }
+                } else {
+                    // Menu was closed, check if all menus are closed
+                    const allClosed = menuToggles.every(t => t && !t.checked);
+                    if (allClosed) {
+                        anyMenuOpen = false;
+                        
+                        // If all menus are closed, maintain the blur
+                        // For now, keep the blur active - will be removed when Start button is clicked
+                    }
+                }
+            });
+        }
+    });
+});
