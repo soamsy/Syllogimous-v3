@@ -1,8 +1,16 @@
 # Syllogimous v3
 
-Definitive Relational Game
+Modified version of Syllogimous-v3, created to support new theories and experiments on relational reasoning training.
 
-[Try it](https://4skinskywalker.github.io/Syllogimous-v3/)
+[Try it](https://soamsy.github.io/Syllogimous-v3/)
+
+# Contribution
+
+[4skinSkywalker](https://github.com/4skinSkywalker/)
+[ikokusovereignty](https://github.com/ikokusovereignty/)
+[soamsy](https://github.com/soamsy/)
+[giladkingsley](https://github.com/giladkingsley/)
+
 
 # Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0)
 
