@@ -203,6 +203,13 @@ function displayInit() {
     } else {
         displayText.classList.remove('complicated-conclusion');
     }
+
+    if (q.premises.length > 12) {
+        displayText.classList.add('big-question');
+    } else {
+        displayText.classList.remove('big-question');
+    }
+
     imagePromise = imagePromise.then(() => updateCustomStyles());
 }
 

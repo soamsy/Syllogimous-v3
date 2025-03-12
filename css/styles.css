@@ -624,6 +624,10 @@ input[type="number"]::-moz-inner-spin-button {
     overflow-x: hidden;
 }
 
+.display_text.big-question .formatted-premise {
+    margin-bottom: 0.2rem;
+}
+
 .display_text.minimal .formatted-premise,
 .display_text.minimal .formatted-operation,
 .display_text.minimal:not(.complicated-conclusion) .formatted-conclusion {
