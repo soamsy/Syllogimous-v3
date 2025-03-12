@@ -255,6 +255,14 @@ graphClose.addEventListener('click', () => {
 });
 
 graphButton.addEventListener('click', () => {
+    // Add blur to the game area when opening graph
+    document.getElementById('game-area').classList.add('blurred');
+    
+    // Stop timer if it's running - call the stopCountDown function from index.js
+    if (typeof window.stopCountDown === 'function') {
+        window.stopCountDown();
+    }
+    
     PROGRESS_GRAPH.createGraph();
 });
 
