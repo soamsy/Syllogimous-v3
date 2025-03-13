@@ -377,7 +377,9 @@ function switchButtons() {
 
 function startCountDown() {
     timerRunning = true;
-    question.startedAt = new Date().getTime();
+    if (question) {
+        question.startedAt = new Date().getTime();
+    }
     timerCount = findStartingTimerCount();
     animateTimerBar();
 }
