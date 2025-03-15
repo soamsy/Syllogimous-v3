@@ -69,6 +69,7 @@ let savedata = {
     "overrideTopUnderWeight": 100,
     "overrideComparisonWeight": 100,
     "overrideTemporalWeight": 100,
+    "overrideContainsWeight": 100,
     "overrideSyllogismWeight": 100,
     "overrideDirectionWeight": 100,
     "overrideDirection3DWeight": 100,
@@ -153,6 +154,7 @@ const compressedSettings = {
     "overrideTopUnderWeight": "tuW",
     "overrideComparisonWeight": "compW",
     "overrideTemporalWeight": "tempW",
+    "overrideContainsWeight": "contW",
     "overrideSyllogismWeight": "syllW",
     "overrideDirectionWeight": "dir2DW",
     "overrideDirection3DWeight": "dir3DW",
@@ -268,6 +270,7 @@ const keySettingMap = {
     "p-62": "overrideAnchorSpaceWeight",
     "p-63-optional": "dailyProgressGoal",
     "p-64-optional": "weeklyProgressGoal",
+    "p-65": "overrideContainsWeight",
 };
 
 const meaningfulWords = {

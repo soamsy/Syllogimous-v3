@@ -4,6 +4,7 @@ const linearLeftRightCheckbox = document.getElementById('p-leftright');
 const linearTopUnderCheckbox = document.getElementById('p-topunder');
 const linearComparisonCheckbox = document.getElementById('p-comparison');
 const linearTemporalCheckbox = document.getElementById('p-temporal');
+const linearContainsCheckbox = document.getElementById('p-contains');
 
 linearSettingsButton.addEventListener('click', (event) => {
   event.preventDefault();
@@ -23,6 +24,7 @@ function populateLinearDropdown() {
   linearTopUnderCheckbox.checked = options.includes('topunder');
   linearComparisonCheckbox.checked = options.includes('comparison');
   linearTemporalCheckbox.checked = options.includes('temporal');
+  linearContainsCheckbox.checked = options.includes('contains');
 }
 
 function updateLinearWording(option, isSelected) {
@@ -42,3 +44,4 @@ linearLeftRightCheckbox.addEventListener('click', e => updateLinearWording('left
 linearTopUnderCheckbox.addEventListener('click', e => updateLinearWording('topunder', e.target.checked));
 linearComparisonCheckbox.addEventListener('click', e => updateLinearWording('comparison', e.target.checked));
 linearTemporalCheckbox.addEventListener('click', e => updateLinearWording('temporal', e.target.checked));
+linearContainsCheckbox.addEventListener('click', e => updateLinearWording('contains', e.target.checked));

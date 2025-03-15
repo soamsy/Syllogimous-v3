@@ -3,8 +3,8 @@ function pickLinearPremise(a, b, comparison, reverseComparison, min, minRev) {
         comparison = min;
         reverseComparison = minRev;
     } else {
-        comparison = 'is ' + comparison;
-        reverseComparison = 'is ' + reverseComparison;
+        comparison = comparison;
+        reverseComparison = reverseComparison;
     }
     const ps = [
     `<span class="subject">${a}</span> <span class="relation">${comparison}</span> <span class="subject">${b}</span>`,
@@ -42,15 +42,15 @@ function findTwoWordIndexes(words) {
 class MoreLess {
     createLinearPremise(a, b) {
         return pickRandomItems([
-            pickLinearPremise(a, b, 'less than', 'more than', '<', '>'),
-            pickLinearPremise(b, a, 'more than', 'less than', '>', '<'),
+            pickLinearPremise(a, b, 'is less than', 'is more than', '<', '>'),
+            pickLinearPremise(b, a, 'is more than', 'is less than', '>', '<'),
         ], 1).picked[0];
     }
 
     createReverseLinearPremise(a, b) {
         return pickRandomItems([
-            pickLinearPremise(a, b, 'more than', 'less than', '>', '<'),
-            pickLinearPremise(b, a, 'less than', 'more than', '<', '>'),
+            pickLinearPremise(a, b, 'is more than', 'is less than', '>', '<'),
+            pickLinearPremise(b, a, 'is less than', 'is more than', '<', '>'),
         ], 1).picked[0];
     }
 
@@ -62,15 +62,15 @@ class MoreLess {
 class BeforeAfter {
     createLinearPremise(a, b) {
         return pickRandomItems([
-            pickLinearPremise(a, b, 'before', 'after', '<i class="ci-Arrow_Right_LG"></i>', '<i class="ci-Arrow_Left_MD"></i>'),
-            pickLinearPremise(b, a, 'after', 'before', '<i class="ci-Arrow_Left_MD"></i>', '<i class="ci-Arrow_Right_LG"></i>'),
+            pickLinearPremise(a, b, 'is before', 'is after', '<i class="ci-Arrow_Right_LG"></i>', '<i class="ci-Arrow_Left_MD"></i>'),
+            pickLinearPremise(b, a, 'is after', 'is before', '<i class="ci-Arrow_Left_MD"></i>', '<i class="ci-Arrow_Right_LG"></i>'),
         ], 1).picked[0];
     }
 
     createReverseLinearPremise(a, b) {
         return pickRandomItems([
-            pickLinearPremise(a, b, 'after', 'before', '<i class="ci-Arrow_Left_MD"></i>', '<i class="ci-Arrow_Right_LG"></i>'),
-            pickLinearPremise(b, a, 'before', 'after', '<i class="ci-Arrow_Right_LG"></i>', '<i class="ci-Arrow_Left_MD"></i>'),
+            pickLinearPremise(a, b, 'is after', 'is before', '<i class="ci-Arrow_Left_MD"></i>', '<i class="ci-Arrow_Right_LG"></i>'),
+            pickLinearPremise(b, a, 'is before', 'is after', '<i class="ci-Arrow_Right_LG"></i>', '<i class="ci-Arrow_Left_MD"></i>'),
         ], 1).picked[0];
     }
 
@@ -79,18 +79,38 @@ class BeforeAfter {
     }
 }
 
-class LeftRight {
+class ContainsWithin {
     createLinearPremise(a, b) {
         return pickRandomItems([
-            pickLinearPremise(a, b, 'left of', 'right of', '<i class="ci-Arrow_Right_LG"></i>', '<i class="ci-Arrow_Left_MD"></i>'),
-            pickLinearPremise(b, a, 'right of', 'left of', '<i class="ci-Arrow_Left_MD"></i>', '<i class="ci-Arrow_Right_LG"></i>'),
+            pickLinearPremise(a, b, 'contains', 'is within', '⊃', '⊂'),
+            pickLinearPremise(b, a, 'is within', 'contains', '⊂', '⊃'),
         ], 1).picked[0];
     }
 
     createReverseLinearPremise(a, b) {
         return pickRandomItems([
-            pickLinearPremise(a, b, 'right of', 'left of', '<i class="ci-Arrow_Left_MD"></i>', '<i class="ci-Arrow_Right_LG"></i>'),
-            pickLinearPremise(b, a, 'left of', 'right of', '<i class="ci-Arrow_Right_LG"></i>', '<i class="ci-Arrow_Left_MD"></i>'),
+            pickLinearPremise(a, b, 'is within', 'contains', '⊂', '⊃'),
+            pickLinearPremise(b, a, 'contains', 'is within', '⊃', '⊂'),
+        ], 1).picked[0];
+    }
+
+    getName() {
+        return 'Contains';
+    }
+}
+
+class LeftRight {
+    createLinearPremise(a, b) {
+        return pickRandomItems([
+            pickLinearPremise(a, b, 'is left of', 'is right of', '<i class="ci-Arrow_Right_LG"></i>', '<i class="ci-Arrow_Left_MD"></i>'),
+            pickLinearPremise(b, a, 'is right of', 'is left of', '<i class="ci-Arrow_Left_MD"></i>', '<i class="ci-Arrow_Right_LG"></i>'),
+        ], 1).picked[0];
+    }
+
+    createReverseLinearPremise(a, b) {
+        return pickRandomItems([
+            pickLinearPremise(a, b, 'is right of', 'is left of', '<i class="ci-Arrow_Left_MD"></i>', '<i class="ci-Arrow_Right_LG"></i>'),
+            pickLinearPremise(b, a, 'is left of', 'is right of', '<i class="ci-Arrow_Right_LG"></i>', '<i class="ci-Arrow_Left_MD"></i>'),
         ], 1).picked[0];
     }
 
@@ -102,15 +122,15 @@ class LeftRight {
 class TopUnder {
     createLinearPremise(a, b) {
         return pickRandomItems([
-            pickLinearPremise(a, b, 'on top of', 'under', '<i class="ci-Arrow_Down_LG"></i>', '<i class="ci-Arrow_Up_LG"></i>'),
-            pickLinearPremise(b, a, 'under', 'on top of', '<i class="ci-Arrow_Up_LG"></i>', '<i class="ci-Arrow_Down_LG"></i>'),
+            pickLinearPremise(a, b, 'is on top of', 'is under', '<i class="ci-Arrow_Down_LG"></i>', '<i class="ci-Arrow_Up_LG"></i>'),
+            pickLinearPremise(b, a, 'is under', 'is on top of', '<i class="ci-Arrow_Up_LG"></i>', '<i class="ci-Arrow_Down_LG"></i>'),
         ], 1).picked[0];
     }
 
     createReverseLinearPremise(a, b) {
         return pickRandomItems([
-            pickLinearPremise(a, b, 'under', 'on top of', '<i class="ci-Arrow_Up_LG"></i>', '<i class="ci-Arrow_Down_LG"></i>'),
-            pickLinearPremise(b, a, 'on top of', 'under', '<i class="ci-Arrow_Down_LG"></i>', '<i class="ci-Arrow_Up_LG"></i>'),
+            pickLinearPremise(a, b, 'is under', 'is on top of', '<i class="ci-Arrow_Up_LG"></i>', '<i class="ci-Arrow_Down_LG"></i>'),
+            pickLinearPremise(b, a, 'is on top of', 'is under', '<i class="ci-Arrow_Down_LG"></i>', '<i class="ci-Arrow_Up_LG"></i>'),
         ], 1).picked[0];
     }
 
@@ -348,6 +368,8 @@ function createLinearQuestion(wording) {
         return new LinearQuestion(new BeforeAfter());
     } else if (wording === 'topunder') {
         return new LinearQuestion(new TopUnder());
+    } else if (wording === 'contains') {
+        return new LinearQuestion(new ContainsWithin());
     } else {
         return new LinearQuestion(new LeftRight());
     }
@@ -364,6 +386,7 @@ function getEnabledLinearWeights() {
         [ 'topunder', savedata.overrideTopUnderWeight ],
         [ 'comparison', savedata.overrideComparisonWeight ],
         [ 'temporal', savedata.overrideTemporalWeight ],
+        [ 'contains', savedata.overrideContainsWeight ],
     ].filter(w => wordings.includes(w[0]));
     return weights;
 }
