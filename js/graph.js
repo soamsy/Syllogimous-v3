@@ -99,8 +99,16 @@ class ProgressGraph {
         await this.plotScore();
     }
 
+    randomColor() {
+        const r = Math.floor(Math.random() * 128 + 128);
+        const g = Math.floor(Math.random() * 128 + 128);
+        const b = Math.floor(Math.random() * 128 + 128);
+        return `rgb(${r}, ${g}, ${b})`;
+    }
+
     async plotScore() {
-        const data = await getAllRRTProgress();
+        let data = await getAllRRTProgress();
+        data = data.filter(q => q.timeElapsed >= 1500);
         if (!data || data.length === 0) {
             return;
         }
@@ -114,7 +122,7 @@ class ProgressGraph {
             return {
                 label: type,
                 data: premiseLevelData[type].map((entry) => ({ x: entry.day, y: entry.averageTime })),
-                borderColor: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
+                borderColor: this.randomColor(),
                 fill: false,
             };
         });
@@ -123,8 +131,7 @@ class ProgressGraph {
             return {
                 label: type,
                 data: typeData[type].map((entry) => ({ x: entry.day, y: entry.count })),
-                borderColor: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
-                fill: false,
+                backgroundColor: this.randomColor(),
             };
         });
 
@@ -132,21 +139,20 @@ class ProgressGraph {
         const timeDatasets = [{
             label: 'Time Spent (Minutes)',
             data: timeData.map(entry => ({ x: entry.day, y: entry.time })),
-            borderColor: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
-            fill: false,
+            backgroundColor: this.randomColor(),
         }];
 
         const scoreCtx = canvasScore.getContext('2d');
-        this.scoreChart = this.createChart(scoreCtx, premiseLevelLabels, scoreDatasets, 'Average Correct Time (s)', 1, 2, 's');
+        this.scoreChart = this.createChart(scoreCtx, premiseLevelLabels, scoreDatasets, 'line', 'Average Correct Time (s)', 1, 2, 's');
         const countCtx = canvasCount.getContext('2d');
-        this.countChart = this.createChart(countCtx, labels, countDatasets, 'Count', 0, 0);
+        this.countChart = this.createChart(countCtx, labels, countDatasets, 'bar', 'Count', 0, 0);
         const timeCtx = canvasTime.getContext('2d');
-        this.timeChart = this.createChart(timeCtx, labels, timeDatasets, 'Time Spent');
+        this.timeChart = this.createChart(timeCtx, labels, timeDatasets, 'bar', 'Time Spent');
     }
 
-    createChart(ctx, labels, datasets, yAxisTitle, tickDecimals = 1, tooltipDecimals = 2, unit='') {
+    createChart(ctx, labels, datasets, type, yAxisTitle, tickDecimals = 1, tooltipDecimals = 2, unit='') {
         return new Chart(ctx, {
-            type: 'line',
+            type: type,
             data: {
                 labels,
                 datasets,
