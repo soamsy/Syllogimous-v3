@@ -136,3 +136,7 @@ function normalizeString(input) {
         .replace(/-+/g, '-')
         .replace(/^-+|-+$/g, '');
 }
+
+function oneOutOf(n) {
+    return Math.random() < 1 / n;
+}

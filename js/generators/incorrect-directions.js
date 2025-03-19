@@ -75,8 +75,7 @@ class IncorrectDirections {
         let backupPool = this.findUnused(combinations, correctCoord);
         backupPool.push(opposite);
         backupPool.push(opposite);
-        backupPool.push(opposite);
-        if (combinations.length !== 0 && Math.random() < 0.90) {
+        if (combinations.length !== 0 && !oneOutOf(11)) {
             return combinations;
         } else {
             return backupPool;
