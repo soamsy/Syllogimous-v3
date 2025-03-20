@@ -131,7 +131,7 @@ class ProgressGraph {
             return {
                 label: type,
                 data: typeData[type].map((entry) => ({ x: entry.day, y: entry.count })),
-                backgroundColor: this.randomColor(),
+                borderColor: this.randomColor(),
             };
         });
 
@@ -145,7 +145,7 @@ class ProgressGraph {
         const scoreCtx = canvasScore.getContext('2d');
         this.scoreChart = this.createChart(scoreCtx, premiseLevelLabels, scoreDatasets, 'line', 'Average Correct Time (s)', 1, 2, 's');
         const countCtx = canvasCount.getContext('2d');
-        this.countChart = this.createChart(countCtx, labels, countDatasets, 'bar', 'Count', 0, 0);
+        this.countChart = this.createChart(countCtx, labels, countDatasets, 'line', 'Count', 0, 0);
         const timeCtx = canvasTime.getContext('2d');
         this.timeChart = this.createChart(timeCtx, labels, timeDatasets, 'bar', 'Time Spent');
     }
