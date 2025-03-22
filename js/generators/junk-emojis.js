@@ -3,6 +3,7 @@ const JUNK_EMOJI_COUNT = 1000;
 class JunkEmojis {
     constructor() {
         this.id = 0;
+        this.prevColor = null;
         this.pool = JunkEmojis.generateColorPool();
     }
 
@@ -29,7 +30,7 @@ class JunkEmojis {
     
         const result = [];
         for (let i = 0; i < maxLength; i++) {
-            const group = arrays.map(arr => arr[i] !== undefined ? arr[i] : undefined).filter(x => x !== undefined); // Handle different array lengths
+            const group = arrays.map(arr => arr?.[i]).filter(x => x !== undefined);
             const splits = pickRandomItems([3,4,5,6,7,8,9], 1).picked[0];
             result.push(JunkEmojis.perfectShuffle(group, splits));
         }
@@ -42,18 +43,26 @@ class JunkEmojis {
 
         const hueGroups = [];
         const hues = [0,10,20,30,40,45,50,55,60,65,70,80,90,100,115,130,145,160,170,180,190,200,210,220,230,237,244,250,260,270,280,290,295,300,305,310,320,330,340,350];
-        const saturations = [5, 30, 40, 50, 65, 67, 75, 80, 85, 90, 95, 100];
-        const lightnesses = [10, 22, 35, 50, 65, 80, 92];
+        const saturationsA = [10, 100, 25, 75, 95, 38, 85, 43, 68, 47, 55, 50];
+        const saturationsB = saturationsA.slice().reverse();
+        const lightA = [12, 92, 22, 82, 32, 77, 42, 67, 54, 59];
+        const lightB = lightA.slice().reverse();
+        let lightnesses = lightA;
+        let saturations = saturationsA;
 
         for (const hue of hues) {
             const group = [];
-            for (const saturation of saturations) {
-                for (const lightness of lightnesses) {
+            lightnesses = (lightnesses == lightA) ? lightB : lightA;
+            saturations = (saturations == saturationsA) ? saturationsB : saturationsA;
+            for (const sat of saturations) {
+                const saturation = Math.round(sat + (Math.random() - 0.5) * 6);
+                for (const light of lightnesses) {
+                    const lightness = Math.round(light + (Math.random() - 0.5) * 6);
                     if (85 < hue && hue < 150 && (lightness <= 30 || saturation <= 30)) {
                         // Puke green is not kawaii
                         continue;
                     }
-                    if (Math.random() < 0.005) {
+                    if (Math.random() < 0.01) {
                         group.push(`hsl(${hue}, ${saturation}%, ${0}%)`);
                     } else if (Math.random() < 0.005) {
                         group.push(`hsl(${hue}, ${saturation}%, ${100}%)`);
@@ -63,10 +72,6 @@ class JunkEmojis {
                 }
             }
             hueGroups.push(group);
-        }
-
-        for (const group of hueGroups) {
-            JunkEmojis.shuffleArray(group);
         }
 
         return JunkEmojis.zipShuffle(hueGroups);
@@ -88,9 +93,30 @@ class JunkEmojis {
             return true;
         };
 
-        while (points.length < numPoints) {
-            const x = minX + Math.random() * width;
-            const y = minY + Math.random() * height;
+        const usePerpendicularShifts = oneOutOf(7);
+        let usedX = coinFlip();
+        for (let tries = 0; tries < 1000 && points.length < numPoints; tries++) {
+            let x = minX + Math.random() * width;
+            let y = minY + Math.random() * height;
+            if (usePerpendicularShifts && points.length > 0) {
+                if (usedX) {
+                    if (Math.random() < 0.8) {
+                        y = points[points.length - 1][1];
+                        usedX = false;
+                    } else {
+                        x = points[points.length - 1][0];
+                        usedX = true;
+                    }
+                } else {
+                    if (Math.random() < 0.2) {
+                        y = points[points.length - 1][1];
+                        usedX = false;
+                    } else {
+                        x = points[points.length - 1][0];
+                        usedX = true;
+                    }
+                }
+            }
 
             if (isFarEnough(x, y)) {
                 points.push([x, y]);
@@ -104,12 +130,22 @@ class JunkEmojis {
         this.pool = JunkEmojis.generateColorPool();
     }
 
-    nextColor() {
-        const color = this.pool[this.id % this.pool.length];
+    bumpId() {
         this.id += 1;
         if (this.id % this.pool.length == 0) {
             this.rebuildPool();
         }
+    }
+
+    nextColor() {
+        let color = this.pool[this.id % this.pool.length];
+        while (this.prevColor && ColorComparator.areSimilarHslColors(color, this.prevColor)) {
+            this.bumpId();
+            this.prevColor = color;
+            color = this.pool[this.id % this.pool.length];
+        }
+        this.bumpId();
+        this.prevColor = color;
         return color;
     }
 
@@ -141,7 +177,7 @@ class JunkEmojis {
     generateAllEmoji() {
         let colorCombos = [];
         for (let i = 0; i < JUNK_EMOJI_COUNT; i++) {
-            const numColors = pickRandomItems([2, 3, 3, 4, 4, 5], 1).picked[0];
+            const numColors = pickRandomItems([2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5], 1).picked[0];
             let combo = [];
             for (let j = 0; j < numColors; j++) {
                 combo.push(this.nextColor());
@@ -178,7 +214,12 @@ function throwSvgsOnPage() {
     let container = document.createElement("div");
     container.id = "svg-container";
 
-    symbols.forEach(symbol => {
+    symbols.forEach((symbol, i) => {
+        if (i % (JUNK_EMOJI_COUNT / 10) === 0) {
+            let divider = document.createElement("div");
+            divider.setAttribute("style", "display: inline-block; width: 10px; height: 50px; border: 3px dotted black; background-color: #FFF");
+            container.appendChild(divider);
+        }
         let useElement = document.createElementNS("http://www.w3.org/2000/svg", "use");
         useElement.setAttributeNS("http://www.w3.org/1999/xlink", "href", `#${symbol.id}`);
 
@@ -188,6 +229,7 @@ function throwSvgsOnPage() {
         svgWrapper.setAttribute("height", "50");
         svgWrapper.appendChild(useElement);
         container.appendChild(svgWrapper);
+
     });
 
     document.body.appendChild(container);

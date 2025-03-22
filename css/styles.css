@@ -42,6 +42,7 @@
   --step--2: clamp(0.7813rem, 0.6829rem + 0.3575vw, 0.96rem);
   --step--1: clamp(0.9375rem, 0.7931rem + 0.525vw, 1.2rem);
   --step-0: clamp(1.125rem, 0.9188rem + 0.75vw, 1.5rem);
+  --step-05: clamp(1.25rem, 0.975rem + 0.9vw, 1.625rem);
   --step-1: clamp(1.35rem, 1.0613rem + 1.05vw, 1.875rem);
   --step-2: clamp(1.62rem, 1.2219rem + 1.4475vw, 2.3438rem);
   --step-3: clamp(1.944rem, 1.4019rem + 1.9714vw, 2.9297rem);
@@ -1321,13 +1322,13 @@ input[type="checkbox"]:checked + .switch::after {
 .indent-i::before { content: '(((((((('; visibility: hidden; }
 
 svg.junk, svg.noise, svg.anchor {
-    height: 1em;
+    height: 1.125em;
     width: auto;
     vertical-align: middle;
 }
 
 svg.junk, svg.noise {
-    box-shadow: 0 0 0 0.04em #000;
+    box-shadow: 0 0 0 0.05em #000;
 }
 
 .subject svg.junk {
@@ -1899,6 +1900,9 @@ table.distinction {
     .progress-value {
       font-size: 11px;
     }
+    .display_text {
+        font-size: var(--step-05);
+    }
 }
 
 @media (max-width: 500px) {
@@ -1938,6 +1942,10 @@ table.distinction {
 
     .display_text.minimal {
         font-size: var(--step-1);
+    }
+
+    svg.junk, svg.noise, svg.anchor {
+        height: 1.25em;
     }
 }
 

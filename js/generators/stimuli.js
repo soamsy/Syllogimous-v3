@@ -52,8 +52,7 @@ function createGarbageWord() {
     return string;
 }
 
-let currentJunkEmojiSequence = [0, 1, 2, 3, 4, 5, 6, 7];
-shuffle(currentJunkEmojiSequence);
+let currentJunkEmojiSequence = [0, 3, 6, 9, 1, 4, 7, 2, 5, 8];
 let currentJunkEmojiSequenceId = 0;
 function createJunkEmoji() {
     const splitSize = Math.floor(JUNK_EMOJI_COUNT / currentJunkEmojiSequence.length);
