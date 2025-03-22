@@ -470,6 +470,7 @@ input[type="number"]::-moz-inner-spin-button {
     max-width: 750px;
     transition: box-shadow 0.3s ease-in-out;
     position: relative;
+    box-sizing: content-box;
 }
 
 .game-area:before {
