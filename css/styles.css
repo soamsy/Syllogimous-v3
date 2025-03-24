@@ -621,7 +621,7 @@ input[type="number"]::-moz-inner-spin-button {
     max-height: calc(100vh - 240px);
     min-width: 270px;
     line-height: 1.5;
-    padding: 0.5rem 1rem 0 0;
+    padding: 0.5rem 0.75rem 0 0.125rem;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -1913,7 +1913,12 @@ table.distinction {
     }
 
     .display-inner {
+        padding: 0.5rem 0.125rem 0.5rem 0.625rem;
         margin: 0;
+    }
+
+    .display_text {
+        padding-right: 0.375em;
     }
 
     .display-inner .border-left,
@@ -1926,7 +1931,7 @@ table.distinction {
     }
 
     label.open {
-        padding: 0.7rem;
+        padding: 0.5rem 0.8rem;
     }
 
     .game-area {
@@ -1953,5 +1958,14 @@ table.distinction {
 @media (max-width: 360px) {
     label.open {
         padding: 0.4rem;
+    }
+
+    .display-inner {
+        padding: 0.5rem 0 0.5rem 0.25rem;
+        margin: 0;
+    }
+
+    .display_text {
+        padding-right: 0.125em;
     }
 }
