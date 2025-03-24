@@ -15,6 +15,7 @@ let appState = {
     "sfx": "none",
     "fastUi": true,
     "staticButtons": true,
+    "darkMode": true,
 };
 
 let savedata = {

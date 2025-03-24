@@ -211,6 +211,12 @@ function displayInit() {
     }
 
     imagePromise = imagePromise.then(() => updateCustomStyles());
+
+    if (appState.darkMode) {
+        document.body.classList.remove('light-mode');
+    } else {
+        document.body.classList.add('light-mode');
+    }
 }
 
 function clearBackgroundImage() {
@@ -243,6 +249,7 @@ function populateAppearanceSettings() {
     document.getElementById('color-input').value = appState.gameAreaColor;
     document.getElementById('p-sfx').value = appState.sfx;
     document.getElementById('p-fast-ui').checked = appState.fastUi;
+    document.getElementById('p-dark-mode').checked = appState.darkMode;
 }
 
 function handleColorChange(event) {
@@ -263,6 +270,12 @@ function handleFastUiChange(event) {
     appState.staticButtons = event.target.checked;
     removeFastFeedback();
     switchButtons();
+    save();
+    init();
+}
+
+function handleDarkModeChange(event) {
+    appState.darkMode = event.target.checked;
     save();
     init();
 }
