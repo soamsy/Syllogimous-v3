@@ -1337,7 +1337,7 @@ svg.junk, svg.noise, svg.anchor {
 }
 
 svg.junk, svg.noise {
-    box-shadow: 0 0 0.02em 0.065em #000;
+    box-shadow: 0 0 0.02em 0.06em #000;
 }
 
 .subject svg.junk {
