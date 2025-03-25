@@ -509,20 +509,18 @@
 							<button onclick="clearBackgroundImage()" style="float:right;">Clear Image</button>
 						</div>
 						<div class="mb-1">
-							<div class="inline-input__outer">
-								Color
-								<span class="inline-input__inner">
-								  <input type="text" id="color-input" placeholder="Enter color (e.g. #ff0000)" value="#161F30CC" oninput="handleColorChange(event)"></input>
-								</span>
-							</div>
-						</div>
-						<div class="mb-2" style="display: none;">
 							<div class="ctrl__inner">
-								<div>
+								<div class="inline-input__outer">
+									<span>Color</span>
+									<span class="inline-input__inner">
+									  <input type="text" id="color-input" placeholder="Enter color (e.g. #ff0000)" value="#161F30CC" oninput="handleColorChange(event)" style="width: 11ch"></input>
+									</span>
+								</div>
+								<div style="display: none;">
 									<input hidden id="p-dark-mode" type="checkbox" checked onchange="handleDarkModeChange(event)">
 									<label class="switch" for="p-dark-mode"></label>
 								</div>
-								<span>Dark Mode</span>
+								<span style="display: none;">Dark Mode</span>
 							</div>
 						</div>
 						<div class="mb-2 ux-customize">
