@@ -1,8 +1,8 @@
 @font-face {
-    font-family: "MGS2";
+    font-family: "Roboto";
     font-style: normal;
     font-weight: normal;
-    src: url("../fonts/MGS2.ttf") format("ttf");
+    src: url("../fonts/Roboto-VariableFont.ttf") format("truetype");
 }
 
 @font-face {
@@ -71,7 +71,7 @@ body {
     height: 100vh;
     margin: 0;
     padding: 0;
-    font-family: "MGS2", sans-serif;
+    font-family: "Roboto", sans-serif;
     font-size: var(--step-0);
     color: var(--text-color);
     background-color: #111;
@@ -359,7 +359,7 @@ button.delete:hover {
 }
 .inline-input__inner {
     background-color: #111a;
-    font-family: "MGS2", sans-serif;
+    font-family: "Roboto", sans-serif;
     padding: .25rem;
     white-space: nowrap;
 }
@@ -402,7 +402,7 @@ input[type="number"]::-moz-inner-spin-button {
 
 .inline-premise-spinner {
     background-color: #111a;
-    font-family: "MGS2", sans-serif;
+    font-family: "Roboto", sans-serif;
     padding: .25rem;
     display: flex;
     gap: 0.25rem;
@@ -1884,7 +1884,7 @@ table.distinction {
 }
 
 .progress-value {
-    font-family: "MGS2", sans-serif;
+    font-family: "Roboto", sans-serif;
     font-size: 13px;
     white-space: nowrap;
     color: rgba(255, 255, 255, 0.9);
