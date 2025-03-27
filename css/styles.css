@@ -976,14 +976,14 @@ label.open[for="offcanvas-credits"] {
     left: 0;
     bottom: 0;
     transform-origin: bottom left;
-    transform: rotateZ(90deg) translateX(calc(-100% - 1rem));
+    transform: rotateZ(90deg) translateX(-100%);
 }
 
 label.open[for="offcanvas-graph"] {
     right: 0;
     bottom: 0;
     transform-origin: bottom right;
-    transform: rotateZ(-90deg) translateX(calc(100% + 1rem));
+    transform: rotateZ(-90deg) translateX(100%);
 }
 
 label.open[for="offcanvas-settings"]:hover {
@@ -1311,7 +1311,7 @@ input[type="checkbox"]:checked + .switch::after {
 }
 
 .binary-explainer-separator {
-    height: 2px; 
+    height: 2px;
     margin: 10px 0;
     width: 100%;
     background-color: #2bdef9;
@@ -1665,7 +1665,7 @@ table.distinction {
     justify-content: space-between;
     gap: 4px;
     margin-bottom: 4px;
-    
+
 }
 
 .error-popup {
