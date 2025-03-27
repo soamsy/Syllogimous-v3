@@ -1741,10 +1741,12 @@ table.distinction {
     background-color: #222;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    top: 10.0%;
-    left: 10%;
-    width: 80vw;
-    min-height: 75vh;
+    top: 5%;
+    left: 5%;
+    width: 90vw;
+    min-height: 80vh;
+    max-height: 90vh;
+    overflow: auto;
 }
 
 .graph-popup.visible {
@@ -1754,7 +1756,7 @@ table.distinction {
 }
 
 .graph-popup-content {
-    height: 60vh;
+    height: 50vh;
     display: none;
 }
 
@@ -1767,10 +1769,202 @@ table.distinction {
     gap: 10px;
 }
 
+.graph-filter-panel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin: 10px 0;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    border: 1px solid #333;
+}
+
+.graph-date-filter,
+.graph-chart-types,
+.graph-type-filter {
+    flex: 1;
+    min-width: 250px;
+}
+
+.filter-section-header {
+    font-family: "Espionage", sans-serif;
+    font-size: 14px;
+    color: #4aa39a;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 4px;
+}
+
+.date-range-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.date-input-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.date-input-group label {
+    font-size: 13px;
+    color: #bbb;
+}
+
+.graph-date-input {
+    background-color: #333;
+    border: 1px solid #444;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+    height: 28px;
+}
+
+.graph-reset-button {
+    background-color: #444;
+    border: 1px solid #555;
+    color: #ddd;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    height: 28px;
+}
+
+.graph-reset-button:hover {
+    background-color: #555;
+}
+
+.chart-type-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.chart-type-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.chart-type-group label {
+    font-size: 13px;
+    color: #bbb;
+    white-space: nowrap;
+}
+
+.chart-type-selector {
+    background-color: #333;
+    border: 1px solid #444;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+    height: 28px;
+}
+
+.filter-note {
+    font-size: 12px;
+    color: #aaa;
+    font-style: italic;
+    margin-bottom: 8px;
+}
+
+.type-filter-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    max-height: 120px;
+    overflow-y: auto;
+    padding-right: 8px;
+    padding: 5px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+}
+
+.type-filter-controls {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 6px;
+    width: 100%;
+}
+
+.type-filter-btn {
+    background-color: #2a3a39;
+    border: 1px solid #3c5c56;
+    color: #ddd;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.type-filter-btn:hover {
+    background-color: #3c5c56;
+}
+
+.type-filter-empty {
+    color: #888;
+    font-style: italic;
+    font-size: 12px;
+    padding: 5px;
+    text-align: center;
+    width: 100%;
+}
+
+.type-filter-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.type-filter-container::-webkit-scrollbar-track {
+    background: #333;
+    border-radius: 3px;
+}
+
+.type-filter-container::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 3px;
+}
+
+.type-filter-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    font-size: 12px;
+    background-color: #2a2a2a;
+    padding: 2px 8px;
+    border-radius: 3px;
+    border: 1px solid #444;
+}
+
+.type-filter-item input[type="checkbox"] {
+    margin: 0;
+}
+
+.type-filter-item label {
+    cursor: pointer;
+    color: #ddd;
+}
+
 .graph-end-controls {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-top: 10px;
+}
+
+.graph-end-controls div {
+    font-size: 12px;
+    color: #aaa;
+    font-style: italic;
 }
 
 .graph-select {
@@ -1788,16 +1982,37 @@ table.distinction {
     background: #316154;
 }
 
-.folder {
+#graph-close-popup {
+    background: rgba(220, 53, 69, 0.1);
+    border: 1px solid rgba(220, 53, 69, 0.5);
+    color: #e63946;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 14px;
     cursor: pointer;
-    padding: 8px;
-    width: 300px;
-    display: flex;
-    align-items: center;
-    height: 50px;
-    background-color: var(--folder-bg);
-    margin-bottom: 20px;
-    user-select: none;
+    transition: background 0.2s ease;
+}
+
+#graph-close-popup:hover {
+    background: rgba(220, 53, 69, 0.2);
+}
+
+@media (max-width: 768px) {
+    .graph-popup {
+        top: 2%;
+        left: 2%;
+        width: 96vw;
+        padding: 10px;
+    }
+
+    .graph-filter-panel {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .graph-popup-content {
+        height: 40vh;
+    }
 }
 
 .folder-content {

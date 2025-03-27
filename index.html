@@ -1044,6 +1044,62 @@
 				<button id="graph-select-score" class="graph-select">Average Correct Times</button>
 				<button id="graph-select-count" class="graph-select">Total Problems Answered</button>
 			</div>
+
+			<div class="graph-filter-panel">
+				<div class="graph-date-filter">
+					<div class="filter-section-header">Date Range</div>
+					<div class="date-range-controls">
+						<div class="date-input-group">
+							<label for="graph-start-date">Start:</label>
+							<input type="date" id="graph-start-date" class="graph-date-input">
+						</div>
+						<div class="date-input-group">
+							<label for="graph-end-date">End:</label>
+							<input type="date" id="graph-end-date" class="graph-date-input">
+						</div>
+						<button id="graph-reset-dates" class="graph-reset-button">Reset</button>
+					</div>
+				</div>
+
+				<div class="graph-chart-types">
+					<div class="filter-section-header">Chart Types</div>
+					<div class="chart-type-controls">
+						<div class="chart-type-group">
+							<label for="time-chart-type">Time Spent:</label>
+							<select id="time-chart-type" class="chart-type-selector" data-chart="time">
+								<option value="bar">Bar</option>
+								<option value="line">Line</option>
+								<option value="scatter">Scatter</option>
+							</select>
+						</div>
+						<div class="chart-type-group">
+							<label for="count-chart-type">Count:</label>
+							<select id="count-chart-type" class="chart-type-selector" data-chart="count">
+								<option value="line">Line</option>
+								<option value="bar">Bar</option>
+								<option value="scatter">Scatter</option>
+							</select>
+						</div>
+						<div class="chart-type-group">
+							<label for="score-chart-type">Average Time:</label>
+							<select id="score-chart-type" class="chart-type-selector" data-chart="score">
+								<option value="line">Line</option>
+								<option value="bar">Bar</option>
+								<option value="scatter">Scatter</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<div class="graph-type-filter">
+					<div class="filter-section-header">Question Types</div>
+					<div class="filter-note">* Time Spent chart cannot be filtered by question type</div>
+					<div id="type-filter-container" class="type-filter-container">
+						<!-- Question type filters will be dynamically inserted here -->
+					</div>
+				</div>
+			</div>
+
 			<div id="graph-popup-time" class="graph-popup-content visible"><canvas id="graph-canvas-time"></canvas></div>
 			<div id="graph-popup-count" class="graph-popup-content"><canvas id="graph-canvas-count"></canvas></div>
 			<div id="graph-popup-score" class="graph-popup-content"><canvas id="graph-canvas-score"></canvas></div>
