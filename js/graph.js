@@ -3,6 +3,19 @@ class ProgressGraph {
         this.scoreChart = null;
         this.countChart = null;
         this.timeChart = null;
+        this.colorIndex = 0;
+        this.colorPalette = [
+            '#00a8e8', // Bright Cyan
+            '#0077b6', // Deep Ocean Blue
+            '#264653', // Dark Teal
+            '#8ecae6', // Soft Sky Blue
+            '#023e8a', // Midnight Blue
+            '#f4a261', // Warm Sunset Orange (for contrast)
+            '#e63946', // Vivid Red (for strong contrast)
+            '#2a9d8f', // Rich Teal
+            '#6a4c93', // Deep Violet (Blue-leaning)
+            '#ffb703'  // Vivid Amber (to balance contrast)
+        ];
     }
 
     findDay(question) {
@@ -99,11 +112,14 @@ class ProgressGraph {
         await this.plotScore();
     }
 
-    randomColor() {
-        const r = Math.floor(Math.random() * 128 + 128);
-        const g = Math.floor(Math.random() * 128 + 128);
-        const b = Math.floor(Math.random() * 128 + 128);
-        return `rgb(${r}, ${g}, ${b})`;
+    getNextColor() {
+        const color = this.colorPalette[this.colorIndex % this.colorPalette.length];
+        this.colorIndex++;
+        return color;
+    }
+
+    resetColorIndex() {
+        this.colorIndex = 0;
     }
 
     async plotScore() {
@@ -112,6 +128,8 @@ class ProgressGraph {
         if (!data || data.length === 0) {
             return;
         }
+
+        this.resetColorIndex();
         const typeData = this.calculateTypeData(data, false);
         const premiseLevelData = this.calculateTypeData(data, true);
 
@@ -122,16 +140,17 @@ class ProgressGraph {
             return {
                 label: type,
                 data: premiseLevelData[type].map((entry) => ({ x: entry.day, y: entry.averageTime })),
-                borderColor: this.randomColor(),
+                borderColor: this.getNextColor(),
                 fill: false,
             };
         });
 
+        this.resetColorIndex();
         const countDatasets = Object.keys(typeData).map((type) => {
             return {
                 label: type,
                 data: typeData[type].map((entry) => ({ x: entry.day, y: entry.count })),
-                borderColor: this.randomColor(),
+                borderColor: this.getNextColor(),
             };
         });
 
@@ -139,7 +158,7 @@ class ProgressGraph {
         const timeDatasets = [{
             label: 'Time Spent (Minutes)',
             data: timeData.map(entry => ({ x: entry.day, y: entry.time })),
-            backgroundColor: this.randomColor(),
+            backgroundColor: this.getNextColor(),
         }];
 
         const scoreCtx = canvasScore.getContext('2d');
