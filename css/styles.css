@@ -2404,3 +2404,11 @@ table.distinction {
         padding-right: 0.125em;
     }
 }
+
+#svg-holder {
+    position: absolute;
+    height: 0;
+    width: 0;
+    overflow: hidden;
+    display: none;
+}
