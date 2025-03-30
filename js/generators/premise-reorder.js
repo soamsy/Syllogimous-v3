@@ -58,7 +58,7 @@ function scrambleWithLimit(premises, unbreakableDivisions) {
                 neighborCount += 1;
             }
         }
-        const chanceOfLargeLeeway = premises.length <= 5 ? 0.75 : 0.4
+        const chanceOfLargeLeeway = premises.length <= 5 ? 0.7 : 0.3
         let leeway = Math.random() < chanceOfLargeLeeway ? 2 : 1;
         if (savedata.scrambleFactor >= 95) {
             leeway = 1;
