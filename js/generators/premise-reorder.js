@@ -30,39 +30,40 @@ function orderPremises(premiseMap, neighbors) {
 }
 
 function scramble(premises) {
-    if (savedata.scrambleLimit === null || premises.length <= savedata.scrambleLimit) {
-        return shuffle(premises);
-    }
-
-    return scrambleWithLimit(premises, savedata.scrambleLimit);
+    const divisions = premises.length - 1;
+    const unbreakableDivisions = Math.floor((100 - savedata.scrambleFactor) * divisions / 100);
+    return scrambleWithLimit(premises, unbreakableDivisions);
 }
 
-function scrambleWithLimit(premises, limit) {
-    let { picked: shuffled, remaining: unshuffled } = pickRandomItems(premises, limit);
-    shuffled = shuffle(shuffled);
+function scrambleWithLimit(premises, unbreakableDivisions) {
+    const indices = Array.from({ length: premises.length - 1 }, (_, i) => i + 1);
+    const selected = pickRandomItems(indices, unbreakableDivisions).picked;
 
-    return mergeRandomly(shuffled, unshuffled);
-}
-
-function mergeRandomly(left, right) {
-    result = [];
-    let i = 0, j = 0;
-    while (i < left.length || j < right.length) {
-        if (i < left.length && j < right.length) {
-            let leftRemaining = left.length - i;
-            let rightRemaining = right.length - j;
-            let chance = leftRemaining / (leftRemaining + rightRemaining);
-            if (Math.random() < chance) {
-                result.push(left[i++]);
-            } else {
-                result.push(right[j++]);
-            }
-        } else if (i < left.length) {
-            result.push(left[i++]);
+    let groups = []
+    for (let i = 0; i < premises.length; i++) {
+        if (!groups || !selected.includes(i)) {
+            groups.push([i]);
         } else {
-            result.push(right[j++]);
+            groups[groups.length - 1].push(i);
         }
     }
 
-    return result;
+    let endIndices;
+    let attempts;
+    for (attempts = 0; attempts < 100; attempts++) {
+        endIndices = shuffle(groups.slice()).flat();
+        neighborCount = 0;
+        for (let i = 0; i < endIndices.length - 1; i++) {
+            if (Math.abs(endIndices[i] - endIndices[i+1]) === 1) {
+                neighborCount += 1;
+            }
+        }
+        const chanceOfLargeLeeway = premises.length <= 5 ? 0.75 : 0.4
+        const leeway = Math.random() < chanceOfLargeLeeway ? 2 : 1;
+        if (Math.abs(unbreakableDivisions - neighborCount) <= leeway) {
+            break;
+        }
+    }
+
+    return endIndices.map(i => premises[i]);
 }

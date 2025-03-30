@@ -182,7 +182,7 @@ function displayInit() {
     const q = renderJunkEmojis(question);
     displayLabelType.textContent = q.category.split(":")[0];
     displayLabelLevel.textContent = q.premises.length + "p";
-    const easy = savedata.scrambleLimit === 0 ? ' (easy)' : '';
+    const easy = savedata.scrambleFactor < 12 ? ' (easy)' : '';
     displayText.innerHTML = [
         `<div class="preamble">Premises${easy}</div>`,
         ...q.premises.map(p => `<div class="formatted-premise">${p}</div>`),

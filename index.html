@@ -252,20 +252,23 @@
 						<hr class="divider"/>
 						<div class="mb-1">
 							<div class="inline-input__outer">
-								Scramble Limit
+								Scramble Factor
 								<span class="inline-premise-spinner">
-									<input id="p-31-optional" type="number" placeholder="" min="0" max="50" value="" style="width: 4ch">ps
+									<input id="p-31" type="number" placeholder="" min="0" max="100" value="" style="width: 6ch">%
 								</span>
 								<div class="tooltip-container" tabindex="0">
 									?
 									<div class="tooltip-text right">
-										Number of premises that are<br>
-										randomly reordered away from their<br>
-										original neighboring premises.<br>
+										How much to scramble premises.<br>
 										<br>
-										Leave blank to always scramble<br>
-										all premises (default). Enter 0<br>
-										to never scramble (easy mode).
+										100% scrambles the most.<br>
+										Neighboring premises are rare.<br>
+										<br>
+										0% scrambles nothing (easy mode).<br>
+										<br>
+										Anything in between will try to<br>
+										keep a percentage of premises<br>
+										next to each other, unscrambled.<br>
 									</div>
 								</div>
 							</div>

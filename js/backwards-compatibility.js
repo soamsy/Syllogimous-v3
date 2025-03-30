@@ -4,6 +4,10 @@ class SettingsMigration {
             this.upgradeToV2(settings);
         }
 
+        if (settings.version === 2) {
+            this.upgradeToV3(settings);
+        }
+
         for (const key of Object.keys(defaultSavedata)) {
             if (!settings.hasOwnProperty(key)) {
                 settings[key] = defaultSavedata[key];
@@ -48,6 +52,25 @@ class SettingsMigration {
             delete settings.enableBacktrackingTemporal;
         }
         settings.version = 2;
+    }
+
+    upgradeToV3(settings) {
+        if (settings.hasOwnProperty('scrambleLimit')) {
+            const limit = settings.scrambleLimit;
+            if (limit === null || limit === undefined) {
+                settings.scrambleFactor = 80;
+            } else if (limit === 0) {
+                settings.scrambleFactor = 0;
+            } else if (limit === 1) {
+                settings.scrambleFactor = 35;
+            } else if (limit === 2) {
+                settings.scrambleFactor = 65;
+            } else {
+                settings.scrambleFactor = 80;
+            }
+            delete settings.scrambleLimit;
+        }
+        settings.version = 3;
     }
 
     updateRRTHistory(progressStore) {

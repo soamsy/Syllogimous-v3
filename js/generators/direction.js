@@ -489,15 +489,12 @@ class DirectionQuestion {
             premiseChunks.pop();
         }
 
-        let scrambleLimit = savedata.scrambleLimit;
+        let divisions = words.length - 2;
+        let unbreakableDivisions = Math.round((100 - savedata.scrambleFactor) * divisions / 100);
         premiseChunks = premiseChunks.map(chunk => {
-            if (scrambleLimit === null) {
-                return shuffle(chunk);
-            } else {
-                let chosenLimit = Math.min(scrambleLimit, chunk.length);
-                scrambleLimit -= chosenLimit;
-                return scrambleWithLimit(chunk, chosenLimit);
-            }
+            let chosenDivisions = Math.min(unbreakableDivisions, chunk.length - 1);
+            unbreakableDivisions -= chosenDivisions;
+            return scrambleWithLimit(chunk, chosenDivisions);
         });
 
         let merged = interleaveArrays(premiseChunks, operations);

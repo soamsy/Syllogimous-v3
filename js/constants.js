@@ -19,7 +19,7 @@ let appState = {
 };
 
 let savedata = {
-    "version": 2,
+    "version": 3,
     "premises": 2,
     "timer": 30,
     "enableDistinction": true,
@@ -82,7 +82,7 @@ let savedata = {
     "space2DHardModeLevel": 0,
     "space3DHardModeLevel": 0,
     "space4DHardModeLevel": 0,
-    "scrambleLimit": null,
+    "scrambleFactor": 80,
     "enableConnectionBranching": true,
     "enableTransformSet": true,
     "enableTransformMirror": true,
@@ -167,7 +167,7 @@ const compressedSettings = {
     "space2DHardModeLevel": "transform2D",
     "space3DHardModeLevel": "transform3D",
     "space4DHardModeLevel": "transform4D",
-    "scrambleLimit": "scramble",
+    "scrambleFactor": "scrambleF",
     "enableConnectionBranching": "branch",
     "enableTransformSet": "tset",
     "enableTransformMirror": "tMirror",
@@ -237,7 +237,7 @@ const keySettingMap = {
     "p-28": "useJunkEmoji",
     "p-29": "space2DHardModeLevel",
     "p-30": "space3DHardModeLevel",
-    "p-31-optional": "scrambleLimit",
+    "p-31": "scrambleFactor",
     "p-32": "enableConnectionBranching",
     "p-33": "space4DHardModeLevel",
     "p-34": "enableTransformSet",
