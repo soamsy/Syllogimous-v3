@@ -274,6 +274,37 @@ const keySettingMap = {
     "p-65": "overrideContainsWeight",
 };
 
+const legacySettings = [
+    "enableDirection4D",
+    "enableAnchorSpace",
+    "enableBinary",
+    "enableCarouselMode",
+    "enableNegation",
+    "enableMeta",
+    "onlyAnalogy",
+    "onlyBinary",
+    "maxNestedBinaryDepth",
+    "removeNegationExplainer",
+    "offsetAnalogyPremises",
+    "overrideBinaryPremises",
+    "overrideDirection4DPremises",
+    "overrideAnchorSpacePremises",
+    "offsetAnalogyTime",
+    "overrideBinaryTime",
+    "overrideDirection4DTime",
+    "overrideAnchorSpaceTime",
+    "overrideDirection4DWeight",
+    "overrideAnchorSpaceWeight",
+    "space2DHardModeLevel",
+    "space3DHardModeLevel",
+    "space4DHardModeLevel",
+    "enableTransformSet",
+    "enableTransformMirror",
+    "enableTransformScale",
+    "enableTransformRotate",
+    "enableTransformInterleave",
+];
+
 const meaningfulWords = {
     nouns: [
         "People",

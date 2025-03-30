@@ -183,6 +183,11 @@ class ProfileStore {
 
     generateUrl() {
         const savedata = structuredClone(this.current().savedata);
+        for (const setting of legacySettings) {
+            if (savedata.hasOwnProperty(setting) && defaultSavedata[setting] === savedata[setting]) {
+                delete savedata[setting];
+            }
+        }
         for (const [setting, compressed] of Object.entries(compressedSettings)) {
             if (savedata.hasOwnProperty(setting)) {
                 savedata[compressed] = savedata[setting];
@@ -257,6 +262,12 @@ class ProfileStore {
 
             if (typeof savedataObj[key] === "string") {
                 savedataObj[key] = sanitizeInput(savedataObj[key]);
+            }
+        }
+
+        for (const [key, defaultValue] in Object.entries(defaultSavedata)) {
+            if (!savedataObj.hasOwnProperty(key)) {
+                savedataObj[key] = defaultValue;
             }
         }
 
