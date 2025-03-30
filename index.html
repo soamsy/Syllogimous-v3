@@ -891,12 +891,26 @@
 					<label class="offcanvas-close" for="offcanvas-history">✕</label>
 				</div>
 				<div class="offcanvas-body ffmono hql-frame">
-					<div>Total answer time: <span id="total-display"></span></div>
-					<div>Avg answer time: <span id="average-display"></span></div>
-					<div>Avg correct answer time: <span id="average-correct-display"></span></div>
-					<div>% of answers correct: <span id="percent-correct-display"></span></div>
+					<div class="hql-stats">
+						<div class="hql-stats-item">
+							<div class="hql-stats-label">Total Time</div>
+							<div class="hql-stats-value" id="total-display">--</div>
+						</div>
+						<div class="hql-stats-item">
+							<div class="hql-stats-label">Avg Time</div>
+							<div class="hql-stats-value" id="average-display">--</div>
+						</div>
+						<div class="hql-stats-item">
+							<div class="hql-stats-label">Avg Correct</div>
+							<div class="hql-stats-value" id="average-correct-display">--</div>
+						</div>
+						<div class="hql-stats-item">
+							<div class="hql-stats-label">Accuracy</div>
+							<div class="hql-stats-value" id="percent-correct-display">--</div>
+						</div>
+					</div>
 					<div id="history-list" class="hql"></div>
-					<button onclick="clearHistory()">Clear Session</button>
+					<button class="hql-clear-button" onclick="clearHistory()">Clear Session</button>
 				</div>
 			</div>
 			<input id="offcanvas-credits"

@@ -145,7 +145,7 @@ function populateSettings() {
         if (!(key in keySettingMapInverse)) continue;
         let value = savedata[key];
         let id = keySettingMapInverse[key];
-        
+
         const input = document.querySelector("#" + id);
         if (input.type === "checkbox") {
             if (value === true || value === false) {
@@ -343,7 +343,7 @@ function renderCarousel() {
     } else {
         carouselBackButton.disabled = false;
     }
-    
+
     if (carouselIndex < q.premises.length) {
         carouselNextButton.disabled = false;
         disableConfirmationButtons();
@@ -370,7 +370,7 @@ function carouselBack() {
     carouselIndex--;
     renderCarousel();
 }
-  
+
 function carouselNext() {
     carouselIndex++;
     renderCarousel();
@@ -818,7 +818,7 @@ function updateAverage(reverseChronological) {
     const minutes = Math.floor(totalTime / 60);
     const seconds = totalTime % 60;
     totalDisplay.innerHTML = minutes.toFixed(0) + 'm ' + seconds.toFixed(0) + 's';
-    
+
     const average =  totalTime / times.length;
     averageDisplay.innerHTML = average.toFixed(1) + 's';
 
@@ -845,14 +845,14 @@ function createHQLI(question, i) {
         'right': answerUser,
         'wrong': answerUser,
     }[q.correctness];
-    
+
     const answer = q.isValid;
     let classModifier = {
         'missed': '',
         'right': 'hqli--right',
         'wrong': 'hqli--wrong'
     }[q.correctness];
-    
+
     let answerDisplay = ('' + answer).toUpperCase();
     let answerUserDisplay = {
         'missed': '(TIMED OUT)',
@@ -868,11 +868,8 @@ function createHQLI(question, i) {
 
     let responseTimeHtml = '';
     if (q.startedAt && q.answeredAt)
-        responseTimeHtml =
-`
-        <div class="hqli-response-time">${Math.round((q.answeredAt - q.startedAt) / 1000)} sec</div>
-`;
-    
+        responseTimeHtml = `<div class="hqli-response-time">${Math.round((q.answeredAt - q.startedAt) / 1000)} sec</div>`;
+
     const html =
 `<div class="hqli ${classModifier}">
     <div class="inner">
@@ -885,13 +882,25 @@ function createHQLI(question, i) {
         </div>
         <div class="hqli-postamble">Conclusion</div>
         <div class="hqli-conclusion">${q.conclusion}</div>
-        <div class="hqli-answer-user ${answerUserClassName}">${answerUserDisplay}</div>
-        <div class="hqli-answer ${answer}">${answerDisplay}</div>
-        ${responseTimeHtml}
+        <div class="hqli-answer-user ${answerUserClassName}">
+            <span class="hqli-answer-label">User Answer:</span>
+            ${answerUserDisplay}
+        </div>
+        <div class="hqli-answer ${answer}">
+            <span class="hqli-answer-label">Right Answer:</span>
+            ${answerDisplay}
+        </div>
+        ${responseTimeHtml ? `
+        <div class="hqli-response-time">
+            <span class="hqli-answer-label">Response Time:</span>
+            ${Math.round((q.answeredAt - q.startedAt) / 1000)} sec
+        </div>` : ''}
         <div class="hqli-footer">
-            <div>${q.category}</div>
-            ${createExplanationButton(q)}
-            <button class="delete">X</button>
+            <div class="hqli-category">${q.category}</div>
+            <div class="hqli-controls">
+                ${createExplanationButton(q)}
+                <button class="delete">✕</button>
+            </div>
         </div>
     </div>
 </div>`;
