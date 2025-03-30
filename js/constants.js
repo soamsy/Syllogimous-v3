@@ -16,6 +16,7 @@ let appState = {
     "fastUi": true,
     "staticButtons": true,
     "darkMode": true,
+    "timerToggled": false,
 };
 
 let savedata = {

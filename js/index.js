@@ -169,8 +169,16 @@ function populateSettings() {
     populateLinearDropdown();
     populateAppearanceSettings();
 
+    // Sync timer toggle checkbox with the saved state
+    timerToggle.checked = appState.timerToggled;
+    timerToggled = appState.timerToggled;
+
     timerInput.value = savedata.timer;
     timerTime = timerInput.value;
+
+    if (timerToggled) {
+        startCountDown();
+    }
 }
 
 function carouselInit() {
@@ -966,6 +974,8 @@ timerInput.addEventListener("input", evt => {
 
 function handleCountDown() {
     timerToggled = timerToggle.checked;
+    appState.timerToggled = timerToggled;
+    save();
     if (timerToggled)
         startCountDown();
     else
