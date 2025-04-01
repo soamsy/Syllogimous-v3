@@ -1728,6 +1728,7 @@ table.distinction {
 #graph-close-popup {
     position: relative;
     max-width: 300px;
+    min-width: 150px;
     align-self: flex-end;
     white-space: nowrap;
     overflow: hidden;
@@ -1764,18 +1765,12 @@ table.distinction {
 
 .graph-controls {
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
 }
 
-.graph-end-controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
 .graph-select {
-    flex-grow: 1;
-    flex-shrink: 1;
+    flex: 1 1 auto;
     white-space: nowrap;
     overflow: hidden;
 }
@@ -1786,6 +1781,16 @@ table.distinction {
 
 .graph-select.selected:hover {
     background: #316154;
+}
+
+.graph-end-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.graph-end-controls > * {
+    flex: 1 1 auto;
 }
 
 .folder {
