@@ -39,105 +39,59 @@ function findTwoWordIndexes(words) {
     return [start, end];
 }
 
-class MoreLess {
+class LinearGenerator {
+    constructor(name, prev, prevMin, next, nextMin, equal, equalMin) {
+        this.name = name;
+        this.prev = prev;
+        this.prevMin = prevMin;
+        this.next = next;
+        this.nextMin = nextMin;
+        this.equal = equal;
+        this.equalMin = equalMin;
+    }
+
+    forwards(a, b) {
+        return pickLinearPremise(a, b, this.prev, this.next, this.prevMin, this.nextMin);
+    }
+
+    backwards(a, b) {
+        return pickLinearPremise(a, b, this.next, this.prev, this.nextMin, this.prevMin);
+    }
+
     createLinearPremise(a, b) {
-        return pickRandomItems([
-            pickLinearPremise(a, b, 'is less than', 'is more than', '<', '>'),
-            pickLinearPremise(b, a, 'is more than', 'is less than', '>', '<'),
-        ], 1).picked[0];
+        if (coinFlip()) {
+            return this.forwards(a, b);
+        } else {
+            return this.backwards(b, a);
+        }
     }
 
     createReverseLinearPremise(a, b) {
-        return pickRandomItems([
-            pickLinearPremise(a, b, 'is more than', 'is less than', '>', '<'),
-            pickLinearPremise(b, a, 'is less than', 'is more than', '<', '>'),
-        ], 1).picked[0];
+        return this.createLinearPremise(b, a);
+    }
+
+    createBacktrackingLinearPremise(a, b, options, isValid) {
+        if (coinFlip()) {
+            [a, b] = [b, a];
+            options = options.map(choice => -choice);
+        }
+        const choice = pickRandomItems(options, 1).picked[0] + 1;
+        const relations = [this.prev, this.equal, this.next];
+        const relationsMin = [this.prevMin, this.equalMin, this.nextMin];
+        const negatedChoice = pickRandomItems([0, 1, 2].filter(x => x !== choice), 1).picked[0];
+        return pickLinearPremise(a, b, relations[choice], relations[negatedChoice], relationsMin[choice], relationsMin[negatedChoice]);
     }
 
     getName() {
-        return 'Comparison';
+        return this.name;
     }
 }
 
-class BeforeAfter {
-    createLinearPremise(a, b) {
-        return pickRandomItems([
-            pickLinearPremise(a, b, 'is before', 'is after', '<i class="ci-Arrow_Right_LG"></i>', '<i class="ci-Arrow_Left_MD"></i>'),
-            pickLinearPremise(b, a, 'is after', 'is before', '<i class="ci-Arrow_Left_MD"></i>', '<i class="ci-Arrow_Right_LG"></i>'),
-        ], 1).picked[0];
-    }
-
-    createReverseLinearPremise(a, b) {
-        return pickRandomItems([
-            pickLinearPremise(a, b, 'is after', 'is before', '<i class="ci-Arrow_Left_MD"></i>', '<i class="ci-Arrow_Right_LG"></i>'),
-            pickLinearPremise(b, a, 'is before', 'is after', '<i class="ci-Arrow_Right_LG"></i>', '<i class="ci-Arrow_Left_MD"></i>'),
-        ], 1).picked[0];
-    }
-
-    getName() {
-        return 'Temporal';
-    }
-}
-
-class ContainsWithin {
-    createLinearPremise(a, b) {
-        return pickRandomItems([
-            pickLinearPremise(a, b, 'contains', 'is within', '⊃', '⊂'),
-            pickLinearPremise(b, a, 'is within', 'contains', '⊂', '⊃'),
-        ], 1).picked[0];
-    }
-
-    createReverseLinearPremise(a, b) {
-        return pickRandomItems([
-            pickLinearPremise(a, b, 'is within', 'contains', '⊂', '⊃'),
-            pickLinearPremise(b, a, 'contains', 'is within', '⊃', '⊂'),
-        ], 1).picked[0];
-    }
-
-    getName() {
-        return 'Contains';
-    }
-}
-
-class LeftRight {
-    createLinearPremise(a, b) {
-        return pickRandomItems([
-            pickLinearPremise(a, b, 'is left of', 'is right of', '<i class="ci-Arrow_Right_LG"></i>', '<i class="ci-Arrow_Left_MD"></i>'),
-            pickLinearPremise(b, a, 'is right of', 'is left of', '<i class="ci-Arrow_Left_MD"></i>', '<i class="ci-Arrow_Right_LG"></i>'),
-        ], 1).picked[0];
-    }
-
-    createReverseLinearPremise(a, b) {
-        return pickRandomItems([
-            pickLinearPremise(a, b, 'is right of', 'is left of', '<i class="ci-Arrow_Left_MD"></i>', '<i class="ci-Arrow_Right_LG"></i>'),
-            pickLinearPremise(b, a, 'is left of', 'is right of', '<i class="ci-Arrow_Right_LG"></i>', '<i class="ci-Arrow_Left_MD"></i>'),
-        ], 1).picked[0];
-    }
-
-    getName() {
-        return 'Horizontal';
-    }
-}
-
-class TopUnder {
-    createLinearPremise(a, b) {
-        return pickRandomItems([
-            pickLinearPremise(a, b, 'is on top of', 'is under', '<i class="ci-Arrow_Down_LG"></i>', '<i class="ci-Arrow_Up_LG"></i>'),
-            pickLinearPremise(b, a, 'is under', 'is on top of', '<i class="ci-Arrow_Up_LG"></i>', '<i class="ci-Arrow_Down_LG"></i>'),
-        ], 1).picked[0];
-    }
-
-    createReverseLinearPremise(a, b) {
-        return pickRandomItems([
-            pickLinearPremise(a, b, 'is under', 'is on top of', '<i class="ci-Arrow_Up_LG"></i>', '<i class="ci-Arrow_Down_LG"></i>'),
-            pickLinearPremise(b, a, 'is on top of', 'is under', '<i class="ci-Arrow_Down_LG"></i>', '<i class="ci-Arrow_Up_LG"></i>'),
-        ], 1).picked[0];
-    }
-
-    getName() {
-        return 'Vertical';
-    }
-}
+const MORE_LESS = new LinearGenerator('Comparison', 'is less than', '<', 'is more than', '>', 'is equal to', '=');
+const BEFORE_AFTER = new LinearGenerator('Temporal', 'is before', '<i class="ci-Arrow_Right_LG"></i>', 'is after', '<i class="ci-Arrow_Left_MD"></i>', 'is at', '=');
+const CONTAINS_WITHIN = new LinearGenerator('Contains', 'contains', '⊃', 'is within', '⊂', 'is the same as', '=');
+const LEFT_RIGHT = new LinearGenerator('Horizontal', 'is left of', '<i class="ci-Arrow_Right_LG"></i>', 'is right of', '<i class="ci-Arrow_Left_MD"></i>', 'is at', '=');
+const TOP_UNDER = new LinearGenerator('Vertical', 'is on top of', '<i class="ci-Arrow_Down_LG"></i>', 'is under', '<i class="ci-Arrow_Up_LG"></i>', 'is at', '=');
 
 class LinearQuestion {
     constructor(linearGenerator) {
@@ -206,11 +160,6 @@ class LinearQuestion {
 
 
     buildBacktrackingMap(words) {
-        let premiseMap = {};
-        let first = words[0];
-        let bucketMap = { [first]: 0 };
-        let neighbors = { [first]: [] };
-
         const chanceOfBranching = {
             5: 0.60,
             6: 0.55,
@@ -219,41 +168,60 @@ class LinearQuestion {
             9: 0.40,
             10: 0.35,
         }[words.length] ?? (words.length > 10 ? 0.3 : 0.6);
-        for (let i = 1; i < words.length; i++) {
-            const source = pickBaseWord(neighbors, Math.random() < chanceOfBranching);
-            const target = words[i];
-            const key = premiseKey(source, target);
 
-            let forwardChance = 0.5;
-            const neighborList = neighbors[source];
-            const firstNeighbor = neighborList[0];
-            if (firstNeighbor && neighborList.every(word => bucketMap[word] === bucketMap[firstNeighbor])) {
-                if (bucketMap[firstNeighbor] + 1 == bucketMap[source]) {
-                    forwardChance = 0.6;
-                } else {
-                    forwardChance = 0.4;
-                }
-            }
-            if (Math.random() < forwardChance) {
-                if (coinFlip()) {
-                    premiseMap[key] = this.generator.createLinearPremise(source, target);
-                } else {
-                    premiseMap[key] = this.generator.createReverseLinearPremise(target, source);
-                }
-                bucketMap[target] = bucketMap[source] + 1;
-            } else {
-                if (coinFlip()) {
-                    premiseMap[key] = this.generator.createLinearPremise(target, source);
-                } else {
-                    premiseMap[key] = this.generator.createReverseLinearPremise(source, target);
-                }
-                bucketMap[target] = bucketMap[source] - 1;
-            }
+        const first = words[0];
+        const chooseEqualItems = words.length >= 5 && oneOutOf(8);
+        let premiseMap, bucketMap, neighbors;
+        let a, b;
+        const isIdealScenario = (a, b) => {
+            return (chooseEqualItems && bucketMap[a] === bucketMap[b]) ||
+                   (!chooseEqualItems && bucketMap[a] !== bucketMap[b])
+        };
 
-            neighbors[source] = neighbors?.[source] ?? [];
-            neighbors[target] = neighbors?.[target] ?? [];
-            neighbors[target].push(source);
-            neighbors[source].push(target);
+        for (let tries = 0; tries < 9999; tries++) {
+            premiseMap = {};
+            bucketMap = { [first]: 0 };
+            neighbors = { [first]: [] };
+            for (let i = 1; i < words.length; i++) {
+                const source = pickBaseWord(neighbors, Math.random() < chanceOfBranching);
+                const target = words[i];
+                const key = premiseKey(source, target);
+
+                let forwardChance = 0.5;
+                const neighborList = neighbors[source];
+                const firstNeighbor = neighborList[0];
+                if (firstNeighbor && neighborList.every(word => bucketMap[word] === bucketMap[firstNeighbor])) {
+                    if (bucketMap[firstNeighbor] + 1 == bucketMap[source]) {
+                        forwardChance = 0.6;
+                    } else {
+                        forwardChance = 0.4;
+                    }
+                }
+                if (Math.random() < forwardChance) {
+                    if (coinFlip()) {
+                        premiseMap[key] = this.generator.createLinearPremise(source, target);
+                    } else {
+                        premiseMap[key] = this.generator.createReverseLinearPremise(target, source);
+                    }
+                    bucketMap[target] = bucketMap[source] + 1;
+                } else {
+                    if (coinFlip()) {
+                        premiseMap[key] = this.generator.createLinearPremise(target, source);
+                    } else {
+                        premiseMap[key] = this.generator.createReverseLinearPremise(source, target);
+                    }
+                    bucketMap[target] = bucketMap[source] - 1;
+                }
+
+                neighbors[source] = neighbors?.[source] ?? [];
+                neighbors[target] = neighbors?.[target] ?? [];
+                neighbors[target].push(source);
+                neighbors[source].push(target);
+            }
+            [a, b] = new DirectionPairChooser().pickTwoDistantWords(neighbors);
+            if (isIdealScenario(a, b)) {
+                break;
+            }
         }
 
         const bucketTargets = Object.values(bucketMap);
@@ -266,24 +234,25 @@ class LinearQuestion {
         }
 
         let premises = orderPremises(premiseMap, neighbors);
-        let a, b, tries;
-        for (let tries = 0; tries < 10; tries++) {
-            [a, b] = new DirectionPairChooser().pickTwoDistantWords(neighbors);
-            if (bucketMap[a] !== bucketMap[b]) {
-                break;
-            }
-        }
-        for (let tries = 0; tries < 9999 && bucketMap[a] === bucketMap[b]; tries++) {
-            [a, b] = pickRandomItems(words, 2).picked;
-        }
-
+        const comparison = bucketMap[a] === bucketMap[b] ? 0 : (bucketMap[a] < bucketMap[b] ? -1 : 1)
         let conclusion, isValid;
         if (coinFlip()) {
-            conclusion = this.generator.createLinearPremise(a, b);
-            isValid = bucketMap[a] < bucketMap[b];
+            conclusion = this.generator.createBacktrackingLinearPremise(a, b, [comparison], true);
+            isValid = true;
         } else {
-            conclusion = this.generator.createReverseLinearPremise(a, b);
-            isValid = bucketMap[a] > bucketMap[b];
+            let options = [-1, 0, 1].filter(o => o !== comparison);
+            const distance = Math.abs(bucketMap[a] - bucketMap[b]);
+            const includeZero = {
+                1: oneOutOf(2),
+                2: oneOutOf(4),
+                3: oneOutOf(6),
+                4: oneOutOf(8),
+            }?.[distance] ?? oneOutOf(12);
+            if (!includeZero) {
+                options = options.filter(o => o !== 0);
+            }
+            conclusion = this.generator.createBacktrackingLinearPremise(a, b, options, false);
+            isValid = false;
         }
 
         return [premises, conclusion, isValid, buckets, bucketMap];
@@ -363,15 +332,15 @@ class LinearQuestion {
 
 function createLinearQuestion(wording) {
     if (wording === 'comparison') {
-        return new LinearQuestion(new MoreLess());
+        return new LinearQuestion(MORE_LESS);
     } else if (wording === 'temporal') {
-        return new LinearQuestion(new BeforeAfter());
+        return new LinearQuestion(BEFORE_AFTER);
     } else if (wording === 'topunder') {
-        return new LinearQuestion(new TopUnder());
+        return new LinearQuestion(TOP_UNDER);
     } else if (wording === 'contains') {
-        return new LinearQuestion(new ContainsWithin());
+        return new LinearQuestion(CONTAINS_WITHING);
     } else {
-        return new LinearQuestion(new LeftRight());
+        return new LinearQuestion(LEFT_RIGHT);
     }
 }
 
