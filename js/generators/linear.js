@@ -338,7 +338,7 @@ function createLinearQuestion(wording) {
     } else if (wording === 'topunder') {
         return new LinearQuestion(TOP_UNDER);
     } else if (wording === 'contains') {
-        return new LinearQuestion(CONTAINS_WITHING);
+        return new LinearQuestion(CONTAINS_WITHIN);
     } else {
         return new LinearQuestion(LEFT_RIGHT);
     }
