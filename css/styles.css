@@ -1504,7 +1504,7 @@ table.distinction {
     font-size: var(--step-2);
     cursor: pointer;
     user-select: none;
-    background-color: var(--profile-icon-bg);
+    background-color: var(--profile-arrow-bg);
     text-align: center;
     border: 1px solid #333;
     height: 50px;
