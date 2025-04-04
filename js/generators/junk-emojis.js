@@ -248,7 +248,7 @@ function renderJunkEmojisText(text) {
     });
 
     text = text.replaceAll(/\[svg\](\d+)\[\/svg\]/gi, (match, id) => {
-        return ANCHOR_SVGS[id];
+        return REUSABLE_SVGS[id];
     });
 
     return text;

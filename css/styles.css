@@ -717,9 +717,7 @@ input[type="number"]::-moz-inner-spin-button {
 }
 
 .formatted-premise,
-.formatted-operation,
-.hqli-premise,
-.hqli-operation {
+.formatted-operation {
     margin-bottom: 0.7rem;
 }
 

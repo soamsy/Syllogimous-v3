@@ -88,10 +88,10 @@ class LinearGenerator {
 }
 
 const MORE_LESS = new LinearGenerator('Comparison', 'is less than', '<', 'is more than', '>', 'is equal to', '=');
-const BEFORE_AFTER = new LinearGenerator('Temporal', 'is before', '<i class="ci-Arrow_Right_LG"></i>', 'is after', '<i class="ci-Arrow_Left_MD"></i>', 'is at', '=');
+const BEFORE_AFTER = new LinearGenerator('Temporal', 'is before', '[svg]4[/svg]', 'is after', '[svg]5[/svg]', 'is at', '=');
 const CONTAINS_WITHIN = new LinearGenerator('Contains', 'contains', '⊃', 'is within', '⊂', 'is the same as', '=');
-const LEFT_RIGHT = new LinearGenerator('Horizontal', 'is left of', '<i class="ci-Arrow_Right_LG"></i>', 'is right of', '<i class="ci-Arrow_Left_MD"></i>', 'is at', '=');
-const TOP_UNDER = new LinearGenerator('Vertical', 'is on top of', '<i class="ci-Arrow_Down_LG"></i>', 'is under', '<i class="ci-Arrow_Up_LG"></i>', 'is at', '=');
+const LEFT_RIGHT = new LinearGenerator('Horizontal', 'is left of', '[svg]9[/svg]', 'is right of', '[svg]8[/svg]', 'is at', '=');
+const TOP_UNDER = new LinearGenerator('Vertical', 'is on top of', '[svg]7[/svg]', 'is under', '[svg]6[/svg]', 'is at', '=');
 
 class LinearQuestion {
     constructor(linearGenerator) {

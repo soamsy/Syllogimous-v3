@@ -29,14 +29,44 @@ function generateHeartSVG(color) {
             </svg>`;
 }
 
-const ANCHOR_SVGS = {
+function generateFastForwardSVG() {
+    return `<svg class="anchor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#FFF" d="M13,6V18L21.5,12M4,18L12.5,12L4,6V18Z" /></svg>`;
+}
+
+function generateRewindSVG() {
+    return `<svg class="anchor" xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24"><path fill="#FFF" d="M11.5,12L20,18V6M11,18V6L2.5,12L11,18Z" /></svg>`;
+}
+
+function generateUpArrow() {
+  return `<svg class="anchor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#FFF" d="M15,20H9V12H4.16L12,4.16L19.84,12H15V20Z" /></svg>`
+}
+
+function generateDownArrow() {
+  return `<svg class="anchor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#FFF" d="M9,4H15V12H19.84L12,19.84L4.16,12H9V4Z" /></svg>`
+}
+
+function generateLeftArrow() {
+  return `<svg class="anchor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#FFF" d="M20,9V15H12V19.84L4.16,12L12,4.16V9H20Z" /></svg>`
+}
+
+function generateRightArrow() {
+  return `<svg class="anchor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#FFF" d="M4,15V9H12V4.16L19.84,12L12,19.84V15H4Z" /></svg>`
+}
+
+const REUSABLE_SVGS = {
   0: generateStarSVG('#8585e0'),
   1: generateCircleSVG('#17ebeb'),
   2: generateTriangleSVG('#f8f843'),
   3: generateHeartSVG('#e32020'),
+  4: generateFastForwardSVG(),
+  5: generateRewindSVG(),
+  6: generateUpArrow(),
+  7: generateDownArrow(),
+  8: generateLeftArrow(),
+  9: generateRightArrow(),
 }
 
-document.getElementById('svg-0').innerHTML = ANCHOR_SVGS[0];
-document.getElementById('svg-1').innerHTML = ANCHOR_SVGS[1];
-document.getElementById('svg-2').innerHTML = ANCHOR_SVGS[2];
-document.getElementById('svg-3').innerHTML = ANCHOR_SVGS[3];
+document.getElementById('svg-0').innerHTML = REUSABLE_SVGS[0];
+document.getElementById('svg-1').innerHTML = REUSABLE_SVGS[1];
+document.getElementById('svg-2').innerHTML = REUSABLE_SVGS[2];
+document.getElementById('svg-3').innerHTML = REUSABLE_SVGS[3];
