@@ -136,8 +136,12 @@ class ProgressGraph {
         });
 
         const timeData = this.calculateTimeSpentData(data);
+        const totalTimeSpent = timeData.map(entry => entry.time).reduce((a,b) => a + b, 0);
+        const totalHours = totalTimeSpent / 60;
+        const extraMinutes = totalTimeSpent % 60;
+        const totalTimeSpentDisplay = `Total = ${totalHours.toFixed(0)}h ${extraMinutes.toFixed(0)}m`
         const timeDatasets = [{
-            label: 'Time Spent (Minutes)',
+            label: `Time Spent (Minutes)`,
             data: timeData.map(entry => ({ x: entry.day, y: entry.time })),
             backgroundColor: this.randomColor(),
         }];
@@ -147,10 +151,10 @@ class ProgressGraph {
         const countCtx = canvasCount.getContext('2d');
         this.countChart = this.createChart(countCtx, labels, countDatasets, 'line', 'Count', 0, 0);
         const timeCtx = canvasTime.getContext('2d');
-        this.timeChart = this.createChart(timeCtx, labels, timeDatasets, 'bar', 'Time Spent');
+        this.timeChart = this.createChart(timeCtx, labels, timeDatasets, 'bar', 'Time Spent', 1, 2, '', totalTimeSpentDisplay);
     }
 
-    createChart(ctx, labels, datasets, type, yAxisTitle, tickDecimals = 1, tooltipDecimals = 2, unit='') {
+    createChart(ctx, labels, datasets, type, yAxisTitle, tickDecimals = 1, tooltipDecimals = 2, unit='', subtitle) {
         return new Chart(ctx, {
             type: type,
             data: {
@@ -195,6 +199,12 @@ class ProgressGraph {
                                 return `${tooltipItem.dataset.label}: ${value.y.toFixed(2)}${unit}`;
                             }
                         }
+                    },
+                    subtitle: {
+                        display: subtitle ? true : false,
+                        text: subtitle,
+                        align: 'end',
+                        color: '#EEEEEE',
                     }
                 },
             },
