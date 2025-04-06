@@ -170,12 +170,24 @@ class LinearQuestion {
         }[words.length] ?? (words.length > 10 ? 0.3 : 0.6);
 
         const first = words[0];
+        let idealDistance = null;
+        if (words.length >= 5) {
+            if (oneOutOf(8)) {
+                idealDistance = 0;
+            } else if (oneOutOf(7)) {
+                idealDistance = 1;
+            } else if (oneOutOf(8)) {
+                idealDistance = 2;
+            }
+        }
         const chooseEqualItems = words.length >= 5 && oneOutOf(8);
         let premiseMap, bucketMap, neighbors;
         let a, b;
         const isIdealScenario = (a, b) => {
-            return (chooseEqualItems && bucketMap[a] === bucketMap[b]) ||
-                   (!chooseEqualItems && bucketMap[a] !== bucketMap[b])
+            if (idealDistance === null) {
+                return true;
+            }
+            return Math.abs(bucketMap[a] - bucketMap[b]) === idealDistance;
         };
 
         for (let tries = 0; tries < 9999; tries++) {
