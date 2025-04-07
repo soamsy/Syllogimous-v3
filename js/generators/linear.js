@@ -174,13 +174,12 @@ class LinearQuestion {
         if (words.length >= 5) {
             if (oneOutOf(8)) {
                 idealDistance = 0;
-            } else if (oneOutOf(7)) {
-                idealDistance = 1;
             } else if (oneOutOf(8)) {
+                idealDistance = 1;
+            } else if (oneOutOf(10)) {
                 idealDistance = 2;
             }
         }
-        const chooseEqualItems = words.length >= 5 && oneOutOf(8);
         let premiseMap, bucketMap, neighbors;
         let a, b;
         const isIdealScenario = (a, b) => {
