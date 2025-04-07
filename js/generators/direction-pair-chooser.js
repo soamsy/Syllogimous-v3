@@ -8,10 +8,15 @@ class DirectionPairChooser {
         pool.push.apply(pool, single_edge_neighbors);
 
         const ranks = this._rankPairs(pool, neighbors);
-        let [startWord, endWord] = pickRandomItems(ranks[0][1], 1).picked[0];
-        const useMaxPossible = Object.keys(neighbors).length <= 5 || Math.random() > 0.20;
-        if (ranks.length > 1 && !useMaxPossible) {
+        let startWord, endWord;
+        if (Object.keys(neighbors).length <= 5) {
+            [startWord, endWord] = pickRandomItems(ranks[0][1], 1).picked[0];
+        } else if (oneOutOf(40) && ranks.length >= 3) {
+            [startWord, endWord] = pickRandomItems(ranks[2][1], 1).picked[0];
+        } else if (oneOutOf(4.8) && ranks.length >= 2) {
             [startWord, endWord] = pickRandomItems(ranks[1][1], 1).picked[0];
+        } else {
+            [startWord, endWord] = pickRandomItems(ranks[0][1], 1).picked[0];
         }
 
         return [startWord, endWord];
