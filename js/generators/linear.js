@@ -174,7 +174,7 @@ class LinearQuestion {
         if (words.length >= 5) {
             if (oneOutOf(8)) {
                 idealDistance = 0;
-            } else if (oneOutOf(8)) {
+            } else if (oneOutOf(9)) {
                 idealDistance = 1;
             } else if (oneOutOf(10)) {
                 idealDistance = 2;
@@ -229,7 +229,7 @@ class LinearQuestion {
                 neighbors[target].push(source);
                 neighbors[source].push(target);
             }
-            [a, b] = new DirectionPairChooser().pickTwoDistantWords(neighbors);
+            [a, b] = new DirectionPairChooser().pickTwoDistantWords(neighbors, true);
             if (isIdealScenario(a, b)) {
                 break;
             }
