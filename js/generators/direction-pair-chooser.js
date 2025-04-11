@@ -12,8 +12,8 @@ class DirectionPairChooser {
         }
 
         const useCloseNodes = deprioritizePoles ? oneOutOf(15) : false;
-        const useMiddleNodes = deprioritizePoles ? oneOutOf(6) : oneOutOf(40);
-        const useNearEdge = deprioritizePoles ? oneOutOf(2.5) : oneOutOf(4.8);
+        const useMiddleNodes = deprioritizePoles ? oneOutOf(6) : oneOutOf(28);
+        const useNearEdge = deprioritizePoles ? oneOutOf(2.5) : oneOutOf(4.7);
         const ranks = this._rankPairs(pool, neighbors);
         let startWord, endWord;
         if (Object.keys(neighbors).length <= 5) {
