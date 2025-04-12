@@ -981,10 +981,12 @@ function handleKeyPress(event) {
                 const firstEntry = historyList.firstElementChild;
                 if (firstEntry) {
                     const explanationButton = firstEntry.querySelector(`button.explanation-button`);
-                    explanationButton.dispatchEvent(new Event("mouseenter"));
-                    dehoverQueue.push(() => {
-                        explanationButton.dispatchEvent(new Event("mouseleave"));
-                    });
+                    if (explanationButton) {
+                        explanationButton.dispatchEvent(new Event("mouseenter"));
+                        dehoverQueue.push(() => {
+                            explanationButton.dispatchEvent(new Event("mouseleave"));
+                        });
+                    }
                 }
             } else {
                 dehoverQueue.forEach(callback => {
