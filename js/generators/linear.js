@@ -51,11 +51,25 @@ class LinearGenerator {
     }
 
     forwards(a, b) {
-        return pickLinearPremise(a, b, this.prev, this.next, this.prevMin, this.nextMin);
+        return {
+            start: a,
+            end: b,
+            relation: this.prev,
+            reverse: this.next,
+            relationMinimal: this.prevMin,
+            reverseMinimal: this.nextMin,
+        };
     }
 
     backwards(a, b) {
-        return pickLinearPremise(a, b, this.next, this.prev, this.nextMin, this.prevMin);
+        return {
+            start: a,
+            end: b,
+            relation: this.next,
+            reverse: this.prev,
+            relationMinimal: this.nextMin,
+            reverseMinimal: this.prevMin,
+        };
     }
 
     createLinearPremise(a, b) {
@@ -64,10 +78,6 @@ class LinearGenerator {
         } else {
             return this.backwards(b, a);
         }
-    }
-
-    createReverseLinearPremise(a, b) {
-        return this.createLinearPremise(b, a);
     }
 
     createBacktrackingLinearPremise(a, b, options, isValid) {
@@ -113,11 +123,12 @@ class LinearQuestion {
             [premises, conclusion, isValid] = this.buildLinearMap(words);
         }
 
-        if (savedata.enableMeta && !savedata.minimalMode) {
+        if (savedata.enableMeta && !savedata.minimalMode && !savedata.widePremises) {
             premises = applyMeta(premises, p => p.match(/<span class="relation">(?:<span class="is-negated">)?(.*?)<\/span>/)[1]);
         }
 
         premises = scramble(premises);
+        premises = premises.map(p => createPremiseHTML(p));
         this.premises = premises;
         this.conclusion = conclusion;
         this.isValid = isValid;
@@ -138,20 +149,19 @@ class LinearQuestion {
             const curr = words[i];
             const next = words[i + 1];
 
-            if (coinFlip()) {
-                premises.push(this.generator.createLinearPremise(curr, next));
-            } else {
-                premises.push(this.generator.createReverseLinearPremise(next, curr));
-            }
+            premises.push(this.generator.createLinearPremise(curr, next));
         }
 
+        if (savedata.widePremises) {
+            premises = createWidePremises(premises);
+        }
         const [i, j] = findTwoWordIndexes(words);
 
         if (coinFlip()) {
-            conclusion = this.generator.createLinearPremise(words[i], words[j]);
+            conclusion = createBasicPremiseHTML(this.generator.createLinearPremise(words[i], words[j]));
             isValid = i < j;
         } else {
-            conclusion = this.generator.createReverseLinearPremise(words[i], words[j]);
+            conclusion = createBasicPremiseHTML(this.generator.createLinearPremise(words[j], words[i]));
             isValid = i > j;
         }
 
@@ -209,18 +219,10 @@ class LinearQuestion {
                     }
                 }
                 if (Math.random() < forwardChance) {
-                    if (coinFlip()) {
-                        premiseMap[key] = this.generator.createLinearPremise(source, target);
-                    } else {
-                        premiseMap[key] = this.generator.createReverseLinearPremise(target, source);
-                    }
+                    premiseMap[key] = this.generator.createLinearPremise(source, target);
                     bucketMap[target] = bucketMap[source] + 1;
                 } else {
-                    if (coinFlip()) {
-                        premiseMap[key] = this.generator.createLinearPremise(target, source);
-                    } else {
-                        premiseMap[key] = this.generator.createReverseLinearPremise(source, target);
-                    }
+                    premiseMap[key] = this.generator.createLinearPremise(target, source);
                     bucketMap[target] = bucketMap[source] - 1;
                 }
 
@@ -245,6 +247,9 @@ class LinearQuestion {
         }
 
         let premises = orderPremises(premiseMap, neighbors);
+        if (savedata.widePremises) {
+            premises = createWidePremises(premises, premiseMap);
+        }
         const comparison = bucketMap[a] === bucketMap[b] ? 0 : (bucketMap[a] < bucketMap[b] ? -1 : 1)
         let conclusion, isValid;
         if (coinFlip()) {
@@ -310,6 +315,7 @@ class LinearQuestion {
             ...(this.bucket && { bucket: this.bucket }),
             ...(this.buckets && { buckets: this.buckets, modifiers: ['180'] }),
             premises: this.premises,
+            ...(savedata.widePremises && { plen: length }),
             isValid,
             conclusion,
             ...(countdown && { countdown }),
@@ -328,6 +334,7 @@ class LinearQuestion {
             premises: this.premises,
             isValid: this.isValid,
             conclusion: this.conclusion,
+            ...(savedata.widePremises && { plen: length }),
             ...(countdown && { countdown }),
         }
     }

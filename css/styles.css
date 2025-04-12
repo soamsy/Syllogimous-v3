@@ -565,7 +565,6 @@ input[type="number"]::-moz-inner-spin-button {
 
 .carousel, .display-outer {
     margin: 0 auto;
-    max-width: 750px;
     height: fit-content;
     display: none;
 }
@@ -702,6 +701,34 @@ input[type="number"]::-moz-inner-spin-button {
 .display_text.minimal .formatted-premise > span:nth-child(3),
 .display_text.minimal .formatted-operation > span:nth-child(3),
 .display_text.minimal:not(.complicated-conclusion) .formatted-conclusion > span:nth-child(3) {
+    justify-self: start;
+}
+
+.game-area.wide-premises {
+    max-width: 900px;
+}
+
+.display_text.wide-premises .formatted-premise {
+    display: grid;
+    grid-template-columns: 1fr 2.5fr 1fr 2.5fr 1fr;
+    justify-items: center;
+    gap: 0.7rem;
+}
+
+.display_text.wide-premises.minimal .formatted-premise {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.2rem;
+}
+
+.display_text.wide-premises .formatted-premise > span:nth-child(1) {
+    justify-self: end;
+}
+
+.display_text.wide-premises .formatted-premise > span:nth-child(3) {
+    justify-self: center;
+}
+
+.display_text.wide-premises .formatted-premise > span:nth-child(5) {
     justify-self: start;
 }
 

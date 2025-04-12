@@ -1,69 +1,23 @@
-function pickDistinctionPremise(a, b, comparison, reverseComparison, min, minRev) {
-    if (savedata.minimalMode) {
-        comparison = min;
-        reverseComparison = minRev;
-    } else {
-        comparison = 'is ' + comparison;
-        reverseComparison = 'is ' + reverseComparison;
-    }
-    const ps = [
-    `<span class="subject">${a}</span> <span class="relation">${comparison}</span> <span class="subject">${b}</span>`,
-    `<span class="subject">${a}</span> <span class="relation"><span class="is-negated">${reverseComparison}</span></span> <span class="subject">${b}</span>`,
-    ];
-    return pickNegatable(ps);
-}
-
 function createSamePremise(a, b) {
-    return pickDistinctionPremise(a, b, 'same as', 'opposite of', '=', '☍');
+    return {
+        start: a,
+        end: b,
+        relation: 'is same as',
+        reverse: 'is opposite of',
+        relationMinimal: '=',
+        reverseMinimal: '☍',
+    }
 }
 
 function createOppositePremise(a, b) {
-    return pickDistinctionPremise(a, b, 'opposite of', 'same as', '☍', '=');
-}
-
-function applyMeta(premises, relationFinder) {
-    // Randomly choose a number of meta-relations
-    const numOfMetaRelations = 1 + Math.floor(Math.random() * Math.floor(premises.length / 2));
-    let _premises = pickRandomItems(premises, numOfMetaRelations * 2);
-    premises = [ ..._premises.remaining ];
-
-    while (_premises.picked.length) {
-
-        const choosenPair = pickRandomItems(_premises.picked, 2);
-        const negations = choosenPair.picked.map(p => /is-negated/.test(p));
-        const relations = choosenPair.picked.map(relationFinder);
-
-        // Generate substitution string
-        let substitution;
-        const [a, b] = [
-                ...choosenPair.picked[0]
-                .matchAll(/<span class="subject">(.*?)<\/span>/g)
-            ]
-            .map(m => m[1]);
-        const isSame = negations[0] ^ negations[1] ^ (relations[0] === relations[1]);
-        if (isSame) {
-            substitution = pickNegatable([
-                `$1 is same as <span class="is-meta">(<span class="subject">${a}</span> to <span class="subject">${b}</span>)</span> to $3`,
-                `$1 is <span class="is-negated">opposite of</span> <span class="is-meta">(<span class="subject">${a}</span> to <span class="subject">${b}</span>)</span> to $3`
-            ]);
-        } else {
-            substitution = pickNegatable([
-                `$1 is opposite of <span class="is-meta">(<span class="subject">${a}</span> to <span class="subject">${b}</span>)</span> to $3`,
-                `$1 is <span class="is-negated">same as</span> <span class="is-meta">(<span class="subject">${a}</span> to <span class="subject">${b}</span>)</span> to $3`
-            ]);
-        }
-        
-        // Replace relation with meta-relation via substitution string
-        const metaPremise = choosenPair.picked[1]
-            .replace(/(<span class="relation">)(.*)(<\/span>) (?=<span class="subject">)/, substitution);
-
-        // Push premise and its corresponding meta-premise
-        premises.push(choosenPair.picked[0], metaPremise);
-
-        // Update _premises so that it doesn't end up in an infinite loop
-        _premises = { picked: choosenPair.remaining };
+    return {
+        start: a,
+        end: b,
+        relation: 'is opposite of',
+        reverse: 'is same as',
+        relationMinimal: '☍',
+        reverseMinimal: '=',
     }
-    return premises;
 }
 
 class DistinctionQuestion {
@@ -105,17 +59,21 @@ class DistinctionQuestion {
         }
 
         let premises = orderPremises(premiseMap, neighbors);
+        if (savedata.widePremises) {
+            premises = createWidePremises(premises, premiseMap);
+        }
 
         let buckets = [
             Object.keys(bucketMap).filter(w => bucketMap[w] === 0),
             Object.keys(bucketMap).filter(w => bucketMap[w] === 1)
         ]
 
-        if (savedata.enableMeta && !savedata.minimalMode) {
+        if (savedata.enableMeta && !savedata.minimalMode && !savedata.widePremises) {
             premises = applyMeta(premises, p => p.match(/<span class="relation">(?:<span class="is-negated">)?(.*?)<\/span>/)[1]);
         }
 
         premises = scramble(premises);
+        premises = premises.map(p => createPremiseHTML(p, false));
 
         this.premises = premises;
         this.buckets = buckets;
@@ -159,6 +117,7 @@ class DistinctionQuestion {
             startedAt: new Date().getTime(),
             buckets: this.buckets,
             premises: this.premises,
+            ...(savedata.widePremises && { plen: length }),
             isValid,
             conclusion,
             ...(countdown && { countdown }),
@@ -170,10 +129,10 @@ class DistinctionQuestion {
 
         let [startWord, endWord] = new DirectionPairChooser().pickTwoDistantWords(this.neighbors);
         if (coinFlip()) {
-            this.conclusion = createSamePremise(startWord, endWord);
+            this.conclusion = createBasicPremiseHTML(createSamePremise(startWord, endWord), false);
             this.isValid = this.bucketMap[startWord] === this.bucketMap[endWord];
         } else {
-            this.conclusion = createOppositePremise(startWord, endWord);
+            this.conclusion = createBasicPremiseHTML(createOppositePremise(startWord, endWord), false);
             this.isValid = this.bucketMap[startWord] !== this.bucketMap[endWord];
         }
 
@@ -186,6 +145,7 @@ class DistinctionQuestion {
             premises: this.premises,
             isValid: this.isValid,
             conclusion: this.conclusion,
+            ...(savedata.widePremises && { plen: length }),
             ...(countdown && { countdown }),
         };
     }

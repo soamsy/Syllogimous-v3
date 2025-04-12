@@ -181,7 +181,7 @@ function carouselInit() {
 function displayInit() {
     const q = renderJunkEmojis(question);
     displayLabelType.textContent = q.category.split(":")[0];
-    displayLabelLevel.textContent = q.premises.length + "p";
+    displayLabelLevel.textContent = (q.plen || q.premises.length) + "p";
     const easy = savedata.scrambleFactor < 12 ? ' (easy)' : '';
     displayText.innerHTML = [
         `<div class="preamble">Premises${easy}</div>`,
@@ -198,6 +198,15 @@ function displayInit() {
     } else {
         displayText.classList.remove('minimal');
     }
+
+    if (savedata.widePremises && question.type !== 'syllogism') {
+        displayText.classList.add('wide-premises');
+        gameArea.classList.add('wide-premises');
+    } else {
+        displayText.classList.remove('wide-premises');
+        gameArea.classList.remove('wide-premises');
+    }
+
     if (isAnalogy || isBinary) {
         displayText.classList.add('complicated-conclusion');
     } else {

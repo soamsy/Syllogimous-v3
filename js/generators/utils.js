@@ -42,6 +42,16 @@ function removeDuplicateArrays(arrays) {
     return uniqueArrays;
 }
 
+function removeDuplicates(arr) {
+  const seen = new Set();
+  return arr.filter(item => {
+    if (seen.has(item))
+        return false;
+    seen.add(item);
+    return true;
+  });
+}
+
 function getPremisesFor(key, defaultQuota) {
     if (savedata[key] && typeof savedata[key] === 'number' && isFinite(savedata[key])) {
         return savedata[key];

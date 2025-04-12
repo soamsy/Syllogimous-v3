@@ -100,6 +100,7 @@ let savedata = {
     "minimalMode": false,
     "dailyProgressGoal": null,
     "weeklyProgressGoal": null,
+    "widePremises": false,
 };
 
 const defaultSavedata = structuredClone(savedata);
@@ -191,6 +192,7 @@ const compressedSettings = {
     "minimalMode": "min",
     "dailyProgressGoal": "dGoal",
     "weeklyProgressGoal": "wGoal",
+    "widePremises": "wide",
 };
 
 const keySettingMap = {
@@ -272,6 +274,7 @@ const keySettingMap = {
     "p-63-optional": "dailyProgressGoal",
     "p-64-optional": "weeklyProgressGoal",
     "p-65": "overrideContainsWeight",
+    "p-66": "widePremises",
 };
 
 const legacySettings = [

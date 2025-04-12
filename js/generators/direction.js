@@ -25,21 +25,6 @@ function getConclusionCoords(wordCoordMap, startWord, endWord) {
     return [diffCoord, conclusionCoord];
 }
 
-function createDirectionTemplate(source, target, direction, minimalDirection, isNegated, before='', after='') {
-    let isMinimal = savedata.minimalMode;
-    let directionElement = isMinimal ? minimalDirection : direction;
-    if (isNegated) {
-        directionElement = '<span class="is-negated">' + directionElement + '</span>';
-    }
-    if (before && !isMinimal) {
-        directionElement = before + ' ' + directionElement;
-    }
-    if (after && !isMinimal) {
-        directionElement = directionElement + ' ' + after;
-    }
-    return `<span class="subject">${target}</span> <span class="relation">${directionElement}</span> <span class="subject">${source}</span>`;
-}
-
 function taxicabDistance(a, b) {
     return a.map((v,i) => Math.abs(b[i] - v)).reduce((left,right) => left + right)
 }
@@ -90,14 +75,14 @@ class Direction2D {
     createDirectionStatement(a, b, dirCoord) {
         const direction = dirStringFromCoord(dirCoord);
         const reverseDirection = dirStringFromCoord(inverse(dirCoord));
-        const minimalDirection = dirStringMinimal(dirCoord);
-        const minimalReverseDirection = dirStringMinimal(inverse(dirCoord));
-        const before = 'is';
-        const after = 'of';
-        return pickRandomItems([
-            pickNegatable([createDirectionTemplate(a, b, direction, minimalDirection, false, before, after), createDirectionTemplate(a, b, reverseDirection, minimalReverseDirection, true, before, after)]),
-            pickNegatable([createDirectionTemplate(b, a, reverseDirection, minimalReverseDirection, false, before, after), createDirectionTemplate(b, a, direction, minimalDirection, true, before, after)])
-        ], 1).picked[0];
+        return {
+            start: b,
+            end: a,
+            relation: `is ${direction} of`,
+            reverse: `is ${reverseDirection} of`,
+            relationMinimal: dirStringMinimal(dirCoord),
+            reverseMinimal: dirStringMinimal(inverse(dirCoord)),
+        }
     }
 
     initialCoord() {
@@ -145,14 +130,14 @@ class Direction3D {
     createDirectionStatement(a, b, dirCoord) {
         const direction = dirStringFromCoord(dirCoord);
         const reverseDirection = dirStringFromCoord(inverse(dirCoord));
-        const minimalDirection = dirStringMinimal(dirCoord);
-        const minimalReverseDirection = dirStringMinimal(inverse(dirCoord));
-        const before = 'is';
-        const after = 'of';
-        return pickRandomItems([
-            pickNegatable([createDirectionTemplate(a, b, direction, minimalDirection, false, before, after), createDirectionTemplate(a, b, reverseDirection, minimalReverseDirection, true, before, after)]),
-            pickNegatable([createDirectionTemplate(b, a, reverseDirection, minimalReverseDirection, false, before, after), createDirectionTemplate(b, a, direction, minimalDirection, true, before, after)])
-        ], 1).picked[0];
+        return {
+            start: b,
+            end: a,
+            relation: `is ${direction} of`,
+            reverse: `is ${reverseDirection} of`,
+            relationMinimal: dirStringMinimal(dirCoord),
+            reverseMinimal: dirStringMinimal(inverse(dirCoord)),
+        }
     }
 
     initialCoord() {
@@ -196,15 +181,16 @@ class Direction4D {
     createDirectionStatement(a, b, dirCoord) {
         const direction = dirStringFromCoord(dirCoord);
         const reverseDirection = dirStringFromCoord(inverse(dirCoord));
-        const minimalDirection = dirStringMinimal(dirCoord);
-        const minimalReverseDirection = dirStringMinimal(inverse(dirCoord));
         const timeName = timeMapping[dirCoord[3]];
         const reverseTimeName = reverseTimeNames[timeName];
-        const after = 'of';
-        return pickRandomItems([
-            pickNegatable([createDirectionTemplate(a, b, direction, minimalDirection, false, timeName, after), createDirectionTemplate(a, b, reverseDirection, minimalReverseDirection, true, reverseTimeName, after)]),
-            pickNegatable([createDirectionTemplate(b, a, reverseDirection, minimalReverseDirection, false, reverseTimeName, after), createDirectionTemplate(b, a, direction, minimalDirection, true, timeName, after)])
-        ], 1).picked[0];
+        return {
+            start: b,
+            end: a,
+            relation: `${timeName} ${direction} of`,
+            reverse: `${reverseTimeName} ${reverseDirection} of`,
+            relationMinimal: dirStringMinimal(dirCoord),
+            reverseMinimal: dirStringMinimal(inverse(dirCoord)),
+        }
     }
 
     initialCoord() {
@@ -328,6 +314,8 @@ class DirectionQuestion {
         if (numInterleaved === 0) {
             premises = scramble(premises);
         }
+        premises = premises.map(p => createPremiseHTML(p));
+        conclusion = createBasicPremiseHTML(conclusion);
         const countdown = this.generator.getCountdown();
         const totalTransforms = this.getNumTransformsSplit(length).reduce((a, b) => a + b, 0);
         let modifiers = [];
@@ -340,7 +328,7 @@ class DirectionQuestion {
         return {
             category: this.generator.getName(),
             type: normalizeString(this.generator.getName()),
-            ...(totalTransforms > 0 && { plen: length }),
+            ...((totalTransforms > 0 || savedata.widePremises) && { plen: length }),
             modifiers,
             startedAt: new Date().getTime(),
             wordCoordMap,
@@ -391,6 +379,7 @@ class DirectionQuestion {
         }
         conclusion += analogyTo(c, d);
 
+        premises = premises.map(p => createPremiseHTML(p));
         const countdown = this.generator.getCountdown();
         const totalTransforms = this.getNumTransformsSplit(length).reduce((a, b) => a + b, 0);
         let modifiers = [];
@@ -408,6 +397,7 @@ class DirectionQuestion {
             wordCoordMap,
             isValid,
             premises,
+            ...(savedata.widePremises && { plen: length }),
             operations,
             conclusion,
             ...(countdown && { countdown }),
@@ -579,7 +569,10 @@ class DirectionQuestion {
             neighbors[nextWord].push(baseWord);
         }
 
-        const premises = orderPremises(premiseMap, neighbors);
+        let premises = orderPremises(premiseMap, neighbors);
+        if (savedata.widePremises) {
+            premises = createWidePremises(premises, premiseMap);
+        }
 
         return [wordCoordMap, neighbors, premises, usedDirCoords];
     }

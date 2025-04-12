@@ -68,5 +68,14 @@ function scrambleWithLimit(premises, unbreakableDivisions) {
         }
     }
 
-    return endIndices.map(i => premises[i]);
+    const scrambledPremises = endIndices.map(i => premises[i]);
+    if (savedata.widePremises) {
+        const thinPremiseIndex = scrambledPremises.findIndex(p => Array.isArray(p) && p.length == 1);
+        if (thinPremiseIndex !== -1) {
+            const thinPremise = scrambledPremises[thinPremiseIndex];
+            scrambledPremises.splice(thinPremiseIndex, 1);
+            scrambledPremises.push(thinPremise);
+        }
+    }
+    return scrambledPremises;
 }
