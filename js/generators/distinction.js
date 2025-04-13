@@ -68,12 +68,12 @@ class DistinctionQuestion {
             Object.keys(bucketMap).filter(w => bucketMap[w] === 1)
         ]
 
+        premises = scramble(premises);
+        premises = premises.map(p => createPremiseHTML(p, false));
+
         if (savedata.enableMeta && !savedata.minimalMode && !savedata.widePremises) {
             premises = applyMeta(premises, p => p.match(/<span class="relation">(?:<span class="is-negated">)?(.*?)<\/span>/)[1]);
         }
-
-        premises = scramble(premises);
-        premises = premises.map(p => createPremiseHTML(p, false));
 
         this.premises = premises;
         this.buckets = buckets;

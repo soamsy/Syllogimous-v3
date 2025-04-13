@@ -123,12 +123,13 @@ class LinearQuestion {
             [premises, conclusion, isValid] = this.buildLinearMap(words);
         }
 
+        premises = scramble(premises);
+        premises = premises.map(p => createPremiseHTML(p));
+
         if (savedata.enableMeta && !savedata.minimalMode && !savedata.widePremises) {
             premises = applyMeta(premises, p => p.match(/<span class="relation">(?:<span class="is-negated">)?(.*?)<\/span>/)[1]);
         }
 
-        premises = scramble(premises);
-        premises = premises.map(p => createPremiseHTML(p));
         this.premises = premises;
         this.conclusion = conclusion;
         this.isValid = isValid;
