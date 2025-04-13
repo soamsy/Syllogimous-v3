@@ -101,6 +101,9 @@ let savedata = {
     "dailyProgressGoal": null,
     "weeklyProgressGoal": null,
     "widePremises": false,
+    "autoProgressionChange": 'auto',
+    "autoProgressionTimeDrop": 5,
+    "autoProgressionTimeBump": 5,
 };
 
 const defaultSavedata = structuredClone(savedata);
@@ -181,6 +184,9 @@ const compressedSettings = {
     "autoProgressionPercentSuccess": "autoS",
     "autoProgressionPercentFail": "autoF",
     "autoProgressionGrouping": 'autoG',
+    "autoProgressionChange": 'autoC',
+    "autoProgressionTimeDrop": 'autoTD',
+    "autoProgressionTimeBump": 'autoTB',
     "spoilerConclusion": "spoiler",
     "enableBacktrackingComparison": "backC",
     "enableBacktrackingTemporal": "backT",
@@ -275,6 +281,9 @@ const keySettingMap = {
     "p-64-optional": "weeklyProgressGoal",
     "p-65": "overrideContainsWeight",
     "p-66": "widePremises",
+    "p-67": "autoProgressionChange",
+    "p-68": "autoProgressionTimeDrop",
+    "p-69": "autoProgressionTimeBump",
 };
 
 const legacySettings = [

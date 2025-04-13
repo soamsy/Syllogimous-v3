@@ -112,6 +112,7 @@ function registerEventHandlers() {
             input.addEventListener("change", evt => {
                 savedata[value] = input.value;
                 save();
+                populateSettings();
                 init();
             })
         }
@@ -167,6 +168,7 @@ function populateSettings() {
     }
 
     populateLinearDropdown();
+    populateProgressionDropdown();
     populateAppearanceSettings();
 
     timerInput.value = savedata.timer;
@@ -260,6 +262,16 @@ function populateAppearanceSettings() {
     document.getElementById('p-fast-ui').checked = appState.fastUi;
     document.getElementById('p-dark-mode').checked = appState.darkMode;
 }
+
+function populateProgressionDropdown() {
+    const timeBumper = document.getElementById('time-bumper');
+    const timeDropper = document.getElementById('time-dropper');
+    const isAuto = savedata.autoProgressionChange === 'auto';
+
+    timeBumper.style.display = isAuto ? 'none' : 'flex';
+    timeDropper.style.display = isAuto ? 'none' : 'flex';
+}
+
 
 function handleColorChange(event) {
     const color = event.target.value;

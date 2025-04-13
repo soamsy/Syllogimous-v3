@@ -105,11 +105,17 @@ class ProgressStore {
 
     success(q, trailingProgress, successes, type) {
         const [overridePremiseSetting, overrideTimerSetting] = TYPE_TO_OVERRIDES[type];
-        const minUpgrade = q.countdown - 1;
-        const left = successes[successes.length - 3].timeElapsed / 1000;
-        const right = successes[successes.length - 2].timeElapsed / 1000;
-        const percentile90ish = Math.floor((left + right) / 2) + 1;
-        const newTimerValue = Math.min(minUpgrade, percentile90ish);
+        let newTimerValue;
+        if (savedata.autoProgressionChange === 'auto') {
+            const minUpgrade = q.countdown - 1;
+            const left = successes[successes.length - 3].timeElapsed / 1000;
+            const right = successes[successes.length - 2].timeElapsed / 1000;
+            const percentile90ish = Math.floor((left + right) / 2) + 1;
+            newTimerValue = Math.min(minUpgrade, percentile90ish);
+        } else {
+            newTimerValue = q.countdown - savedata.autoProgressionTimeDrop;
+        }
+        newTimerValue = Math.max(1, newTimerValue);
         const averageTime = successes.map(s => s.timeElapsed / 1000).reduce((a, b) => a + b) / successes.length;
         if (averageTime <= savedata.autoProgressionGoal || newTimerValue <= savedata.autoProgressionGoal) {
             savedata[overridePremiseSetting] = q.premises + 1;
@@ -121,7 +127,12 @@ class ProgressStore {
 
     fail(q, trailingProgress, successes, type) {
         const [overridePremiseSetting, overrideTimerSetting] = TYPE_TO_OVERRIDES[type];
-        const newTimerValue = q.countdown + 5;
+        let newTimerValue;
+        if (savedata.autoProgressionChange === 'auto') {
+            newTimerValue = q.countdown + 5;
+        } else {
+            newTimerValue = q.countdown + savedata.autoProgressionTimeBump;
+        }
         if (newTimerValue > savedata.autoProgressionGoal + 25) {
             if (q.premises > 2) {
                 savedata[overridePremiseSetting] = q.premises - 1;

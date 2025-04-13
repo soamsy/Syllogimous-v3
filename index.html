@@ -124,6 +124,24 @@
 											  <option value="separate">Only progress linear questions together</option>
 											</select>
 										</div>
+										<div class="dropdown-item">
+											<select id="p-67" name="progression-change-mode" class="form-select ffmono">
+											  <option value="auto">Automatically adjust timer on level up</option>
+											  <option value="custom">Customize timer shifts</option>
+											</select>
+										</div>
+										<div id="time-dropper" class="dropdown-item" style="display: none;">
+											Decrease on level up
+											<span class="inline-premise-spinner">
+												<input id="p-68" type="number" placeholder="" value="5" min="1" max="50" style="width: 5ch">s
+											</span>
+										</div>
+										<div id="time-bumper" class="dropdown-item" style="display: none;">
+											Increase on failure
+											<span class="inline-premise-spinner">
+												<input id="p-69" type="number" placeholder="" value="5" min="1" max="50" style="width: 5ch">s
+											</span>
+										</div>
 									</div>
 								</span>
 							</div>
