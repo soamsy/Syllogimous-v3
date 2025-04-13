@@ -272,7 +272,7 @@ class DirectionQuestion {
         let diffCoord;
         let [wordCoordMap, neighbors, premises, usedDirCoords] = [];
         let [numInterleaved, numTransforms] = this.getNumTransformsSplit(length);
-        const branchesAllowed = Math.random() > 0.33;
+        const branchesAllowed = Math.random() < 0.75;
         while (true) {
             if (this.generator.shouldUseAnchor()) {
                 [wordCoordMap, neighbors, premises, usedDirCoords] = this.createWordMapAnchor(length, branchesAllowed);
