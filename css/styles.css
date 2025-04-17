@@ -1671,6 +1671,16 @@ table.distinction {
     justify-content: center;
 }
 
+#linear-settings-button {
+    background-color: #222;
+    color: white;
+    border: 1px solid #444;
+    padding: 3px 4px;
+    border-radius: 2px;
+    display: flex;
+    gap: 5px;
+}
+
 .dropdown {
     display: none;
     flex-direction: column;
