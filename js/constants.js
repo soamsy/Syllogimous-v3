@@ -1,4 +1,3 @@
-// Constants and variables
 const oldSettingsKey = "sllgms-v3";
 const imageKey = 'sllgms-v3-background';
 const profilesKey = 'sllgms-v3-profiles';
@@ -9,7 +8,8 @@ let appState = {
     "score": 0,
     "questions": [],
     "backgroundImage": null,
-    "gameAreaColor": "#161F30CC",
+    "gameAreaColor": "#293247CC",
+    "gameAreaLightColor": "#EFEFEF",
     "isExperimentalOpen": false,
     "isLegacyOpen": false,
     "sfx": "none",

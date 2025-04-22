@@ -36,8 +36,7 @@ function updateLinearWording(option, isSelected) {
   }
 
   savedata.linearWording = options.join(',');
-  save();
-  init();
+  refresh();
 }
 
 linearLeftRightCheckbox.addEventListener('click', e => updateLinearWording('leftright', e.target.checked));

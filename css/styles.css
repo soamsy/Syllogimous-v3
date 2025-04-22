@@ -76,12 +76,32 @@
     --single-input-bg: #222a;
     --spinner-bg: #111a;
     --folder-bg: #222;
+    --profile-select-highlight: #248;
+    --profile-select-hover: #444;
+    --profile-select-highlight-hover: #36A;
+    --profile-select-delete: #523;
+    --profile-select-delete-hover: #956;
+    --switch-background-color: #333;
+    --switch-unselected-color: #444;
+    --switch-selected-color: #CFF;
+    --switch-border-color: #666;
+    --switch-border-checked-color: #cff9;
+    --linear-settings-background-color: #222;
+    --select-background-color: #191919;
+    --correct-color: #192;
+    --wrong-color: #912;
+    --background-image-bg-color: #000c;
+    --background-brightness: 0.50;
+    --label-background-color: #0009;
+    --label-color: #abf4ff;
+    --overlay-background-color: #000;
+    --three-d-background: radial-gradient(circle at center, #555555E0, #222222E0);
 }
 
 .light-mode {
     --text-color: #111;
     --background-color: #FFF;
-    --text-outline: 0;
+    --text-outline: 0 0.01em 0.04em #11111175;
     --preamble-color: #111;
     --big-input-bg-color: #AAAa;
     --bracket-color: #1798B0;
@@ -89,9 +109,9 @@
     --display-label-color: #001122;
     --offcanvas-fg: #111;
     --offcanvas-bg: radial-gradient(circle at top center, #FFF, #DEF);
-    --small-input-bg-color: #777a;
+    --small-input-bg-color: #fffa;
     --profile-bg: #eee;
-    --profile-arrow-bg: #777;
+    --profile-arrow-bg: #bbb;
     --profile-border: 1px solid #333;
     --profile-select-bg: #eee;
     --profile-select-border: 1px solid #444;
@@ -99,6 +119,26 @@
     --single-input-bg: #eeea;
     --spinner-bg: #fffa;
     --folder-bg: #bbba;
+    --profile-select-highlight: #9BF;
+    --profile-select-hover: #BBB;
+    --profile-select-highlight-hover: #ACF;
+    --profile-select-delete: #D67;
+    --profile-select-delete-hover: #F89;
+    --switch-background-color: #DDD;
+    --switch-unselected-color: #FFF;
+    --switch-selected-color: #38B;
+    --switch-border-color: #888;
+    --switch-border-checked-color: #393939;
+    --linear-settings-background-color: #DDD;
+    --select-background-color: #DDD;
+    --correct-color: #093;
+    --wrong-color: #A03;
+    --background-image-bg-color: #FFF;
+    --background-brightness: 0.75;
+    --label-background-color: #FFF9;
+    --label-color: #1E4D5A;
+    --overlay-background-color: #DDDA;
+    --three-d-background: radial-gradient(circle at center, #FFFFFFE0, #BBDDEEE0);
 }
 
 body {
@@ -108,7 +148,7 @@ body {
     font-family: "Roboto", sans-serif;
     font-size: var(--step-0);
     color: var(--text-color);
-    background-color: #111;
+    background-color: var(--background-color);
 }
 
 h1,
@@ -300,9 +340,9 @@ button.delete:hover {
     z-index: -1;
     width: 100%;
     height: 100%;
-    background-image: repeating-conic-gradient(#000000 0% 25%, #202020 0% 50%);
-    background-size: 2px 2px;
-    opacity: 35%;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" /></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.15"/></svg>');
+    background-color: var(--overlay-background-color);
+    opacity: 0.30;
 }
 
 .background-image {
@@ -312,10 +352,10 @@ button.delete:hover {
     z-index: -2;
     width: 100%;
     height: 100%;
-    background-color: #000c;
+    background-color: var(--background-image-bg-color);
     background-size: cover;
     background-position: center;
-    filter: brightness(0.50);
+    filter: brightness(var(--background-brightness));
 }
 
 .metal-gear {
@@ -375,6 +415,7 @@ button.delete:hover {
     font-size: var(--step--2);
     align-items: center;
     justify-content: flex-end;
+    color: var(text-color);
     text-shadow: 0 1px 1px #000;
 }
 
@@ -405,7 +446,7 @@ button.delete:hover {
     border: none;
     border-bottom: 1px solid #050505;
     margin: 0 3px;
-    color: #fff;
+    color: var(--text-color);
     font-size: var(--step--1);
 }
 
@@ -474,8 +515,8 @@ input[type="number"]::-moz-inner-spin-button {
 }
 
 .select-item {
-    background-color: #222;
-    color: white;
+    background-color: var(--select-background-color);
+    color: var(--text-color);
     border: 1px solid #444;
     padding: 8px 10px;
     border-radius: 2px;
@@ -583,19 +624,21 @@ input[type="number"]::-moz-inner-spin-button {
 
 .confirmation-true,
 .confirmation-false {
-    padding: 0.5rem 1rem;
-    min-width: 8rem;
+    flex-grow: 1;
+    font-size: var(--step-1);
+    max-width: 10rem;
+    padding: 0.3rem 0.7rem;
 }
 
 .confirmation-true {
-    background-color: #090!important;
+    background-color: var(--correct-color)!important;
 }
 .confirmation-true:hover {
     box-shadow: 0 3px 5px 0 #0908!important;
 }
 
 .confirmation-false {
-    background-color: #900!important;
+    background-color: var(--wrong-color)!important;
 }
 .confirmation-false:hover {
     box-shadow: 0 3px 5px 0 #9008!important;
@@ -740,7 +783,7 @@ input[type="number"]::-moz-inner-spin-button {
 .hqli-postamble,
 .hqli-transform-header {
     font-size: var(--step--2);
-    opacity: 0.4;
+    opacity: 0.7;
 }
 
 .formatted-premise,
@@ -772,7 +815,7 @@ input[type="number"]::-moz-inner-spin-button {
 .highlight {
     font-weight: 700;
     padding: 0 3px;
-    background-color: #222;
+    background-color: var(--background-color);
     letter-spacing: normal;
     border-radius: 2px;
 }
@@ -947,10 +990,6 @@ input[type="number"]::-moz-inner-spin-button {
     text-transform: uppercase;
 }
 
-.is-meta {
-    color: #fff;
-}
-
 .is-negated {
     color: #f00;
 }
@@ -973,8 +1012,8 @@ input[type="number"]::-moz-inner-spin-button {
 
 label.open {
     display: block;
-    background-color: #0009;
-    color: #abf4ff;
+    background-color: var(--label-background-color);
+    color: var(--label-color);
     cursor: pointer;
     font-size: var(--step-0);
     font-weight: bold;
@@ -1094,7 +1133,6 @@ label.open[for="offcanvas-credits"]:hover {
 }
 
 .explainer {
-    color: #666;
     font-size: var(--step--1);
     font-style: italic;
     list-style: none;
@@ -1122,8 +1160,8 @@ label.open[for="offcanvas-credits"]:hover {
 
 .switch {
     align-items: center;
-    border: 2px solid #666;
-    background-color: #333;
+    border: 2px solid var(--switch-border-color);
+    background-color: var(--switch-background-color);
     cursor: pointer;
     display: flex;
     justify-content: center;
@@ -1135,7 +1173,7 @@ label.open[for="offcanvas-credits"]:hover {
 }
 
 .switch::after {
-    background-color: #444;
+    background-color: var(--switch-unselected-color);
     content: "";
     height: 0.75rem;
     position: absolute;
@@ -1149,13 +1187,13 @@ label.open[for="offcanvas-credits"]:hover {
 }
 
 input[type="checkbox"]:checked + .switch {
-    border-color: #cff9;
-    box-shadow: 0 0 6px 1px  #cff6;
+    border-color: var(--switch-border-checked-color);
+    box-shadow: 0 0 4px 1px var(--switch-border-checked-color);
     transition-timing-function: ease-in;
 }
 
 input[type="checkbox"]:checked + .switch::after {
-    background-color: #cff;
+    background-color: var(--switch-selected-color);
     transition-timing-function: ease-in;
 }
 
@@ -1193,12 +1231,13 @@ input[type="checkbox"]:checked + .switch::after {
 }
 
 .hqli {
-    background-color: #191817;
+    background-color: var(--background-color);
     box-shadow: 0 1px 10px 5px #0004;
     position: relative;
 }
 
 .hqli .inner {
+    border: 1px solid #333;
     border-bottom: 2px dashed #444;
     display: grid;
     gap: 0.15rem;
@@ -1228,7 +1267,7 @@ input[type="checkbox"]:checked + .switch::after {
 .hqli-answer-user::before,
 .hqli-answer::before,
 .hqli-response-time::before {
-    color: #fffa;
+    color: var(--text-color);
     font-weight: bold;
     margin-right: 0.25rem;
 }
@@ -1242,11 +1281,11 @@ input[type="checkbox"]:checked + .switch::after {
 }
 
 .hqli-answer-user.true, .hqli-answer.true {
-    color: #0a0;
+    color: var(--correct-color);
 }
 
 .hqli-answer-user.false, .hqli-answer.false {
-    color: #a00;
+    color: var(--wrong-color);
 }
 
 .hqli-response-time::before {
@@ -1277,7 +1316,7 @@ input[type="checkbox"]:checked + .switch::after {
 
 .td {
     padding: 3px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--switch-border-color);
     text-align: center;
     display: flex;
     align-items: center;
@@ -1292,7 +1331,7 @@ input[type="checkbox"]:checked + .switch::after {
 
 .three-d-plane {
     box-shadow: 0 10px 10px rgba(0, 0, 0, 0.3);
-    background: radial-gradient(circle at center, #555555E0, #222222E0);
+    background: var(--three-d-background);
 }
 
 .plane-1 { transform: rotateY(10deg) rotateX(10deg) translateZ(0px);}
@@ -1402,11 +1441,15 @@ svg.junk, svg.noise {
     margin-bottom: 3px;
 }
 
+svg.arrow {
+    fill: var(--text-color);
+}
+
 table.distinction td,
 table.distinction th {
     vertical-align: top;
-    border-left: 1px solid white;
-    border-right: 1px solid white;
+    border-left: 1px solid var(--text-color);
+    border-right: 1px solid var(--text-color);
     min-width: 1em;
 }
 
@@ -1452,8 +1495,8 @@ table.distinction {
 
 .tooltip-text {
     visibility: hidden;
-    background-color: #222;
-    color: #fff;
+    background-color: var(--background-color);
+    color: var(--text-color);
     text-align: left;
     padding: 8px;
     border-radius: 4px;
@@ -1596,15 +1639,15 @@ table.distinction {
 }
 
 .profile-list .profile-select.highlight {
-    background-color: #248;
+    background-color: var(--profile-select-highlight);
 }
 
 .profile-list .profile-select:hover {
-    background-color: #444;
+    background-color: var(--profile-select-hover);
 }
 
 .profile-list .profile-select.highlight:hover {
-    background-color: #36A;
+    background-color: var(--profile-select-highlight-hover);
 }
 
 .profile-list .profile-delete {
@@ -1613,7 +1656,7 @@ table.distinction {
     right: 9px;
     justify-content: center;
     align-items: center;
-    background-color: #523;
+    background-color: var(--profile-select-delete);
     width: 40px;
     padding: 8px;
     margin: -9px;
@@ -1622,7 +1665,7 @@ table.distinction {
 }
 
 .profile-list .profile-delete:hover {
-    background-color: #956;
+    background-color: var(--profile-select-delete-hover);
 }
 
 
@@ -1642,8 +1685,8 @@ table.distinction {
 }
 
 .form-select {
-    background-color: #191919;
-    color: white;
+    background-color: var(--select-background-color);
+    color: var(--text-color);
     border: 1px solid #AAA;
     padding: 5px;
     padding-right: 30px;
@@ -1672,8 +1715,8 @@ table.distinction {
 }
 
 #linear-settings-button {
-    background-color: #222;
-    color: white;
+    background-color: var(--linear-settings-background-color);
+    color: var(--text-color);
     border: 1px solid #444;
     padding: 3px 4px;
     border-radius: 2px;
@@ -1686,9 +1729,8 @@ table.distinction {
     flex-direction: column;
     top: 120%;
     position: absolute;
-    background-color: #222;
-    padding: 4px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: var(--background-color);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     z-index: 1000;
     padding: 6px;
     border-radius: 7px;
@@ -1774,7 +1816,7 @@ table.distinction {
     display: none;
     z-index: 1000;
     padding: 20px;
-    background-color: #222;
+    background-color: var(--background-color);
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     top: 10.0%;

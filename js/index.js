@@ -76,8 +76,7 @@ function registerEventHandlers() {
         if (input.type === "checkbox") {
             input.addEventListener("input", evt => {
                 savedata[value] = !!input.checked;
-                save();
-                init();
+                refresh();
             });
         }
 
@@ -103,17 +102,14 @@ function registerEventHandlers() {
                 } else {
                     savedata[value] = +num;
                 }
-                save();
-                init();
+                refresh();
             });
         }
 
         if (input.type === "select-one") {
             input.addEventListener("change", evt => {
                 savedata[value] = input.value;
-                save();
-                populateSettings();
-                init();
+                refresh();
             })
         }
     }
@@ -173,6 +169,12 @@ function populateSettings() {
 
     timerInput.value = savedata.timer;
     timerTime = timerInput.value;
+}
+
+function refresh() {
+    save();
+    populateSettings();
+    init();
 }
 
 function carouselInit() {
@@ -249,15 +251,14 @@ function handleImageChange(event) {
             appState.backgroundImage = imageKey;
             imagePromise = imagePromise.then(() => storeImage(imageKey, base64String));
             imageChanged = true;
-            save();
-            init();
+            refresh();
         };
         reader.readAsDataURL(file);
     }
 }
 
 function populateAppearanceSettings() {
-    document.getElementById('color-input').value = appState.gameAreaColor;
+    document.getElementById('color-input').value = appState.darkMode ? appState.gameAreaColor : appState.gameAreaLightColor;
     document.getElementById('p-sfx').value = appState.sfx;
     document.getElementById('p-fast-ui').checked = appState.fastUi;
     document.getElementById('p-dark-mode').checked = appState.darkMode;
@@ -275,15 +276,17 @@ function populateProgressionDropdown() {
 
 function handleColorChange(event) {
     const color = event.target.value;
-    appState.gameAreaColor = color;
-    save();
-    init();
+    if (appState.darkMode) {
+        appState.gameAreaColor = color;
+    } else {
+        appState.gameAreaLightColor = color;
+    }
+    refresh();
 }
 
 function handleSfxChange(event) {
     appState.sfx = event.target.value;
-    save();
-    init();
+    refresh();
 }
 
 function handleFastUiChange(event) {
@@ -291,14 +294,12 @@ function handleFastUiChange(event) {
     appState.staticButtons = event.target.checked;
     removeFastFeedback();
     switchButtons();
-    save();
-    init();
+    refresh();
 }
 
 function handleDarkModeChange(event) {
     appState.darkMode = event.target.checked;
-    save();
-    init();
+    refresh();
 }
 
 async function updateCustomStyles() {
@@ -330,7 +331,7 @@ async function updateCustomStyles() {
         liveStyles.innerHTML = styles;
     }
 
-    const gameAreaColor = appState.gameAreaColor;
+    const gameAreaColor = appState.darkMode ? appState.gameAreaColor : appState.gameAreaLightColor;
     const gameAreaImage = `${gameAreaColor}`
     if (gameArea.style.background !== gameAreaImage) {
         gameArea.style.background = '';

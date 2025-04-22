@@ -171,7 +171,7 @@ function createExplanationPopup(question, e) {
     popup.style.transform = "translate(-50%, -50%)";
     popup.style.zIndex = "1000";
     popup.style.padding = "20px";
-    popup.style.backgroundColor = "#222";
+    popup.style.backgroundColor = "var(--background-color)";
     popup.style.borderRadius = "8px";
     popup.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
     popup.style.width = "fit-content";
