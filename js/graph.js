@@ -3,6 +3,7 @@ class ProgressGraph {
         this.scoreChart = null;
         this.countChart = null;
         this.timeChart = null;
+        this.timePerPremiseChart = null;
     }
 
     findDay(question) {
@@ -46,6 +47,7 @@ class ProgressGraph {
 
             groupedByType[type][day].totalTime += timeElapsed;
             groupedByType[type][day].count += 1;
+            groupedByType[type][day].numPremises = question.premises;
         });
 
         const result = {};
@@ -53,8 +55,9 @@ class ProgressGraph {
             result[type] = [];
             for (const day in groupedByType[type]) {
                 const count = groupedByType[type][day].count;
+                const numPremises = groupedByType[type][day].numPremises;
                 const averageTime = groupedByType[type][day].totalTime / count;
-                result[type].push({ day, count, averageTime: averageTime / 1000 });
+                result[type].push({ day, count, averageTime: averageTime / 1000, numPremises });
             }
             result[type].sort((a, b) => new Date(a.day) - new Date(b.day));
         }
@@ -96,6 +99,10 @@ class ProgressGraph {
             this.timeChart.destroy();
             this.timeChart = null;
         }
+        if (this.timePerPremiseChart) {
+            this.timePerPremiseChart.destroy();
+            this.timePerPremiseChart = null;
+        }
         await this.plotScore();
     }
 
@@ -115,13 +122,22 @@ class ProgressGraph {
         const typeData = this.calculateTypeData(data, false);
         const premiseLevelData = this.calculateTypeData(data, true);
 
-        const labels = Object.values(typeData)[0].map((entry) => entry.day);
+        const labels = Object.values(typeData)[0].map(entry => entry.day);
         const premiseLevelLabels = Object.values(premiseLevelData)[0].map((entry) => entry.day);
 
         const scoreDatasets = Object.keys(premiseLevelData).map((type) => {
             return {
                 label: type,
                 data: premiseLevelData[type].map((entry) => ({ x: entry.day, y: entry.averageTime })),
+                borderColor: this.randomColor(),
+                fill: false,
+            };
+        });
+
+        const timePerPremiseDatasets = Object.keys(premiseLevelData).map(type => {
+            return {
+                label: type,
+                data: premiseLevelData[type].map((entry) => ({ x: entry.day, y: entry.averageTime / entry.numPremises })),
                 borderColor: this.randomColor(),
                 fill: false,
             };
@@ -152,6 +168,8 @@ class ProgressGraph {
         this.countChart = this.createChart(countCtx, labels, countDatasets, 'line', 'Count', 0, 0);
         const timeCtx = canvasTime.getContext('2d');
         this.timeChart = this.createChart(timeCtx, labels, timeDatasets, 'bar', 'Time Spent', 1, 2, '', totalTimeSpentDisplay);
+        const timePerPremiseCtx = canvasTimePerPremise.getContext('2d');
+        this.timePerPremiseChart = this.createChart(timePerPremiseCtx, premiseLevelLabels, timePerPremiseDatasets, 'line', 'Time Per Premise (s)', 1, 2, 's');
     }
 
     createChart(ctx, labels, datasets, type, yAxisTitle, tickDecimals = 1, tooltipDecimals = 2, unit='', subtitle) {
@@ -228,40 +246,47 @@ const graphButton = document.getElementById('graph-label');
 const graphTime = document.getElementById('graph-popup-time');
 const graphCount = document.getElementById('graph-popup-count');
 const graphScore = document.getElementById('graph-popup-score');
+const graphTimePerPremise = document.getElementById('graph-popup-time-per-premise');
+const graphs = [graphTime, graphCount, graphScore, graphTimePerPremise];
 
 const canvasTime = document.getElementById('graph-canvas-time');
 const canvasCount = document.getElementById('graph-canvas-count');
 const canvasScore = document.getElementById('graph-canvas-score');
+const canvasTimePerPremise = document.getElementById('graph-canvas-time-per-premise');
+const canvases = [canvasTime, canvasCount, canvasScore, canvasTimePerPremise];
 
 const graphTimeSelect = document.getElementById('graph-select-time');
 const graphCountSelect = document.getElementById('graph-select-count');
 const graphScoreSelect = document.getElementById('graph-select-score');
+const graphTimePerPremiseSelect = document.getElementById('graph-select-time-per-premise');
+const graphSelects = [graphTimeSelect, graphCountSelect, graphScoreSelect, graphTimePerPremiseSelect];
 
 graphTimeSelect.addEventListener('click', () => {
+    graphs.forEach(graph => graph.classList.remove('visible'));
+    graphSelects.forEach(select => select.classList.remove('selected'));
     graphTime.classList.add('visible');
-    graphScore.classList.remove('visible');
-    graphCount.classList.remove('visible');
     graphTimeSelect.classList.add('selected');
-    graphScoreSelect.classList.remove('selected');
-    graphCountSelect.classList.remove('selected');
 });
 
 graphCountSelect.addEventListener('click', () => {
-    graphTime.classList.remove('visible');
-    graphScore.classList.remove('visible');
+    graphs.forEach(graph => graph.classList.remove('visible'));
+    graphSelects.forEach(select => select.classList.remove('selected'));
     graphCount.classList.add('visible');
-    graphTimeSelect.classList.remove('selected');
-    graphScoreSelect.classList.remove('selected');
     graphCountSelect.classList.add('selected');
 });
 
 graphScoreSelect.addEventListener('click', () => {
-    graphTime.classList.remove('visible');
+    graphs.forEach(graph => graph.classList.remove('visible'));
+    graphSelects.forEach(select => select.classList.remove('selected'));
     graphScore.classList.add('visible');
-    graphCount.classList.remove('visible');
-    graphTimeSelect.classList.remove('selected');
     graphScoreSelect.classList.add('selected');
-    graphCountSelect.classList.remove('selected');
+});
+
+graphTimePerPremiseSelect.addEventListener('click', () => {
+    graphs.forEach(graph => graph.classList.remove('visible'));
+    graphSelects.forEach(select => select.classList.remove('selected'));
+    graphTimePerPremise.classList.add('visible');
+    graphTimePerPremiseSelect.classList.add('selected');
 });
 
 const PROGRESS_GRAPH = new ProgressGraph();
