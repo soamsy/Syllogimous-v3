@@ -2027,6 +2027,12 @@ table.distinction {
     .display_text {
         font-size: var(--step-05);
     }
+    .graph-select {
+        font-size: var(--step--1);
+        flex: 1 1 auto;
+        white-space: nowrap;
+        overflow: hidden;
+    }
 }
 
 @media (max-width: 500px) {
