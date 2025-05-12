@@ -1945,7 +1945,7 @@ table.distinction {
 }
 
 .progress-bar-vertical {
-    height: 400px;
+    height: 40vh;
     width: 24px;
     background: rgba(0, 0, 0, 0.5);
     border: 2px solid #3c6c64;
@@ -2012,7 +2012,6 @@ table.distinction {
         box-shadow: none;
     }
     .progress-bar-vertical {
-      height: 300px;
       width: 20px;
     }
     .progress-content {
