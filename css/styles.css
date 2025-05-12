@@ -96,6 +96,7 @@
     --label-color: #abf4ff;
     --overlay-background-color: #000;
     --three-d-background: radial-gradient(circle at center, #555555E0, #222222E0);
+    --inline-input-bg-color: #2D2D2D;
 }
 
 .light-mode {
@@ -139,6 +140,7 @@
     --label-color: #1E4D5A;
     --overlay-background-color: #DDDA;
     --three-d-background: radial-gradient(circle at center, #FFFFFFE0, #BBDDEEE0);
+    --inline-input-bg-color: #FAFAFA;
 }
 
 body {
@@ -442,12 +444,13 @@ button.delete:hover {
 .inline-input__inner > select,
 .inline-premise-spinner > input {
     text-align: right;
-    background-color: #0000;
+    background-color: var(--inline-input-bg-color);
     border: none;
     border-bottom: 1px solid #050505;
     margin: 0 3px;
     color: var(--text-color);
     font-size: var(--step--1);
+    box-shadow: 0px 0px 2px #112a;
 }
 
 /* Remove spinner buttons on WebKit browsers (Chrome, Safari, etc.) */
