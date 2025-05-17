@@ -96,7 +96,7 @@
     --label-color: #abf4ff;
     --overlay-background-color: #000;
     --three-d-background: radial-gradient(circle at center, #555555E0, #222222E0);
-    --inline-input-bg-color: #2D2D2D;
+    --inline-input-bg-color: #282828;
 }
 
 .light-mode {
