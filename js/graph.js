@@ -137,7 +137,7 @@ class ProgressGraph {
         const timePerPremiseDatasets = Object.keys(premiseLevelData).map(type => {
             return {
                 label: type,
-                data: premiseLevelData[type].map((entry) => ({ x: entry.day, y: entry.averageTime / entry.numPremises })),
+                data: premiseLevelData[type].map((entry) => ({ x: entry.day, y: entry.numPremises / entry.averageTime })),
                 borderColor: this.randomColor(),
                 fill: false,
             };
@@ -169,7 +169,7 @@ class ProgressGraph {
         const timeCtx = canvasTime.getContext('2d');
         this.timeChart = this.createChart(timeCtx, labels, timeDatasets, 'bar', 'Time Spent', 1, 2, '', totalTimeSpentDisplay);
         const timePerPremiseCtx = canvasTimePerPremise.getContext('2d');
-        this.timePerPremiseChart = this.createChart(timePerPremiseCtx, premiseLevelLabels, timePerPremiseDatasets, 'line', 'Time Per Premise (s)', 1, 2, 's');
+        this.timePerPremiseChart = this.createChart(timePerPremiseCtx, premiseLevelLabels, timePerPremiseDatasets, 'line', 'Premise / second', 1, 2, ' premise/s');
     }
 
     createChart(ctx, labels, datasets, type, yAxisTitle, tickDecimals = 1, tooltipDecimals = 2, unit='', subtitle) {
