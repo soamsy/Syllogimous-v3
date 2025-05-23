@@ -132,6 +132,7 @@ class ProfileStore {
                 selectButton.classList.add('highlight');
             }
             selectButton.addEventListener('click', (event) => {
+                event.stopPropagation();
                 this.selectProfile(index);
             });
 
