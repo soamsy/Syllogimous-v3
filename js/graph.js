@@ -299,4 +299,8 @@ graphButton.addEventListener('click', () => {
     PROGRESS_GRAPH.createGraph();
 });
 
-
+document.addEventListener('click', (event) => {
+  if (graphPopup.classList.contains('visible') && !graphPopup.contains(event.target) && !graphButton.contains(event.target)) {
+      PROGRESS_GRAPH.clearGraph();
+  }
+});
