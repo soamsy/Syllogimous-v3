@@ -707,7 +707,7 @@ input[type="number"]::-moz-inner-spin-button {
 }
 
 .display_text {
-    max-height: calc(100vh - 240px);
+    max-height: calc(100vh - 260px);
     min-width: 270px;
     line-height: 1.5;
     padding: 0.5rem 0.75rem 0 0.125rem;
