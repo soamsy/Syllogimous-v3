@@ -8,6 +8,8 @@ if ('serviceWorker' in navigator)
 const feedbackWrong = document.querySelector(".feedback--wrong");
 const feedbackMissed = document.querySelector(".feedback--missed");
 const feedbackRight = document.querySelector(".feedback--right");
+const trueButton = document.getElementById("true-button");
+const falseButton = document.getElementById("false-button");
 
 const correctlyAnsweredEl = document.querySelector(".correctly-answered");
 const nextLevelEl = document.querySelector(".next-level");
@@ -722,6 +724,7 @@ function storeQuestionAndSave() {
 }
 
 function checkIfTrue() {
+    trueButton.blur();
     if (processingAnswer) {
         return;
     }
@@ -741,6 +744,7 @@ function checkIfTrue() {
 }
 
 function checkIfFalse() {
+    falseButton.blur();
     if (processingAnswer) {
         return;
     }
