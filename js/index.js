@@ -1002,7 +1002,7 @@ function handleKeyPress(event) {
     }
     switch (event.code) {
         case "KeyH":
-            historyButton.click();
+            historyCheckbox.checked = !historyCheckbox.checked;
             if (historyCheckbox.checked) {
                 const firstEntry = historyList.firstElementChild;
                 if (firstEntry) {
