@@ -923,7 +923,8 @@ function createHQLI(question, i) {
 </div>`;
     parent.innerHTML = html;
     parent.querySelector(".index").textContent = i + 1;
-    parent.querySelector(".delete").addEventListener('click', () => {
+    parent.querySelector(".delete").addEventListener('click', (e) => {
+        e.stopPropagation();
         deleteQuestion(i, q.correctness === 'right');
     });
     const explanationButton = parent.querySelector(".explanation-button");
