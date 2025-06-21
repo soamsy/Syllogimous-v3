@@ -80,7 +80,7 @@ class LinearGenerator {
         }
     }
 
-    createBacktrackingLinearPremise(a, b, options, isValid) {
+    createBacktrackingLinearPremise(a, b, options, negationOptions) {
         if (coinFlip()) {
             [a, b] = [b, a];
             options = options.map(choice => -choice);
@@ -88,7 +88,7 @@ class LinearGenerator {
         const choice = pickRandomItems(options, 1).picked[0] + 1;
         const relations = [this.prev, this.equal, this.next];
         const relationsMin = [this.prevMin, this.equalMin, this.nextMin];
-        const negatedChoice = pickRandomItems([0, 1, 2].filter(x => x !== choice), 1).picked[0];
+        const negatedChoice = pickRandomItems(negationOptions.map(o => o+1).filter(x => x !== choice), 1).picked[0];
         return pickLinearPremise(a, b, relations[choice], relations[negatedChoice], relationsMin[choice], relationsMin[negatedChoice]);
     }
 
@@ -254,7 +254,7 @@ class LinearQuestion {
         const comparison = bucketMap[a] === bucketMap[b] ? 0 : (bucketMap[a] < bucketMap[b] ? -1 : 1)
         let conclusion, isValid;
         if (coinFlip()) {
-            conclusion = this.generator.createBacktrackingLinearPremise(a, b, [comparison], true);
+            conclusion = this.generator.createBacktrackingLinearPremise(a, b, [comparison], [-1, 0, 1].filter(o => o !== comparison));
             isValid = true;
         } else {
             let options = [-1, 0, 1].filter(o => o !== comparison);
@@ -268,7 +268,7 @@ class LinearQuestion {
             if (!includeZero) {
                 options = options.filter(o => o !== 0);
             }
-            conclusion = this.generator.createBacktrackingLinearPremise(a, b, options, false);
+            conclusion = this.generator.createBacktrackingLinearPremise(a, b, options, [comparison]);
             isValid = false;
         }
 
