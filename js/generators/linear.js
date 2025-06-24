@@ -84,6 +84,7 @@ class LinearGenerator {
         if (coinFlip()) {
             [a, b] = [b, a];
             options = options.map(choice => -choice);
+            negationOptions = negationOptions.map(choice => -choice);
         }
         const choice = pickRandomItems(options, 1).picked[0] + 1;
         const relations = [this.prev, this.equal, this.next];
