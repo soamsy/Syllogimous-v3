@@ -54,7 +54,7 @@ function removeDuplicates(arr) {
 
 function getPremisesFor(key, defaultQuota) {
     if (savedata[key] && typeof savedata[key] === 'number' && isFinite(savedata[key])) {
-        return savedata[key];
+        return defaultQuota >= 2 ? Math.max(2, savedata[key]) : savedata[key];
     } else {
         return defaultQuota;
     }

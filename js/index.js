@@ -489,7 +489,8 @@ function generateQuestion() {
     ].reduce((a, c) => a + +c, 0) > 1;
 
     const generators = [];
-    let quota = savedata.premises
+    let quota = savedata.premises;
+    quota = Math.max(2, quota);
     quota = Math.min(quota, maxStimuliAllowed());
 
     const banNormalModes = savedata.onlyAnalogy || savedata.onlyBinary;
