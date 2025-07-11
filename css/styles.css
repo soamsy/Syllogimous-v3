@@ -997,6 +997,10 @@ input[type="number"]::-moz-inner-spin-button {
     color: #f00;
 }
 
+.is-negated > svg {
+    fill: #f00 !important;
+}
+
 .negation-explainer {
     color: #eddb7e;
     font-size: var(--step--1);
