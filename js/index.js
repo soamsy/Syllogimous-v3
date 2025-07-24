@@ -1022,8 +1022,15 @@ function handleKeyPress(event) {
                 });
             }
             break;
-        case "KeyS":
-            settingsButton.click();
+        case "KeyA":
+            if (savedata.enableCarouselMode) {
+                carouselBackButton.click();
+            }
+            break;
+        case "KeyD":
+            if (savedata.enableCarouselMode) {
+                carouselNextButton.click();
+            }
             break;
         case "KeyJ":
         case "Digit1":
