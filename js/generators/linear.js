@@ -296,7 +296,8 @@ class LinearQuestion {
         const [indexOfA, indexOfB] = [this.indexOfWord(a), this.indexOfWord(b)];
         const [indexOfC, indexOfD] = [this.indexOfWord(c), this.indexOfWord(d)];
         const isValidSame = indexOfA > indexOfB && indexOfC > indexOfD
-                   || indexOfA < indexOfB && indexOfC < indexOfD;
+                   || indexOfA < indexOfB && indexOfC < indexOfD
+                   || indexOfA === indexOfB && indexOfC === indexOfD;
 
         let conclusion = analogyTo(a, b);
         let isValid;
